@@ -32,10 +32,6 @@
             --active-shift-text: white;
             --active-shift-border: #003a66;
 
-            /* Search bar colors */
-            --search-border: #c9d6e4;
-            --search-focus-border: var(--primary-blue);
-
             /* Shift Status Colors (for personal schedule) */
             --status-jaga-color: #28a745; /* Green */
             --status-libur-color: #dc3545; /* Red */
@@ -45,21 +41,6 @@
             --progress-bar-track: #e0e0e0;
             --progress-bar-fill: var(--secondary-red);
             --progress-bar-text: #555;
-
-            /* Game specific colors */
-            --game-draggable-bg: var(--container-bg);
-            --game-dropzone-border-color: #a0a0a0;
-            --game-dropzone-hover-bg: rgba(var(--primary-blue-rgb), 0.1);
-            --game-feedback-correct-color: var(--status-jaga-color);
-            --game-feedback-wrong-color: var(--status-libur-color);
-            --game-button-bg: var(--primary-blue);
-            --game-button-hover-bg: var(--sub-heading-color);
-            --game-button-text: white;
-
-            /* RGB values for dynamic CSS (used by JS for rgba) */
-            --primary-blue-rgb: 0, 80, 140;
-            --secondary-red-rgb: 220, 47, 47;
-            --status-jaga-rgb: 40, 167, 69;
         }
 
         /* --- Dark Mode Colors --- */
@@ -82,8 +63,6 @@
             --active-shift-bg: var(--primary-blue);
             --active-shift-text: #2d2d2d; /* Dark text on light blue active */
             --active-shift-border: #3a7fa5;
-            --search-border: #555;
-            --search-focus-border: var(--primary-blue);
 
             --status-jaga-color: #4caf50;
             --status-libur-color: #f44336;
@@ -92,20 +71,6 @@
             --progress-bar-track: #555;
             --progress-bar-fill: var(--secondary-red);
             --progress-bar-text: #ccc;
-
-            --game-draggable-bg: #555555;
-            --game-dropzone-border-color: #a0a0a0;
-            --game-dropzone-hover-bg: rgba(var(--primary-blue-rgb), 0.2);
-            --game-feedback-correct-color: #4caf50;
-            --game-feedback-wrong-color: #f44336;
-            --game-button-bg: var(--primary-blue);
-            --game-button-hover-bg: #3a7fa5;
-            --game-button-text: #2d2d2d;
-
-            /* RGB values for dark mode */
-            --primary-blue-rgb: 79, 168, 216;
-            --secondary-red-rgb: 241, 94, 110;
-            --status-jaga-rgb: 76, 175, 80;
         }
 
         /* --- Global Styles --- */
@@ -121,39 +86,18 @@
             align-items: center;
             min-height: 100vh;
             transition: background-color 0.3s ease, color 0.3s ease;
+            /* Placeholder background image - you can remove or replace this */
             background-image: url('https://source.unsplash.com/random/1600x900/?broadcasting,studio,controlroom');
             background-size: cover;
-            background-attachment: fixed; /* Parallax effect */
+            background-attachment: fixed; /* Parallax-like effect */
             background-position: center center;
-            cursor: url('assets/cursors/remote-tv-cursor.png'), auto; /* Feature 48: Custom Cursor */
-            /* Fallback to .cur if .png doesn't work well */
-            /* cursor: url('assets/cursors/remote-tv-cursor.cur'), auto; */
+            cursor: url('assets/cursors/remote-tv-cursor.png'), auto; /* Feature 48: Custom Cursor (PNG) */
+            /* Fallback to .cur if .png doesn't work well on some OS/browsers */
+            /* For .cur files: cursor: url('assets/cursors/remote-tv-cursor.cur'), auto; */
         }
 
-        /* Custom Scrollbar (Feature 15) */
-        ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--card-bg);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary-blue);
-            border-radius: 10px;
-            border: 2px solid var(--card-bg);
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--sub-heading-color);
-        }
-        body { /* For Firefox */
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary-blue) var(--card-bg);
-        }
-
-        /* --- Container & Header --- */
-        .container, .schedule-visualization-container, .search-container, .personal-schedule-result-container, .game-popup-content {
+        /* --- Main Containers --- */
+        .container, .schedule-visualization-container {
             background-color: var(--container-bg);
             padding: 30px;
             border-radius: 12px;
@@ -166,6 +110,7 @@
             position: relative;
         }
 
+        /* --- Header Section --- */
         .header {
             display: flex;
             flex-direction: column;
@@ -174,7 +119,7 @@
         }
 
         .logo {
-            width: 80px;
+            width: 80px; /* Adjust size as needed */
             height: auto;
             margin-bottom: 10px;
         }
@@ -184,13 +129,6 @@
             margin-bottom: 10px;
             font-size: 2.2em;
             letter-spacing: 0.5px;
-            /* Feature 10: Pulsing effect */
-            animation: pulse-color 3s infinite ease-in-out;
-        }
-        @keyframes pulse-color {
-            0% { color: var(--primary-blue); }
-            50% { color: var(--secondary-red); }
-            100% { color: var(--primary-blue); }
         }
 
         .dynamic-greeting {
@@ -198,7 +136,6 @@
             font-weight: bold;
             color: var(--sub-heading-color);
             margin-bottom: 15px;
-            animation: fadeIn 1s ease-out;
         }
 
         .datetime-display {
@@ -237,86 +174,6 @@
             font-weight: bold;
         }
 
-        /* --- Search Bar --- */
-        .search-container {
-            padding: 20px 30px;
-            margin-top: 0;
-            margin-bottom: 30px;
-        }
-        .search-container input[type="text"] {
-            width: calc(100% - 20px);
-            padding: 12px 10px;
-            border: 1px solid var(--search-border);
-            border-radius: 8px;
-            font-size: 1em;
-            color: var(--text-color);
-            background-color: var(--container-bg);
-            transition: border-color 0.3s ease;
-        }
-        .search-container input[type="text"]:focus {
-            outline: none;
-            border-color: var(--search-focus-border);
-            box-shadow: 0 0 0 3px rgba(var(--primary-blue-rgb), 0.2);
-        }
-        .search-message {
-            margin-top: 10px;
-            font-size: 0.9em;
-            color: var(--empty-msg-color);
-            display: none;
-        }
-
-        /* --- Personal Schedule Result --- */
-        .personal-schedule-result-container {
-            display: none; /* Hidden by default */
-            margin-top: 20px;
-            padding: 25px;
-        }
-        .personal-schedule-result-container h2 {
-            color: var(--primary-blue);
-            margin-bottom: 25px;
-            font-size: 2em;
-            border-bottom: 2px solid var(--border-light);
-            padding-bottom: 10px;
-        }
-        .personal-schedule-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .daily-schedule-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 10px;
-            padding: 15px;
-            text-align: left;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-        .daily-schedule-card h3 {
-            color: var(--sub-heading-color);
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-size: 1.2em;
-            border-bottom: 1px dashed var(--border-light);
-            padding-bottom: 5px;
-        }
-        .daily-schedule-card ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            font-size: 0.9em;
-        }
-        .daily-schedule-card li {
-            padding: 3px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .daily-schedule-card .status-jaga { color: var(--status-jaga-color); font-weight: bold; }
-        .daily-schedule-card .status-tidak-jaga { color: var(--status-tidak-jaga-color); font-weight: bold; }
-        .daily-schedule-card .status-libur { color: var(--status-libur-color); font-weight: bold; }
-
         /* --- Schedule Visualization --- */
         .schedule-visualization-container {
             margin-top: 20px;
@@ -328,31 +185,6 @@
             font-size: 2em;
             border-bottom: 2px solid var(--border-light);
             padding-bottom: 10px;
-        }
-        .week-navigation {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            color: var(--sub-heading-color);
-            font-weight: bold;
-        }
-        .week-navigation button {
-            background-color: var(--primary-blue);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-        }
-        .week-navigation button:hover:not(:disabled) {
-            background-color: var(--sub-heading-color);
-            transform: translateY(-1px);
-        }
-        .week-navigation button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
         }
         .shifts-timeline {
             display: flex;
@@ -387,11 +219,6 @@
             background-color: rgba(255,255,255,0.4) !important;
             transform: translateY(-2px);
             box-shadow: none;
-        }
-        .active-shift .jaga-card.highlight {
-            border: 2px solid var(--secondary-red);
-            box-shadow: 0 0 15px var(--secondary-red);
-            transform: scale(1.05);
         }
 
         .shift-display-block h3 {
@@ -580,7 +407,7 @@
             color: var(--popup-text-color);
         }
 
-        /* --- Call Bantuan Button & Pop-up --- */
+        /* --- Call Bantuan Button --- */
         .call-bantuan-button {
             position: fixed;
             bottom: 20px;
@@ -630,171 +457,7 @@
             text-decoration: underline;
         }
 
-        /* --- Game Popup Styles --- */
-        .game-popup-content {
-            padding: 30px;
-            max-width: 700px;
-        }
-        .game-header {
-            color: var(--primary-blue);
-            font-size: 1.8em;
-            margin-bottom: 20px;
-        }
-        .game-area {
-            display: flex;
-            justify-content: space-around;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .draggable-names {
-            flex: 1;
-            min-width: 180px;
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 8px;
-            padding: 15px;
-            height: 300px;
-            overflow-y: auto;
-            text-align: center;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
-        }
-        .draggable-names h4 {
-            color: var(--sub-heading-color);
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-        .draggable-item {
-            background-color: var(--game-draggable-bg);
-            border: 1px solid var(--card-border);
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            cursor: grab;
-            font-size: 0.95em;
-            font-weight: 500;
-            color: var(--text-color);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            transition: background-color 0.2s ease, transform 0.1s ease;
-        }
-        .draggable-item:hover {
-            background-color: var(--game-card-drag-bg);
-        }
-        .draggable-item:active {
-            cursor: grabbing;
-            transform: scale(1.02);
-        }
-
-        .dropzones-container {
-            flex: 2;
-            min-width: 300px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .dropzone {
-            background-color: var(--card-bg);
-            border: 2px dashed var(--game-dropzone-border-color);
-            border-radius: 8px;
-            padding: 15px;
-            min-height: 90px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            transition: border-color 0.2s ease, background-color 0.2s ease;
-        }
-        .dropzone.drag-over {
-            border-color: var(--game-dropzone-hover-bg); /* Now uses a color from root vars */
-            background-color: var(--game-dropzone-hover-bg);
-        }
-        .dropzone.correct-zone {
-            border-color: var(--game-feedback-correct-color);
-            background-color: rgba(var(--status-jaga-rgb), 0.1);
-        }
-        .dropzone.wrong-zone {
-            border-color: var(--game-feedback-wrong-color);
-            background-color: rgba(var(--secondary-red-rgb), 0.1);
-        }
-        .dropzone h4 {
-            color: var(--sub-heading-color);
-            margin-top: 0;
-            margin-bottom: 10px;
-        }
-        .dropzone .dropped-item {
-            background-color: var(--container-bg);
-            border: 1px solid var(--card-border);
-            padding: 5px 10px;
-            margin-bottom: 5px;
-            border-radius: 4px;
-            font-size: 0.85em;
-            color: var(--text-color);
-            width: calc(100% - 22px);
-            text-align: center;
-        }
-
-        .game-controls {
-            margin-top: 25px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .game-button {
-            background-color: var(--game-button-bg);
-            color: var(--game-button-text);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-        }
-        .game-button:hover {
-            background-color: var(--game-button-hover-bg);
-            transform: translateY(-2px);
-        }
-        .game-feedback {
-            margin-top: 20px;
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-        .game-feedback.correct {
-            color: var(--game-feedback-correct-color);
-        }
-        .game-feedback.wrong {
-            color: var(--game-feedback-wrong-color);
-        }
-
-        /* --- Hiding Employee Easter Egg (Feature 20) --- */
-        .hiding-employee-icon {
-            position: fixed;
-            width: 40px;
-            height: 40px;
-            background-image: url('assets/tvri-icon-small.png'); /* Use a local small TVRI icon */
-            background-size: contain;
-            background-repeat: no-repeat;
-            cursor: pointer;
-            z-index: 500;
-            transition: left 2s ease-in-out, top 2s ease-in-out, transform 0.1s ease-out; /* Smooth movement over 2s */
-            animation: pulse 2s infinite ease-in-out;
-            display: none; /* Hidden by default, shown by JS */
-        }
-        .hiding-employee-icon:hover {
-            transform: scale(1.1);
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.9; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* --- General Contacts Popup (Feature 62) --- */
-        .general-contacts-btn {
-            background-color: var(--sub-heading-color) !important; /* Override fixed button color */
-        }
-
-        /* Keyframe for fade-in animation */
+        /* Keyframe for fade-in animation (used by dynamic-greeting) */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -826,28 +489,10 @@
         </div>
     </div>
 
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Cari jadwal pribadi / Ketik 'GAMEON'..." aria-label="Cari jadwal pribadi atau aktifkan game">
-        <p id="searchMessage" class="search-message">Nama tidak ditemukan.</p>
-    </div>
-
-    <div class="personal-schedule-result-container" id="personalScheduleResultContainer">
-        <h2 id="personalScheduleNameHeader">Jadwal Pribadi:</h2>
-        <div class="personal-schedule-grid" id="personalScheduleGrid">
-            </div>
-        <p style="font-size: 0.9em; color: var(--empty-msg-color); margin-top: 15px;">Data ini diambil dari jadwal yang sedang aktif (minggu ini atau minggu yang dipilih).</p>
-    </div>
-
     <div class="schedule-visualization-container">
-        <div class="week-navigation">
-            <button id="prevWeekBtn" disabled>&larr; Minggu Sebelumnya</button>
-            <span id="currentWeekDisplay">Loading Week...</span>
-            <button id="nextWeekBtn">Minggu Berikutnya &rarr;</button>
-        </div>
         <h2 id="scheduleDateHeader">Jadwal Jaga Hari Ini</h2>
         <div class="shifts-timeline" id="shiftsTimeline">
             </div>
-        <p style="font-size: 0.9em; color: var(--empty-msg-color); margin-top: 15px;">Gunakan panah di atas untuk melihat jadwal minggu lainnya.</p>
     </div>
 
     <div class="popup-overlay" id="photoPopupOverlay">
@@ -870,262 +515,179 @@
         </div>
     </div>
 
-    <button class="call-bantuan-button" id="viewAllEmployeesBtn" style="bottom: 90px; right: 20px; background-color: var(--primary-blue); font-size: 1.5em;">👥</button>
-    <div class="popup-overlay" id="allEmployeesPopupOverlay">
-        <div class="popup-content">
-            <button class="popup-close" id="allEmployeesCloseBtn">&times;</button>
-            <h3>Daftar Semua Karyawan</h3>
-            <ul id="allEmployeesList" style="text-align: left; max-height: 300px; overflow-y: auto;">
-                </ul>
-            <p style="font-size: 0.9em; color: var(--empty-msg-color); margin-top: 15px;">Klik nama untuk melihat jadwal pribadi.</p>
-        </div>
-    </div>
-
-    <button class="call-bantuan-button general-contacts-btn" id="generalContactsBtn" style="bottom: 160px; right: 20px; font-size: 1.2em;">📞</button>
-    <div class="popup-overlay" id="generalContactsPopupOverlay">
-        <div class="popup-content call-bantuan-popup-content">
-            <button class="popup-close" id="generalContactsCloseBtn">&times;</button>
-            <h3>Kontak Umum Departemen</h3>
-            <ul id="generalContactList">
-                </ul>
-        </div>
-    </div>
-
-    <div class="popup-overlay" id="gamePopupOverlay">
-        <div class="popup-content game-popup-content">
-            <button class="popup-close" id="gameCloseBtn">&times;</button>
-            <h2 class="game-header">Shift Sorter Challenge!</h2>
-            <p>Seret nama-nama di kiri ke Shift yang benar untuk hari ini.</p>
-            <div class="game-area">
-                <div class="draggable-names" id="draggableNamesContainer">
-                    <h4>Nama Karyawan</h4>
-                    </div>
-                <div class="dropzones-container">
-                    <div class="dropzone" id="dropzoneShift1">
-                        <h4>Shift 1</h4>
-                    </div>
-                    <div class="dropzone" id="dropzoneShift2">
-                        <h4>Shift 2</h4>
-                    </div>
-                    <div class="dropzone" id="dropzoneShift3">
-                        <h4>Shift 3</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="game-controls">
-                <button class="game-button" id="checkAnswersBtn">Periksa Jawaban Anda</button>
-                <button class="game-button" id="resetGameBtn">Mulai Ulang Game</button>
-                <button class="game-button" id="closeGameBtn">Tutup Game</button>
-            </div>
-            <p class="game-feedback" id="gameFeedback"></p>
-        </div>
-    </div>
-
-    <div class="hiding-employee-icon" id="hidingEmployeeIcon" title="Klik aku!"></div>
-
-
     <script>
-        // --- DATA JADWAL LENGKAP UNTUK BEBERAPA MINGGU (FEATURE 16) ---
-        // CATATAN PENTING: Anda harus mengisi data jadwal untuk minggu-minggu berikutnya secara manual
-        // Saya akan menggunakan duplikasi data Minggu 1 untuk Minggu 2, 3, 4 sebagai placeholder.
-        // Ganti data di minggu2, minggu3, minggu4 dengan jadwal ROTASI Anda yang sebenarnya.
-        const allSchedules = {
-            "minggu1": { // Data untuk Minggu 1 (Contoh: Minggu saat ini)
-                "ALVIANA DAMAYANTI": {
-                    "shift": {
-                        "SENIN": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
-                        "SELASA": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
-                        "RABU": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
-                        "KAMIS": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_juga" },
-                        "JUMAT": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_juga" },
-                        "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
-                    },
-                    "info": "Divisi Admin",
-                    "photo": "photos/alviana_damayanti.jpg" 
+        // --- DATA JADWAL (HANYA MINGGU 1 SEPERTI AWAL) ---
+        // Ini adalah data jadwal untuk satu minggu.
+        // Jika Anda perlu memperbarui untuk minggu berikutnya, Anda harus MENGEDIT DATA INI SECARA MANUAL.
+        const jadwalMinggu1Juni2025 = {
+            "ALVIANA DAMAYANTI": {
+                "shift": {
+                    "SENIN": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
+                    "SELASA": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
+                    "RABU": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
+                    "KAMIS": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
                 },
-                "INA APRIANA": {
-                    "shift": {
-                        "SENIN": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
-                        "SELASA": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
-                    },
-                    "info": "Divisi Keuangan",
-                    "photo": "photos/ina_apriana.jpg"
-                },
-                "RAHMA ELVIRA ARIYANTI": {
-                    "shift": {
-                        "SENIN": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "SELASA": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
-                    },
-                    "info": "Divisi HRD",
-                    "photo": "photos/rahma_elvira_ariyanti.jpg"
-                },
-                "MUH. FADIL PERKASA": {
-                    "shift": {
-                        "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "SABTU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "MINGGU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
-                    },
-                    "info": "Divisi IT Support",
-                    "photo": "photos/muh_fadil_perkasa.jpg"
-                },
-                "M. ISWANSYAH NUR": {
-                    "shift": {
-                        "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "SABTU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "MINGGU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
-                    },
-                    "info": "Divisi Umum",
-                    "photo": "photos/m_iswansyah_nur.jpg"
-                },
-                "ABDAN SYAKURO": {
-                    "shift": {
-                        "SENIN": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                        "SELASA": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                        "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                        "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                        "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                        "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
-                    },
-                    "info": "Divisi TI",
-                    "photo": "photos/abdan_syakuro.jpg"
-                },
-                "ANDI FAIRUL AMRI": {
-                    "shift": {
-                        "SENIN": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                        "SELASA": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                        "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                        "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                        "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                        "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
-                    },
-                    "info": "Divisi Operasional",
-                    "photo": "photos/andi_fairul_amri.jpg"
-                },
-                "R. AULIA RAHMAN": {
-                    "shift": {
-                        "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                        "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                        "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                        "SABTU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" },
-                        "MINGGU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" }
-                    },
-                    "info": "Divisi Desain",
-                    "photo": "photos/r_aulia_rahman.jpg"
-                },
-                "RAMAZONA NABABAN": {
-                    "shift": {
-                        "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                        "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                        "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                        "SABTU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" },
-                        "MINGGU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" }
-                    },
-                    "info": "Divisi Pemasaran",
-                    "photo": "photos/ramazona_nababan.jpg"
-                },
-                "ARI ARDIANSYAH": {
-                    "shift": {
-                        "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                        "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                        "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                        "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                        "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
-                    },
-                    "info": "Divisi Keamanan",
-                    "photo": "photos/ari_ardiansyah.jpg"
-                },
-                "BAHRIN": {
-                    "shift": {
-                        "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                        "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                        "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                        "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" },
-                        "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
-                    },
-                    "info": "Divisi Logistik",
-                    "photo": "photos/bahrin.jpg"
-                },
-                "WIDHIONO": {
-                    "shift": {
-                        "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                        "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                        "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                        "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" },
-                        "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
-                    },
-                    "info": "Divisi Teknik",
-                    "photo": "photos/widhiono.jpg"
-                },
-                "WIRA AHMAD GAZALI": {
-                    "shift": {
-                        "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                        "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                        "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                        "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                        "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" },
-                        "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
-                    },
-                    "info": "Divisi Produksi",
-                    "photo": "photos/wira_ahmad_gazali.jpg"
-                }
+                "info": "Divisi Admin",
+                "photo": "photos/alviana_damayanti.jpg" /* Pastikan path foto benar! */
             },
-            // --- DATA UNTUK MINGGU 2 (CONTOH) ---
-            // GANTI DENGAN JADWAL MINGGU 2 ANDA YANG SEBENARNYA!
-            "minggu2": {
-                 // Contoh: Rotasi Abdan ke bawah, dll. (Manual Anda lakukan di sini)
-                "ALVIANA DAMAYANTI": { ...allSchedules.minggu1["ALVIANA DAMAYANTI"], shift: { "SENIN": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "SELASA": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" } } },
-                "INA APRIANA": { ...allSchedules.minggu1["INA APRIANA"], shift: { "SENIN": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "SELASA": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" } } },
-                "RAHMA ELVIRA ARIYANTI": { ...allSchedules.minggu1["RAHMA ELVIRA ARIYANTI"], shift: { "SENIN": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "SELASA": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" } } },
-                "MUH. FADIL PERKASA": { ...allSchedules.minggu1["MUH. FADIL PERKASA"], shift: { "SENIN": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "SELASA": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "SABTU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "MINGGU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" } } },
-                "M. ISWANSYAH NUR": { ...allSchedules.minggu1["M. ISWANSYAH NUR"], shift: { "SENIN": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "SELASA": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "SABTU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "MINGGU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" } } },
-                "ABDAN SYAKURO": { ...allSchedules.minggu1["ABDAN SYAKURO"], shift: { "SENIN": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, "SELASA": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" } } },
-                "ANDI FAIRUL AMRI": { ...allSchedules.minggu1["ANDI FAIRUL AMRI"], shift: { "SENIN": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, "SELASA": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" } } },
-                "R. AULIA RAHMAN": { ...allSchedules.minggu1["R. AULIA RAHMAN"], shift: { "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, "SABTU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" }, "MINGGU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" } } },
-                "RAMAZONA NABABAN": { ...allSchedules.minggu1["RAMAZONA NABABAN"], shift: { "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, "SABTU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" }, "MINGGU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" } } },
-                "ARI ARDIANSYAH": { ...allSchedules.minggu1["ARI ARDIANSYAH"], shift: { "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" }, "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" }, "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" }, "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" }, "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" } } },
-                "BAHRIN": { ...allSchedules.minggu1["BAHRIN"], shift: { "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" }, "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" }, "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" }, "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }, "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" } } },
-                "WIDHIONO": { ...allSchedules.minggu1["WIDHIONO"], shift: { "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" }, "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" }, "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" }, "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }, "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" } } },
-                "WIRA AHMAD GAZALI": { ...allSchedules.minggu1["WIRA AHMAD GAZALI"], shift: { "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }, "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" }, "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" }, "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" }, "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }, "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" } } }
+            "INA APRIANA": {
+                "shift": {
+                    "SENIN": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
+                    "SELASA": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi Keuangan",
+                "photo": "photos/ina_apriana.jpg"
             },
-            "minggu3": {
-                // Duplikasi data minggu 1, ganti dengan jadwal minggu 3
-                "ALVIANA DAMAYANTI": { ...allSchedules.minggu1["ALVIANA DAMAYANTI"] }, "INA APRIANA": { ...allSchedules.minggu1["INA APRIANA"] }, "RAHMA ELVIRA ARIYANTI": { ...allSchedules.minggu1["RAHMA ELVIRA ARIYANTI"] }, "MUH. FADIL PERKASA": { ...allSchedules.minggu1["MUH. FADIL PERKASA"] }, "M. ISWANSYAH NUR": { ...allSchedules.minggu1["M. ISWANSYAH NUR"] }, "ABDAN SYAKURO": { ...allSchedules.minggu1["ABDAN SYAKURO"] }, "ANDI FAIRUL AMRI": { ...allSchedules.minggu1["ANDI FAIRUL AMRI"] }, "R. AULIA RAHMAN": { ...allSchedules.minggu1["R. AULIA RAHMAN"] }, "RAMAZONA NABABAN": { ...allSchedules.minggu1["RAMAZONA NABABAN"] }, "ARI ARDIANSYAH": { ...allSchedules.minggu1["ARI ARDIANSYAH"] }, "BAHRIN": { ...allSchedules.minggu1["BAHRIN"] }, "WIDHIONO": { ...allSchedules.minggu1["WIDHIONO"] }, "WIRA AHMAD GAZALI": { ...allSchedules.minggu1["WIRA AHMAD GAZALI"] }
+            "RAHMA ELVIRA ARIYANTI": {
+                "shift": {
+                    "SENIN": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi HRD",
+                "photo": "photos/rahma_elvira_ariyanti.jpg"
             },
-            "minggu4": {
-                // Duplikasi data minggu 1, ganti dengan jadwal minggu 4
-                "ALVIANA DAMAYANTI": { ...allSchedules.minggu1["ALVIANA DAMAYANTI"] }, "INA APRIANA": { ...allSchedules.minggu1["INA APRIANA"] }, "RAHMA ELVIRA ARIYANTI": { ...allSchedules.minggu1["RAHMA ELVIRA ARIYANTI"] }, "MUH. FADIL PERKASA": { ...allSchedules.minggu1["MUH. FADIL PERKASA"] }, "M. ISWANSYAH NUR": { ...allSchedules.minggu1["M. ISWANSYAH NUR"] }, "ABDAN SYAKURO": { ...allSchedules.minggu1["ABDAN SYAKURO"] }, "ANDI FAIRUL AMRI": { ...allSchedules.minggu1["ANDI FAIRUL AMRI"] }, "R. AULIA RAHMAN": { ...allSchedules.minggu1["R. AULIA RAHMAN"] }, "RAMAZONA NABABAN": { ...allSchedules.minggu1["RAMAZONA NABABAN"] }, "ARI ARDIANSYAH": { ...allSchedules.minggu1["ARI ARDIANSYAH"] }, "BAHRIN": { ...allSchedules.minggu1["BAHRIN"] }, "WIDHIONO": { ...allSchedules.minggu1["WIDHIONO"] }, "WIRA AHMAD GAZALI": { ...allSchedules.minggu1["WIRA AHMAD GAZALI"] }
+            "MUH. FADIL PERKASA": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi IT Support",
+                "photo": "photos/muh_fadil_perkasa.jpg"
+            },
+            "M. ISWANSYAH NUR": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi Umum",
+                "photo": "photos/m_iswansyah_nur.jpg"
+            },
+            "ABDAN SYAKURO": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi TI",
+                "photo": "photos/abdan_syakuro.jpg"
+            },
+            "ANDI FAIRUL AMRI": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi Operasional",
+                "photo": "photos/andi_fairul_amri.jpg"
+            },
+            "R. AULIA RAHMAN": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi Desain",
+                "photo": "photos/r_aulia_rahman.jpg"
+            },
+            "RAMAZONA NABABAN": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi Pemasaran",
+                "photo": "photos/ramazona_nababan.jpg"
+            },
+            "ARI ARDIANSYAH": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
+                },
+                "info": "Divisi Keamanan",
+                "photo": "photos/ari_ardiansyah.jpg"
+            },
+            "BAHRIN": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
+                },
+                "info": "Divisi Logistik",
+                "photo": "photos/bahrin.jpg"
+            },
+            "WIDHIONO": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
+                },
+                "info": "Divisi Teknik",
+                "photo": "photos/widhiono.jpg"
+            },
+            "WIRA AHMAD GAZALI": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
+                },
+                "info": "Divisi Produksi",
+                "photo": "photos/wira_ahmad_gazali.jpg"
             }
         };
 
@@ -1145,16 +707,10 @@
             { role: "Keamanan Kantor", name: "Nomor Kantor", phone: "(021) 1234567" }
         ];
 
-        // --- Kontak Umum Departemen (Feature 62) ---
-        const generalContacts = [
-            { department: "SDM", name: "Ibu Fatma", phone: "021-1111-2222" },
-            { department: "Logistik", name: "Pak Harun", phone: "021-3333-4444" },
-            { department: "Pusat Kendali", name: "Operator", phone: "021-5555-6666" }
-        ];
-
-        let lastActiveShiftKey = null;
-        let gameActive = false;
-        let currentWeekIndex = 0; // State for current week (Feature 16)
+        // --- Global Variables (Minimum) ---
+        // currentScheduleData now holds the single week's data.
+        // It's not a global state that changes.
+        let lastActiveShiftKey = null; // Used to prevent redundant DOM updates
 
         // --- Helper Functions ---
         function getNamaHari(date) {
@@ -1174,7 +730,7 @@
 
         function getJagaList(dayName, shiftKey, scheduleData) {
             const jagaNames = [];
-            if (!scheduleData) return jagaNames; // Handle if scheduleData is null/undefined
+            if (!scheduleData) return jagaNames;
             for (const nama in scheduleData) {
                 const jadwalOrang = scheduleData[nama];
                 if (jadwalOrang.shift && typeof jadwalOrang.shift[dayName] === 'object' && jadwalOrang.shift[dayName] !== null) {
@@ -1190,7 +746,7 @@
         function hidePopup(popupElement) {
             popupElement.classList.remove('active');
             if (popupElement === photoPopupOverlay) {
-                popupImage.src = "";
+                popupImage.src = ""; // Clear src to prevent flashing of old image
             }
         }
 
@@ -1279,52 +835,25 @@
             document.getElementById('countdownProgressText').textContent = countdownText;
         }
 
-        // Helper for Feature 16: Get actual week index from a reference date
-        function getActualWeekIndexFromDate(date) {
-            // Assume the first week of jadwal (minggu1) corresponds to May 26, 2025 (Monday)
-            const firstWeekStartDate = new Date('2025-05-26T00:00:00');
-            firstWeekStartDate.setHours(0,0,0,0); 
-
-            const todayWITA = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
-            todayWITA.setHours(0,0,0,0);
-
-            const diffTime = todayWITA.getTime() - firstWeekStartDate.getTime();
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-            return Math.floor(diffDays / 7);
-        }
-
-        // Display full day schedule visualization (updated for multi-week and current week display)
         function displayFullDayScheduleVisualization() {
             const now = new Date();
             const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
             const currentShiftInfo = getCurrentShiftInfo(hourWITA);
 
-            const currentWeekKey = `minggu${currentWeekIndex + 1}`;
-            const currentScheduleData = allSchedules[currentWeekKey];
-
-            if (!currentScheduleData) {
-                document.getElementById('scheduleDateHeader').textContent = `Jadwal Tidak Tersedia untuk Minggu ke-${currentWeekIndex + 1}`;
-                document.getElementById('shiftsTimeline').innerHTML = "<p class='empty-message'>Data jadwal untuk minggu ini belum tersedia. Silakan hubungi admin.</p>";
-                document.getElementById('prevWeekBtn').disabled = (currentWeekIndex === 0);
-                document.getElementById('nextWeekBtn').disabled = true;
-                document.getElementById('currentWeekDisplay').textContent = `Minggu ke-${currentWeekIndex + 1}`;
-                return;
-            }
+            // Use the single week's data directly
+            const scheduleToDisplay = jadwalMinggu1Juni2025;
 
             let displayDateForSchedule = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
-            const actualCurrentWeekIndex = getActualWeekIndexFromDate(now);
-            if (currentShiftInfo.key === "shift3" && currentWeekIndex === actualCurrentWeekIndex) {
+            if (currentShiftInfo.key === "shift3") { 
                  displayDateForSchedule.setDate(displayDateForSchedule.getDate() - 1);
             }
             const namaHariJadwal = getNamaHari(displayDateForSchedule);
             const formattedDateForHeader = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(displayDateForSchedule);
             document.getElementById('scheduleDateHeader').textContent = `Jadwal Jaga ${formattedDateForHeader}`;
-
-            document.getElementById('currentWeekDisplay').textContent = `Minggu ke-${currentWeekIndex + 1}`;
-            document.getElementById('prevWeekBtn').disabled = (currentWeekIndex === 0);
-            document.getElementById('nextWeekBtn').disabled = (currentWeekIndex >= Object.keys(allSchedules).length - 1);
-
+            
+            // Hide week navigation (if it ever existed and wasn't removed from HTML)
+            const weekNav = document.querySelector('.week-navigation');
+            if (weekNav) weekNav.style.display = 'none';
 
             const shiftsTimelineDiv = document.getElementById('shiftsTimeline');
             shiftsTimelineDiv.innerHTML = '';
@@ -1336,7 +865,7 @@
 
                 const shiftBlock = document.createElement('div');
                 shiftBlock.className = 'shift-display-block';
-                if (shiftKey === currentShiftInfo.key && currentWeekIndex === actualCurrentWeekIndex) {
+                if (shiftKey === currentShiftInfo.key) { // Highlight active shift for today
                     shiftBlock.classList.add('active-shift');
                 }
 
@@ -1345,7 +874,7 @@
                 const jagaGrid = document.createElement('div');
                 jagaGrid.className = 'jaga-grid';
 
-                const jagaNames = getJagaList(namaHariJadwal, shiftKey, currentScheduleData);
+                const jagaNames = getJagaList(namaHariJadwal, shiftKey, scheduleToDisplay);
 
                 if (jagaNames.length > 0) {
                     jagaNames.forEach(nama => {
@@ -1368,6 +897,7 @@
                 shiftsTimelineDiv.appendChild(shiftBlock);
             });
         }
+
 
         // --- Dark Mode Logic ---
         const toggleSwitch = document.getElementById('checkbox');
@@ -1403,9 +933,7 @@
         const popupCloseBtn = document.getElementById('popupCloseBtn');
 
         function showPhotoPopup(nama) {
-            if (gameActive) return;
-
-            const employeeData = allSchedules[`minggu${currentWeekIndex + 1}`][nama];
+            const employeeData = jadwalMinggu1Juni2025[nama]; 
             if (employeeData) {
                 const photoPath = employeeData.photo && (employeeData.photo.startsWith('photos/') || employeeData.photo.startsWith('http')) ? employeeData.photo : 'https://via.placeholder.com/150?text=No+Photo';
                 const infoText = employeeData.info || "Informasi tidak tersedia.";
@@ -1433,116 +961,14 @@
         });
         popupCloseBtn.addEventListener('click', () => hidePopup(photoPopupOverlay));
 
-        // --- Search Personal Schedule Logic ---
-        const searchInput = document.getElementById('searchInput');
-        const searchMessage = document.getElementById('searchMessage');
-        const personalScheduleResultContainer = document.getElementById('personalScheduleResultContainer');
-        const personalScheduleNameHeader = document.getElementById('personalScheduleNameHeader');
-        const personalScheduleGrid = document.getElementById('personalScheduleGrid');
-        let searchTimeout;
-
-        function searchPersonalSchedule() {
-            const searchTerm = searchInput.value.trim();
-
-            personalScheduleResultContainer.style.display = 'none';
-            searchMessage.style.display = 'none';
-            personalScheduleGrid.innerHTML = '';
-
-            if (searchTerm.length === 0) {
-                return;
-            }
-
-            if (searchTerm.toUpperCase() === "GAMEON") {
-                showGamePopup();
-                searchInput.value = "";
-                return;
-            }
-
-            let foundEmployee = null;
-            let employeeDataFromAnyWeek = null;
-            for (const weekKey in allSchedules) {
-                for (const nama in allSchedules[weekKey]) {
-                    if (nama.toLowerCase().includes(searchTerm.toLowerCase())) {
-                        foundEmployee = nama;
-                        employeeDataFromAnyWeek = allSchedules[weekKey][nama];
-                        break;
-                    }
-                }
-                if (foundEmployee) break;
-            }
-
-            if (foundEmployee) {
-                personalScheduleNameHeader.textContent = `Jadwal Pribadi: ${foundEmployee}`;
-                personalScheduleResultContainer.style.display = 'block';
-
-                allDays.forEach(day => {
-                    const dailyCard = document.createElement('div');
-                    dailyCard.className = 'daily-schedule-card';
-
-                    const dayHeader = document.createElement('h3');
-                    dayHeader.textContent = day;
-                    dailyCard.appendChild(dayHeader);
-
-                    const ul = document.createElement('ul');
-                    const scheduleForDay = employeeDataFromAnyWeek.shift[day];
-
-                    if (typeof scheduleForDay === 'string' && scheduleForDay === "libur") {
-                        const li = document.createElement('li');
-                        li.textContent = `Seluruh Hari: Libur`;
-                        li.classList.add('status-libur');
-                        ul.appendChild(li);
-                    } else if (typeof scheduleForDay === 'object' && scheduleForDay !== null) {
-                        allShiftKeys.forEach(shiftKey => {
-                            const li = document.createElement('li');
-                            const status = scheduleForDay[shiftKey];
-                            const displayStatus = status === "jaga" ? "Jaga" : (status === "tidak_jaga" ? "Tidak Jaga" : "Tidak Diketahui");
-                            const statusClass = status === "jaga" ? "status-jaga" : (status === "tidak_jaga" ? "status-tidak-jaga" : "status-libur");
-                            li.innerHTML = `<span>${shiftTimes[shiftKey].display}:</span> <span class="${statusClass}">${displayStatus}</span>`;
-                            ul.appendChild(li);
-                        });
-                    } else {
-                        const li = document.createElement('li');
-                        li.textContent = "Jadwal tidak tersedia.";
-                        li.classList.add('status-tidak-jaga');
-                        ul.appendChild(li);
-                    }
-                    dailyCard.appendChild(ul);
-                    personalScheduleGrid.appendChild(dailyCard);
-                });
-            } else {
-                searchMessage.textContent = `"${searchInput.value.trim()}" tidak ditemukan dalam data.`;
-                searchMessage.style.display = 'block';
-            }
-        }
-
-        searchInput.addEventListener('input', (event) => {
-            clearTimeout(searchTimeout);
-            const searchTerm = event.target.value.trim();
-            if (searchTerm.length === 0) {
-                personalScheduleResultContainer.style.display = 'none';
-                searchMessage.style.display = 'none';
-                return;
-            }
-            searchTimeout = setTimeout(() => {
-                searchPersonalSchedule();
-            }, 300);
-        });
-        searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                searchPersonalSchedule();
-            }
-        });
-
-
-        // Call Bantuan Logic
+        // --- Call Bantuan Logic ---
         const callBantuanBtn = document.getElementById('callBantuanBtn');
         const callBantuanPopupOverlay = document.getElementById('callBantuanPopupOverlay');
         const callBantuanCloseBtn = document.getElementById('callBantuanCloseBtn');
         const contactList = document.getElementById('contactList');
 
         function showCallBantuanPopup() {
-            if (gameActive) return;
-            contactList.innerHTML = '';
+            contactList.innerHTML = ''; // Clear previous contacts
             emergencyContacts.forEach(contact => {
                 const li = document.createElement('li');
                 li.innerHTML = `<strong>${contact.role}:</strong> ${contact.name} (<a href="tel:${contact.phone}">${contact.phone}</a>)`;
@@ -1559,345 +985,26 @@
             }
         });
 
-        // Feature 23: View All Employees Logic
-        const viewAllEmployeesBtn = document.getElementById('viewAllEmployeesBtn');
-        const allEmployeesPopupOverlay = document.getElementById('allEmployeesPopupOverlay');
-        const allEmployeesCloseBtn = document.getElementById('allEmployeesCloseBtn');
-        const allEmployeesList = document.getElementById('allEmployeesList');
 
-        function showAllEmployeesPopup() {
-            if (gameActive) return;
-            allEmployeesList.innerHTML = '';
-            // Use allSchedules.minggu1 to get a consistent list of all employees
-            const allEmployeeNames = Object.keys(allSchedules.minggu1 || {}).sort(); 
-
-            if (allEmployeeNames.length === 0) {
-                 const li = document.createElement('li');
-                 li.textContent = "Tidak ada karyawan dalam daftar.";
-                 allEmployeesList.appendChild(li);
-            } else {
-                allEmployeeNames.forEach(name => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<a href="#" data-employee-name="${name}">${name}</a>`;
-                    li.querySelector('a').addEventListener('click', (e) => {
-                        e.preventDefault();
-                        searchInput.value = name;
-                        searchPersonalSchedule();
-                        hidePopup(allEmployeesPopupOverlay);
-                    });
-                    allEmployeesList.appendChild(li);
-                });
-            }
-            allEmployeesPopupOverlay.classList.add('active');
-        }
-
-        viewAllEmployeesBtn.addEventListener('click', showAllEmployeesPopup);
-        allEmployeesCloseBtn.addEventListener('click', () => hidePopup(allEmployeesPopupOverlay));
-        allEmployeesPopupOverlay.addEventListener('click', (e) => {
-            if (e.target === allEmployeesPopupOverlay) {
-                hidePopup(allEmployeesPopupOverlay);
-            }
-        });
-
-        // Feature 62: General Contacts Popup Logic
-        const generalContactsBtn = document.getElementById('generalContactsBtn');
-        const generalContactsPopupOverlay = document.getElementById('generalContactsPopupOverlay');
-        const generalContactsCloseBtn = document.getElementById('generalContactsCloseBtn');
-        const generalContactList = document.getElementById('generalContactList');
-
-        function showGeneralContactsPopup() {
-            if (gameActive) return;
-            generalContactList.innerHTML = '';
-            generalContacts.forEach(contact => {
-                const li = document.createElement('li');
-                li.innerHTML = `<strong>${contact.department}:</strong> ${contact.name} (<a href="tel:${contact.phone}">${contact.phone}</a>)`;
-                generalContactList.appendChild(li);
-            });
-            generalContactsPopupOverlay.classList.add('active');
-        }
-
-        generalContactsBtn.addEventListener('click', showGeneralContactsPopup);
-        generalContactsCloseBtn.addEventListener('click', () => hidePopup(generalContactsPopupOverlay));
-        generalContactsPopupOverlay.addEventListener('click', (e) => {
-            if (e.target === generalContactsPopupOverlay) {
-                hidePopup(generalContactsPopupOverlay);
-            }
-        });
-
-
-        // GAME LOGIC: Shift Sorter Challenge (Feature 20)
-        const gamePopupOverlay = document.getElementById('gamePopupOverlay');
-        const gameCloseBtn = document.getElementById('gameCloseBtn');
-        const draggableNamesContainer = document.getElementById('draggableNamesContainer');
-        const dropzoneShift1 = document.getElementById('dropzoneShift1');
-        const dropzoneShift2 = document.getElementById('dropzoneShift2');
-        const dropzoneShift3 = document.getElementById('dropzoneShift3');
-        const checkAnswersBtn = document.getElementById('checkAnswersBtn');
-        const resetGameBtn = document.getElementById('resetGameBtn');
-        const gameFeedback = document.getElementById('gameFeedback');
-
-        let currentDayJadwalForGame = {};
-        let droppedNames = {};
-
-        function showGamePopup() {
-            gameActive = true;
-            gamePopupOverlay.classList.add('active');
-            initializeGame();
-        }
-
-        function hideGamePopup() {
-            gameActive = false;
-            gamePopupOverlay.classList.remove('active');
-        }
-
-        gameCloseBtn.addEventListener('click', hideGamePopup);
-        gamePopupOverlay.addEventListener('click', (e) => {
-            if (e.target === gamePopupOverlay) {
-                hideGamePopup();
-            }
-        });
-
-        function initializeGame() {
-            gameFeedback.textContent = "";
-            draggableNamesContainer.innerHTML = '<h4>Nama Karyawan</h4>';
-            dropzoneShift1.innerHTML = '<h4>Shift 1</h4>';
-            dropzoneShift2.innerHTML = '<h4>Shift 2</h4>';
-            dropzoneShift3.innerHTML = '<h4>Shift 3</h4>';
-            
-            [dropzoneShift1, dropzoneShift2, dropzoneShift3].forEach(zone => {
-                zone.classList.remove('correct-zone', 'wrong-zone');
-            });
-
-            droppedNames = {
-                "shift1": [],
-                "shift2": [],
-                "shift3": []
-            };
-
-            const now = new Date();
-            const todayName = getNamaHari(now);
-
-            const currentWeekDataForGame = allSchedules[`minggu${getActualWeekIndexFromDate(now) + 1}`];
-            
-            if (!currentWeekDataForGame) {
-                gameFeedback.textContent = "Error: Data jadwal untuk game tidak tersedia di minggu ini.";
-                return;
-            }
-
-            currentDayJadwalForGame = {
-                "shift1": getJagaList(todayName, "shift1", currentWeekDataForGame),
-                "shift2": getJagaList(todayName, "shift2", currentWeekDataForGame),
-                "shift3": getJagaList(todayName, "shift3", currentWeekDataForGame),
-            };
-
-            const allNamesInJadwal = Object.keys(currentWeekDataForGame);
-            const shuffledNames = shuffleArray(allNamesInJadwal);
-
-            shuffledNames.forEach(name => {
-                const item = document.createElement('div');
-                item.className = 'draggable-item';
-                item.textContent = name;
-                item.draggable = true;
-                item.dataset.name = name;
-                draggableNamesContainer.appendChild(item);
-            });
-
-            addDragDropListeners();
-        }
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
-        function addDragDropListeners() {
-            const draggables = document.querySelectorAll('.draggable-item');
-            const dropzones = document.querySelectorAll('.dropzone');
-
-            draggables.forEach(draggable => {
-                draggable.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('text/plain', draggable.dataset.name);
-                    draggable.classList.add('dragging');
-                });
-                draggable.addEventListener('dragend', (e) => {
-                    draggable.classList.remove('dragging');
-                });
-            });
-
-            dropzones.forEach(zone => {
-                zone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    zone.classList.add('drag-over');
-                });
-                zone.addEventListener('dragleave', (e) => {
-                    zone.classList.remove('drag-over');
-                });
-                zone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    zone.classList.remove('drag-over');
-                    const name = e.dataTransfer.getData('text/plain');
-                    const draggableElement = document.querySelector(`.draggable-item[data-name="${name}"]`);
-                    
-                    if (draggableElement && !zone.querySelector(`[data-name="${name}"]`)) {
-                        const droppedItem = document.createElement('div');
-                        droppedItem.className = 'dropped-item';
-                        droppedItem.textContent = name;
-                        droppedItem.dataset.name = name;
-                        zone.appendChild(droppedItem);
-                        draggableElement.remove();
-
-                        const zoneId = zone.id;
-                        const shiftKey = zoneId.replace('dropzone', '').toLowerCase();
-                        droppedNames[shiftKey].push(name);
-                    }
-                });
-            });
-        }
-
-        checkAnswersBtn.addEventListener('click', checkGameAnswers);
-        resetGameBtn.addEventListener('click', initializeGame);
-
-        function checkGameAnswers() {
-            let totalCorrectlyPlaced = 0;
-            let totalMissed = 0;
-            let totalWronglyPlaced = 0;
-            
-            [dropzoneShift1, dropzoneShift2, dropzoneShift3].forEach(zone => {
-                zone.classList.remove('correct-zone', 'wrong-zone');
-                const zoneId = zone.id;
-                const shiftKey = zoneId.replace('dropzone', '').toLowerCase();
-                const namesInZone = Array.from(zone.querySelectorAll('.dropped-item')).map(item => item.dataset.name);
-
-                const actualJagaList = currentDayJadwalForGame[shiftKey];
-
-                let zoneIsCorrect = true;
-
-                namesInZone.forEach(name => {
-                    if (actualJagaList.includes(name)) {
-                        totalCorrectlyPlaced++;
-                    } else {
-                        totalWronglyPlaced++;
-                        zoneIsCorrect = false;
-                    }
-                });
-
-                actualJagaList.forEach(name => {
-                    if (!namesInZone.includes(name)) {
-                        totalMissed++;
-                        zoneIsCorrect = false;
-                    }
-                });
-                
-                if (namesInZone.length !== actualJagaList.length) {
-                     zoneIsCorrect = false;
-                }
-
-                if (zoneIsCorrect) {
-                    zone.classList.add('correct-zone');
-                } else {
-                    zone.classList.add('wrong-zone');
-                }
-            });
-
-            const unplacedItems = draggableNamesContainer.querySelectorAll('.draggable-item').length;
-            if (unplacedItems > 0) {
-                gameFeedback.textContent = `Ada ${unplacedItems} nama yang belum ditempatkan. Selesaikan semua dulu!`;
-                gameFeedback.classList.add('wrong');
-                gameFeedback.classList.remove('correct');
-                return;
-            }
-
-            if (totalWronglyPlaced === 0 && totalMissed === 0) {
-                gameFeedback.textContent = `Selamat! Anda berhasil menempatkan semua karyawan dengan benar.`;
-                gameFeedback.classList.add('correct');
-                gameFeedback.classList.remove('wrong');
-            } else {
-                gameFeedback.textContent = `Ada kesalahan: ${totalWronglyPlaced} salah tempat, ${totalMissed} tidak ditemukan. Coba lagi!`;
-                gameFeedback.classList.add('wrong');
-                gameFeedback.classList.remove('correct');
-            }
-        }
-
-        // Feature 20: Hiding Employee Easter Egg
-        const hidingEmployeeIcon = document.getElementById('hidingEmployeeIcon');
-        let iconMoveInterval;
-
-        function moveHidingIconRandomly() {
-            const maxX = window.innerWidth - hidingEmployeeIcon.offsetWidth;
-            const maxY = window.innerHeight - hidingEmployeeIcon.offsetHeight;
-
-            // Ensure icon stays within bounds
-            const newX = Math.max(0, Math.min(maxX, Math.random() * maxX));
-            const newY = Math.max(0, Math.min(maxY, Math.random() * maxY));
-
-            hidingEmployeeIcon.style.left = `${newX}px`;
-            hidingEmployeeIcon.style.top = `${newY}px`;
-        }
-
-        hidingEmployeeIcon.addEventListener('click', () => {
-            alert("Selamat! Anda menemukan agen rahasia TVRI yang bersembunyi! Terus semangat!");
-            clearInterval(iconMoveInterval);
-            hidingEmployeeIcon.style.display = 'none';
-        });
-
-        // Trigger for hiding employee icon: click logo 3 times rapidly
-        let logoClickCount = 0;
-        let logoClickTimeout;
-        document.querySelector('.logo').addEventListener('click', () => {
-            logoClickCount++;
-            clearTimeout(logoClickTimeout);
-            logoClickTimeout = setTimeout(() => {
-                if (logoClickCount >= 3) {
-                    alert("Sebuah ikon tersembunyi telah muncul! Cari dan klik dia!");
-                    hidingEmployeeIcon.style.display = 'block';
-                    moveHidingIconRandomly(); // Set initial position
-                    clearInterval(iconMoveInterval); // Clear any old interval
-                    iconMoveInterval = setInterval(moveHidingIconRandomly, 3000); // Start moving
-                }
-                logoClickCount = 0; // Reset count
-            }, 500); // 500ms window for clicks
-        });
-
-
-        // Initial & Interval Updates
+        // --- Initial & Interval Updates ---
+        // Update time and countdown every second
         setInterval(() => {
             updateDateTimeDisplay();
             updateCountdownProgressBar();
         }, 1000);
 
+        // Initial load on DOMContentLoaded
         document.addEventListener('DOMContentLoaded', () => {
-            // Set initial week based on actual date
-            currentWeekIndex = getActualWeekIndexFromDate(new Date());
-            // Ensure currentWeekIndex does not exceed available schedules
-            if (currentWeekIndex >= Object.keys(allSchedules).length) {
-                currentWeekIndex = Object.keys(allSchedules).length - 1; // Fallback to last available week
-            }
-            if (currentWeekIndex < 0) currentWeekIndex = 0; // Fallback to first week if before start date
-
             updateDateTimeDisplay();
             displayDynamicGreeting();
             displayFullDayScheduleVisualization();
             updateCountdownProgressBar();
-            
-            // Feature 29: Weather Link for Tanjung Selor
-            const weatherLink = document.createElement('p');
-            weatherLink.style.textAlign = 'center';
-            weatherLink.style.marginTop = '20px';
-            weatherLink.innerHTML = `<a href="https://www.bmkg.go.id/cuaca/prakiraan-cuaca-indonesia.bmkg?id=50130" target="_blank" style="color: var(--primary-blue); text-decoration: none; font-weight: bold;">Cek Cuaca Tanjung Selor di BMKG</a>`;
-            document.querySelector('.schedule-visualization-container').appendChild(weatherLink);
         });
 
         // Update greeting and full day schedule every minute
         setInterval(() => {
             displayDynamicGreeting();
-            // Only re-render schedule visualization if viewing the current actual week
-            // Or if search personal schedule is not active.
-            if (currentWeekIndex === getActualWeekIndexFromDate(new Date()) && personalScheduleResultContainer.style.display === 'none') {
-                displayFullDayScheduleVisualization();
-            }
+            displayFullDayScheduleVisualization();
         }, 60 * 1000); // Every minute
     </script>
 </body>
