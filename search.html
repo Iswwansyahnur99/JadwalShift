@@ -148,8 +148,8 @@
             background-color: var(--sub-heading-color);
         }
         .navbar a.active-nav {
-            background-color: var(--sub-heading-color); /* This will be on "Cari Jadwal Saya" if search.html is active */
-            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+            background-color: var(--sub-heading-color); 
+            box-shadow: none; /* MODIFIED for precision */
         }
 
         /* --- Header Section (shared with index.html styling due to current content) --- */
@@ -225,7 +225,7 @@
 
         /* --- Search Bar Styles (Defined, but not used by current search.html JS) --- */
         .search-container {
-            padding: 20px 30px; /* This would be inside a .container if used */
+            padding: 20px 30px; 
             margin-top: 0; 
             margin-bottom: 30px;
         }
@@ -236,37 +236,36 @@
             border-radius: 8px;
             font-size: 1em;
             color: var(--text-color);
-            background-color: var(--container-bg); /* Needs to be distinguished from page bg */
+            background-color: var(--container-bg); 
             transition: border-color 0.3s ease;
         }
         .search-container input[type="text"]:focus {
             outline: none;
             border-color: var(--search-focus-border);
-            box-shadow: 0 0 0 3px rgba(0, 80, 140, 0.2); /* primary-blue with alpha */
+            box-shadow: 0 0 0 3px rgba(0, 80, 140, 0.2); 
         }
         .search-message {
             margin-top: 10px;
             font-size: 0.9em;
             color: var(--empty-msg-color);
-            display: none; /* Hidden by default */
+            display: none; 
         }
 
         /* --- Personal Schedule Result Styles (Defined, but not used by current search.html JS) --- */
-        /* .personal-schedule-result-container is styled like .schedule-visualization-container for now */
-        .personal-schedule-result-container h2 { /* Shared h2 style with schedule-visualization-container */
+        .personal-schedule-result-container h2 { 
             color: var(--primary-blue);
             margin-bottom: 25px;
             font-size: 2em;
             border-bottom: 2px solid var(--border-light);
             padding-bottom: 10px;
         }
-        .personal-schedule-grid { /* For actual search results */
+        .personal-schedule-grid { 
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
             margin-top: 20px;
         }
-        .daily-schedule-card { /* For actual search results */
+        .daily-schedule-card { 
             background-color: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 10px;
@@ -356,7 +355,7 @@
             list-style: none;
         }
         .jaga-card {
-            background-color: var(--container-bg); /* Should be card-bg or distinct */
+            background-color: var(--container-bg); 
             border: 1px solid var(--card-border);
             padding: 10px;
             border-radius: 8px;
@@ -488,7 +487,7 @@
             right: 15px;
             font-size: 28px;
             font-weight: bold;
-            color: var(--text-color); /* Changed from popup-text-color for better visibility */
+            color: var(--text-color); 
             cursor: pointer;
             background: none;
             border: none;
@@ -572,7 +571,7 @@
             z-index: 999;
         }
         .call-bantuan-button:hover {
-            background-color: #c42727; /* Darker red */
+            background-color: #c42727; 
             transform: translateY(-2px);
         }
         .call-bantuan-popup-content h3 {
@@ -622,7 +621,8 @@
             <div class="header">
                 <img id="tvriKaltaraLogo" alt="Logo TVRI Kaltara" class="logo">
                 <h1>Cari Jadwal Karyawan</h1> 
-                <p class="dynamic-greeting" id="dynamicGreeting"></p> </div>
+                <p class="dynamic-greeting" id="dynamicGreeting"></p> 
+            </div>
              <div class="datetime-display" id="currentDateTime"></div>
              <div class="countdown-progress-container">
                 <div class="countdown-progress-bar">
@@ -633,9 +633,10 @@
             </div>
 
         <div class="schedule-visualization-container" id="scheduleResultDisplay"> 
-            <h2 id="scheduleDateHeader">Jadwal Jaga Hari Ini</h2> <div class="shifts-timeline" id="shiftsTimeline">
-                </div>
+            <h2 id="scheduleDateHeader">Jadwal Jaga Hari Ini</h2> 
+            <div class="shifts-timeline" id="shiftsTimeline">
             </div>
+        </div>
     </div>
 
     <div class="popup-overlay" id="photoPopupOverlay">
@@ -986,7 +987,7 @@
         }
 
 
-        function displayFullDayScheduleVisualization() { // This is from index.html
+        function displayFullDayScheduleVisualization() { 
             const now = new Date();
             const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
             const currentShiftInfo = getCurrentShiftInfo(hourWITA);
@@ -999,7 +1000,7 @@
             if (scheduleDateHeaderEl) scheduleDateHeaderEl.textContent = `Jadwal Jaga ${formattedDateForHeader}`;
             
             const shiftsTimelineDiv = document.getElementById('shiftsTimeline');
-            if (!shiftsTimelineDiv) return; // Exit if the element isn't on the page
+            if (!shiftsTimelineDiv) return; 
             shiftsTimelineDiv.innerHTML = '';
 
             allShiftKeys.forEach(shiftKey => {
@@ -1023,7 +1024,7 @@
                         div.className = 'jaga-card';
                         div.textContent = nama;
                         div.addEventListener('click', () => { 
-                            showPhotoPopup(nama, scheduleToDisplay); // Pass scheduleToDisplay
+                            showPhotoPopup(nama, scheduleToDisplay); 
                         });
                         jagaGrid.appendChild(div);
                     });
@@ -1070,7 +1071,7 @@
         const popupContactLinks = document.getElementById('popupContactLinks');
         const popupCloseBtn = document.getElementById('popupCloseBtn');
 
-        function showPhotoPopup(nama, scheduleData) { // Added scheduleData
+        function showPhotoPopup(nama, scheduleData) { 
             const employeeData = scheduleData[nama]; 
             if (employeeData) {
                 popupImage.src = employeeData.photo || 'https://via.placeholder.com/150?text=No+Photo';
@@ -1138,13 +1139,10 @@
             }
         });
         
-        // --- Initial & Interval Updates ---
-        // Note: This search.html currently runs the same JS as index.html.
-        // A real search page would have different JS here.
         document.addEventListener('DOMContentLoaded', () => {
             updateDateTimeDisplay();
             displayDynamicGreeting();
-            displayFullDayScheduleVisualization(); // From index.html behavior
+            displayFullDayScheduleVisualization(); 
             updateCountdownProgressBar();
 
             setInterval(() => {
@@ -1158,7 +1156,7 @@
                 const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
                 const currentShiftInfo = getCurrentShiftInfo(hourWITA);
                 if (lastActiveShiftKey !== currentShiftInfo.key) {
-                    displayFullDayScheduleVisualization(); // From index.html behavior
+                    displayFullDayScheduleVisualization(); 
                     lastActiveShiftKey = currentShiftInfo.key;
                 }
             }, 60 * 1000);
