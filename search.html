@@ -460,10 +460,19 @@
         </div>
     </div>
 
+    <button class="call-bantuan-button" id="callBantuanBtn">🚨</button>
+
+    <div class="popup-overlay" id="callBantuanPopupOverlay">
+        <div class="popup-content call-bantuan-popup-content">
+            <button class="popup-close" id="callBantuanCloseBtn">&times;</button>
+            <h3>Bantuan Darurat / Kontak Penting</h3>
+            <ul id="contactList">
+                </ul>
+        </div>
+    </div>
+
     <script>
         // --- DATA JADWAL (HANYA MINGGU 1) ---
-        // Ini adalah data jadwal untuk satu minggu.
-        // Jika Anda perlu memperbarui untuk minggu berikutnya, Anda harus MENGEDIT DATA INI SECARA MANUAL.
         const jadwalMinggu1Juni2025 = {
             "ALVIANA DAMAYANTI": {
                 "shift": {
@@ -477,8 +486,8 @@
                 },
                 "info": "Divisi Admin",
                 "photo": "photos/alviana_damayanti.jpg",
-                "phone": "081234567890",       // Contoh nomor HP
-                "whatsapp": "6281234567890"    // Contoh nomor WhatsApp (kode negara tanpa +)
+                "phone": "081234567890",
+                "whatsapp": "6281234567890"
             },
             "INA APRIANA": {
                 "shift": {
@@ -714,8 +723,12 @@
         function hidePopup(popupElement) {
             popupElement.classList.remove('active');
             if (popupElement === photoPopupOverlay) {
-                popupImage.src = ""; // Clear src to prevent flashing of old image
-                document.getElementById('popupContactLinks').innerHTML = ''; // Clear contact links
+                // Ensure image src is cleared AFTER the popup is fully hidden
+                // This is a common pattern for preventing flicker.
+                setTimeout(() => {
+                    popupImage.src = "";
+                }, 300); // Match CSS transition duration
+                document.getElementById('popupContactLinks').innerHTML = ''; // Clear contact links immediately
             }
         }
 
@@ -845,8 +858,7 @@
                         const div = document.createElement('div');
                         div.className = 'jaga-card';
                         div.textContent = nama;
-                        div.addEventListener('click', (e) => {
-                            e.stopPropagation(); // Prevent clicks on card from affecting other elements
+                        div.addEventListener('click', () => { 
                             showPhotoPopup(nama);
                         });
                         jagaGrid.appendChild(div);
@@ -934,12 +946,20 @@
 
         function hidePopup(popupElement) {
             popupElement.classList.remove('active');
+            // Ensure image src is cleared *after* transition for flicker prevention
+            setTimeout(() => {
+                if (popupElement === photoPopupOverlay) {
+                    popupImage.src = ""; 
+                }
+            }, 300); // Match CSS transition duration
+            // Clear contact links immediately for better UX
             if (popupElement === photoPopupOverlay) {
-                popupImage.src = ""; 
+                document.getElementById('popupContactLinks').innerHTML = '';
             }
         }
 
         photoPopupOverlay.addEventListener('click', (e) => {
+            // Only hide if clicking on the overlay itself, not the content
             if (e.target === photoPopupOverlay) {
                 hidePopup(photoPopupOverlay);
             }
@@ -953,7 +973,7 @@
         const contactList = document.getElementById('contactList');
 
         function showCallBantuanPopup() {
-            contactList.innerHTML = '';
+            contactList.innerHTML = ''; // Clear previous contacts
             emergencyContacts.forEach(contact => {
                 const li = document.createElement('li');
                 li.innerHTML = `<strong>${contact.role}:</strong> ${contact.name} (<a href="tel:${contact.phone}">${contact.phone}</a>)`;
