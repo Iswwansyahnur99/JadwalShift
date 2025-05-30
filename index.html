@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jadwal Jaga Harian TVRI Kaltara</title>
+    <title>Jadwal Shift Pemancar Transmisi TVRI Kaltara</title>
     <link rel="icon" href="photos/logo_tvri_kaltara.png" type="image/png">
     <style>
         /* --- CSS Variables for Theming (Light and Dark Mode) --- */
@@ -599,7 +599,7 @@
 
         <div class="container"> <div class="header">
                 <img id="tvriKaltaraLogo" alt="Logo TVRI Kaltara" class="logo">
-                <h1>Jadwal Jaga Shift</h1>
+                <h1>Shift Pemancar Siaran TVRI Kaltara</h1>
                 <p class="dynamic-greeting" id="dynamicGreeting"></p>
             </div>
             <div class="datetime-display" id="currentDateTime"></div>
@@ -655,9 +655,9 @@
         const allDays = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
 
         const emergencyContacts = [
-            { role: "Manajer Operasional", name: "Budi Santoso", phone: "0812-3456-7890" },
-            { role: "PIC IT", name: "Citra Dewi", phone: "0876-5432-1098" },
-            { role: "Keamanan Kantor", name: "Nomor Kantor", phone: "(021) 1234567" }
+            { role: "Ketua TIM Teknik", name: "Pak Afif", phone: "0813-4754-0304" },
+            { role: "Kasubag Umum", name: "Pak Ari", phone: "0812-4775-7937" },
+            { role: "Kepsta", name: "Pak Agung", phone: "0813-2147-7645" }
         ];
 
         let lastActiveShiftKey = null;
@@ -722,10 +722,10 @@
             const now = new Date();
             const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
             let greeting = "";
-            if (hourWITA >= 5 && hourWITA < 12) greeting = "Selamat Pagi, Tim TVRI!";
-            else if (hourWITA >= 12 && hourWITA < 15) greeting = "Selamat Siang, Tim TVRI!";
-            else if (hourWITA >= 15 && hourWITA < 18) greeting = "Selamat Sore, Tim TVRI!";
-            else greeting = "Selamat Malam, Tim TVRI!";
+            if (hourWITA >= 5 && hourWITA < 12) greeting = "Pagi Cerah, Semangat Melimpah!";
+            else if (hourWITA >= 12 && hourWITA < 15) greeting = "Siang Hangat, Kerja Semangat";
+            else if (hourWITA >= 15 && hourWITA < 18) greeting = "Sore Teduh, Semangat Penuh!";
+            else greeting = "Malam Nyaman, Semangat Aman!";
             document.getElementById('dynamicGreeting').textContent = greeting;
         }
 
