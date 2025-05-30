@@ -77,10 +77,9 @@
             align-items: center;
             min-height: 100vh;
             transition: background-color 0.3s ease, color 0.3s ease;
-            /* Placeholder background image - you can remove or replace this */
             background-image: url('https://source.unsplash.com/random/1600x900/?broadcasting,studio,controlroom');
             background-size: cover;
-            background-attachment: fixed; /* Parallax-like effect */
+            background-attachment: fixed; 
             background-position: center center;
         }
 
@@ -98,7 +97,7 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 20px var(--shadow-color);
-            width: 100%; /* Take full width of parent wrapper */
+            width: 100%; 
             text-align: center;
             margin-bottom: 30px;
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
@@ -109,11 +108,11 @@
         .navbar {
             background-color: var(--primary-blue);
             width: 100%;
-            max-width: 650px; /* Match container width */
-            border-radius: 12px 12px 0 0; /* Rounded top, flat bottom */
+            max-width: 650px; 
+            border-radius: 12px 12px 0 0; 
             padding: 10px 0;
-            margin-bottom: -15px; /* Overlap with container below */
-            z-index: 10; /* Ensure it's above container's shadow */
+            margin-bottom: -15px; 
+            z-index: 10; 
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             display: flex;
             justify-content: center;
@@ -132,7 +131,7 @@
         }
         .navbar a.active-nav {
             background-color: var(--sub-heading-color);
-            box-shadow: none; /* MODIFIED for precision */
+            box-shadow: none; 
         }
 
 
@@ -142,20 +141,17 @@
             flex-direction: column;
             align-items: center;
             margin-bottom: 20px;
-            padding-top: 15px; /* Space from navbar */
+            padding-top: 15px; 
         }
 
-        /* Logo specific styles for light/dark mode */
         #tvriKaltaraLogo {
-            width: 80px; /* Adjust size as needed */
+            width: 80px; 
             height: auto;
             margin-bottom: 10px;
-            /* Default logo for light mode */
             content: url('photos/logo_tvri_kaltara.png');
         }
 
         body.dark-mode #tvriKaltaraLogo {
-            /* Override logo for dark mode */
             content: url('photos/logo_tvri_kaltara_dark_mode.png');
         }
 
@@ -181,10 +177,9 @@
             line-height: 1.5;
         }
 
-        /* --- Countdown Progress Bar --- */
         .countdown-progress-container {
             width: 100%;
-            margin-top: -15px; /* Adjusted due to weather link removal */
+            margin-top: -15px; 
             margin-bottom: 25px;
             text-align: center;
         }
@@ -209,7 +204,6 @@
             font-weight: bold;
         }
 
-        /* --- Schedule Visualization --- */
         .schedule-visualization-container {
             margin-top: 20px;
             padding: 25px;
@@ -237,14 +231,14 @@
             transition: all 0.3s ease;
         }
         .shift-display-block.active-shift {
-            background-color: var(--primary-blue); /* Changed to var(--active-shift-bg) for consistency */
-            color: white; /* Changed to var(--active-shift-text) */
+            background-color: var(--active-shift-bg); 
+            color: var(--active-shift-text); 
             border-color: var(--active-shift-border);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             transform: translateY(-3px);
         }
         .active-shift h3, .active-shift .jaga-grid .jaga-card, .active-shift .no-jaga {
-            color: white !important; /* Ensure all text inside active block is white */
+            color: white !important; 
         }
         .active-shift .jaga-grid .jaga-card {
             background-color: rgba(255,255,255,0.2) !important;
@@ -257,7 +251,7 @@
         }
 
         .shift-display-block h3 {
-            color: var(--sub-heading-color); /* Default color, overridden by active-shift */
+            color: var(--sub-heading-color); 
             margin-top: 0;
             margin-bottom: 10px;
             font-size: 1.4em;
@@ -311,7 +305,6 @@
             font-size: 0.9em;
         }
 
-        /* --- Dark Mode Toggle --- */
         .theme-switch-wrapper {
             display: flex;
             align-items: center;
@@ -370,7 +363,6 @@
             color: var(--text-color);
         }
 
-        /* --- Pop-up Base Styles --- */
         .popup-overlay {
             position: fixed;
             top: 0;
@@ -428,7 +420,7 @@
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            object-position: center center; /* Centering image content */
+            object-position: center center; 
             margin-bottom: 15px;
             border: 3px solid var(--primary-blue);
         }
@@ -464,10 +456,10 @@
             opacity: 0.8;
         }
         .popup-contact-links .phone-link {
-            background-color: #33b5e5; /* Light blue for phone */
+            background-color: #33b5e5; 
         }
         .popup-contact-links .whatsapp-link {
-            background-color: #25d366; /* WhatsApp green */
+            background-color: #25d366; 
         }
         .popup-contact-links a svg {
             margin-right: 5px;
@@ -476,8 +468,6 @@
             fill: white;
         }
 
-
-        /* --- Call Bantuan Button --- */
         .call-bantuan-button {
             position: fixed;
             bottom: 20px;
@@ -527,7 +517,6 @@
             text-decoration: underline;
         }
 
-        /* Keyframe for fade-in animation (used by dynamic-greeting) */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -555,29 +544,29 @@
                 <h1>Jadwal Jaga Shift</h1>
                 <p class="dynamic-greeting" id="dynamicGreeting"></p>
             </div>
-            <div class="datetime-display" id="currentDateTime">
-                </div>
+            <div class="datetime-display" id="currentDateTime"></div>
             <div class="countdown-progress-container">
                 <div class="countdown-progress-bar">
                     <div class="countdown-progress-fill" id="countdownProgressBarFill"></div>
                 </div>
                 <p class="countdown-progress-text" id="countdownProgressText">Loading countdown...</p>
             </div>
-            </div>
+        </div>
 
         <div class="schedule-visualization-container">
-            <h2 id="scheduleDateHeader">Jadwal Jaga Hari Ini</h2>
+            <h2 id="scheduleDateHeader">Memuat Jadwal...</h2>
             <div class="shifts-timeline" id="shiftsTimeline">
-                </div>
+            </div>
         </div>
-    </div> <div class="popup-overlay" id="photoPopupOverlay">
+    </div> 
+    
+    <div class="popup-overlay" id="photoPopupOverlay">
         <div class="popup-content">
             <button class="popup-close" id="popupCloseBtn">&times;</button>
             <img src="" alt="Foto Karyawan" class="popup-image" id="popupImage">
             <p class="popup-name" id="popupName"></p>
             <p class="popup-info" id="popupInfo"></p>
-            <div class="popup-contact-links" id="popupContactLinks">
-                </div>
+            <div class="popup-contact-links" id="popupContactLinks"></div>
         </div>
     </div>
 
@@ -587,210 +576,13 @@
         <div class="popup-content call-bantuan-popup-content">
             <button class="popup-close" id="callBantuanCloseBtn">&times;</button>
             <h3>Bantuan Darurat / Kontak Penting</h3>
-            <ul id="contactList">
-                </ul>
+            <ul id="contactList"></ul>
         </div>
     </div>
 
     <script>
-        // --- DATA JADWAL (HANYA MINGGU 1) ---
-        const jadwalMinggu1Juni2025 = {
-            "ALVIANA DAMAYANTI": {
-                "shift": {
-                    "SENIN": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
-                    "SELASA": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_juga" },
-                    "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
-                },
-                "info": "Divisi Admin",
-                "photo": "photos/alviana_damayanti.jpg",
-                "phone": "081234567890",
-                "whatsapp": "6281234567890"
-            },
-            "INA APRIANA": {
-                "shift": {
-                    "SENIN": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "SELASA": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
-                },
-                "info": "Divisi Keuangan",
-                "photo": "photos/ina_apriana.jpg",
-                "phone": "081311223344",
-                "whatsapp": "6281311223344"
-            },
-            "RAHMA ELVIRA ARIYANTI": {
-                "shift": {
-                    "SENIN": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "SELASA": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
-                },
-                "info": "Divisi HRD",
-                "photo": "photos/rahma_elvira_ariyanti.jpg",
-                "phone": "085712345678",
-                "whatsapp": "6285712345678"
-            },
-            "MUH. FADIL PERKASA": {
-                "shift": {
-                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "SABTU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "MINGGU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
-                },
-                "info": "Divisi IT Support",
-                "photo": "photos/muh_fadil_perkasa.jpg",
-                "phone": "089678901234",
-                "whatsapp": "6289678901234"
-            },
-            "M. ISWANSYAH NUR": {
-                "shift": {
-                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "SABTU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "MINGGU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
-                },
-                "info": "Divisi Umum",
-                "photo": "photos/m_iswansyah_nur.jpg",
-                "phone": "087856789012",
-                "whatsapp": "6287856789012"
-            },
-            "ABDAN SYAKURO": {
-                "shift": {
-                    "SENIN": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                    "SELASA": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                    "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                    "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                    "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
-                },
-                "info": "Divisi TI",
-                "photo": "photos/abdan_syakuro.jpg",
-                "phone": "081122334455",
-                "whatsapp": "6281122334455"
-            },
-            "ANDI FAIRUL AMRI": {
-                "shift": {
-                    "SENIN": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                    "SELASA": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                    "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                    "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                    "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
-                },
-                "info": "Divisi Operasional",
-                "photo": "photos/andi_fairul_amri.jpg",
-                "phone": "081876543210",
-                "whatsapp": "6281876543210"
-            },
-            "R. AULIA RAHMAN": {
-                "shift": {
-                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                    "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                    "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                    "SABTU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" },
-                    "MINGGU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" }
-                },
-                "info": "Divisi Desain",
-                "photo": "photos/r_aulia_rahman.jpg",
-                "phone": "082198765432",
-                "whatsapp": "6282198765432"
-            },
-            "RAMAZONA NABABAN": {
-                "shift": {
-                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                    "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                    "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
-                    "SABTU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" },
-                    "MINGGU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" }
-                },
-                "info": "Divisi Pemasaran",
-                "photo": "photos/ramazona_nababan.jpg",
-                "phone": "085210987654",
-                "whatsapp": "6285210987654"
-            },
-            "ARI ARDIANSYAH": {
-                "shift": {
-                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                    "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
-                },
-                "info": "Divisi Keamanan",
-                "photo": "photos/ari_ardiansyah.jpg",
-                "phone": "081945678901",
-                "whatsapp": "6281945678901"
-            },
-            "BAHRIN": {
-                "shift": {
-                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                    "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" },
-                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
-                },
-                "info": "Divisi Logistik",
-                "photo": "photos/bahrin.jpg",
-                "phone": "085323456789",
-                "whatsapp": "6285323456789"
-            },
-            "WIDHIONO": {
-                "shift": {
-                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                    "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                    "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" },
-                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
-                },
-                "info": "Divisi Teknik",
-                "photo": "photos/widhiono.jpg",
-                "phone": "081590123456",
-                "whatsapp": "6281590123456"
-            },
-            "WIRA AHMAD GAZALI": {
-                "shift": {
-                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
-                    "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                    "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                    "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" },
-                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
-                },
-                "info": "Divisi Produksi",
-                "photo": "photos/wira_ahmad_gazali.jpg",
-                "phone": "087711223344",
-                "whatsapp": "6287711223344"
-            }
-        };
+        // --- Global Variable for Schedule Data ---
+        let fullScheduleData = null;
 
         // --- Konfigurasi Jam Shift ---
         const shiftTimes = {
@@ -799,7 +591,7 @@
             "shift3": { start: 0, end: 8, display: "Shift 3" }
         };
         const allShiftKeys = ["shift1", "shift2", "shift3"];
-        const allDays = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU"];
+        const allDays = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"]; // MINGGU is 0
 
         // --- Kontak Bantuan Darurat ---
         const emergencyContacts = [
@@ -810,18 +602,35 @@
 
         let lastActiveShiftKey = null;
 
+        // --- Fetch Schedule Data ---
+        async function fetchScheduleData() {
+            try {
+                const response = await fetch('jadwal.json'); // Path to your JSON file
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                fullScheduleData = data.karyawan; // Store only the employee data globally
+                // console.log("Schedule data loaded:", fullScheduleData);
+                return fullScheduleData;
+            } catch (error) {
+                console.error("Could not fetch schedule data:", error);
+                document.getElementById('scheduleDateHeader').textContent = "Gagal memuat jadwal.";
+                return null;
+            }
+        }
+
         // --- Helper Functions ---
-        function getNamaHari(date) {
-            const days = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
-            return days[date.getDay()];
+        function getNamaHari(date) { // date should be a Date object
+            return allDays[date.getDay()];
         }
 
         function getCurrentShiftInfo(hour) {
             if (hour >= shiftTimes.shift1.start && hour < shiftTimes.shift1.end) {
                 return { key: "shift1", name: shiftTimes.shift1.display, index: 0 };
-            } else if (hour >= shiftTimes.shift2.start && hour < shiftTimes.shift2.end) {
+            } else if (hour >= shiftTimes.shift2.start && hour < shiftTimes.shift2.end) { // Shift 2 ends at 24:00 (midnight)
                 return { key: "shift2", name: shiftTimes.shift2.display, index: 1 };
-            } else {
+            } else { // Shift 3 is from 00:00 to 08:00
                 return { key: "shift3", name: shiftTimes.shift3.display, index: 2 };
             }
         }
@@ -831,7 +640,7 @@
             if (!scheduleData) return jagaNames;
             for (const nama in scheduleData) {
                 const jadwalOrang = scheduleData[nama];
-                if (jadwalOrang.shift && typeof jadwalOrang.shift[dayName] === 'object' && jadwalOrang.shift[dayName] !== null) {
+                if (jadwalOrang.shift && jadwalOrang.shift[dayName] && typeof jadwalOrang.shift[dayName][shiftKey] !== 'undefined') {
                     const statusShift = jadwalOrang.shift[dayName][shiftKey];
                     if (statusShift === "jaga") {
                         jagaNames.push(nama);
@@ -845,7 +654,7 @@
         function updateDateTimeDisplay() {
             const now = new Date();
             const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Makassar' };
-            const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Makassar' };
+            const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'Asia/Makassar' };
 
             const currentDate = new Intl.DateTimeFormat('id-ID', optionsDate).format(now);
             const currentTime = new Intl.DateTimeFormat('id-ID', optionsTime).format(now);
@@ -865,43 +674,64 @@
         }
 
         function updateCountdownProgressBar() {
-            const now = new Date();
-            const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
-            const minuteWITA = parseInt(new Intl.DateTimeFormat('en-US', { minute: '2-digit', timeZone: 'Asia/Makassar' }).format(now));
-            const secondWITA = parseInt(new Intl.DateTimeFormat('en-US', { second: '2-digit', timeZone: 'Asia/Makassar' }).format(now));
+            const nowWITA = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
+            const hourWITA = nowWITA.getHours();
+            const minuteWITA = nowWITA.getMinutes();
+            const secondWITA = nowWITA.getSeconds();
 
             const currentShiftInfo = getCurrentShiftInfo(hourWITA);
-            const currentShiftTime = shiftTimes[currentShiftInfo.key];
+            const currentShiftConfig = shiftTimes[currentShiftInfo.key];
+
+            let shiftStartSeconds = currentShiftConfig.start * 3600;
+            let shiftEndSeconds = currentShiftConfig.end * 3600;
+            if (currentShiftConfig.end === 0 || currentShiftConfig.end === 24) shiftEndSeconds = 24 * 3600; // Midnight case
+            if (currentShiftConfig.start > currentShiftConfig.end && currentShiftConfig.end === 8) { // Shift 3 (00:00 to 08:00)
+                 shiftEndSeconds = currentShiftConfig.end * 3600; // End is 8:00
+                 // Shift start is effectively 0 for duration calculation within its 24h cycle part
+            }
+
 
             let totalShiftDurationSeconds;
-            let elapsedShiftDurationSeconds;
-
-            if (currentShiftInfo.key === "shift3") { 
-                const shiftStartHour = shiftTimes.shift3.start; 
-                const shiftEndHour = shiftTimes.shift3.end;     
-                totalShiftDurationSeconds = (shiftEndHour - shiftStartHour) * 3600;
-                elapsedShiftDurationSeconds = (hourWITA * 3600 + minuteWITA * 60 + secondWITA) - (shiftStartHour * 3600);
-            } else {
-                totalShiftDurationSeconds = (currentShiftTime.end - currentShiftTime.start) * 3600;
-                elapsedShiftDurationSeconds = (hourWITA * 3600 + minuteWITA * 60 + secondWITA) - (currentShiftTime.start * 3600);
+            if (currentShiftConfig.start < currentShiftConfig.end) {
+                totalShiftDurationSeconds = (currentShiftConfig.end - currentShiftConfig.start) * 3600;
+            } else { // Overnight shift (like 00:00-08:00, or if there was 22:00-06:00)
+                totalShiftDurationSeconds = ((24 - currentShiftConfig.start) + currentShiftConfig.end) * 3600;
             }
-            
+            if (currentShiftInfo.key === "shift3") { // specifically for 00:00 to 08:00
+                totalShiftDurationSeconds = 8 * 3600;
+            }
+
+
+            let elapsedShiftDurationSeconds;
+            const currentTimeInSeconds = hourWITA * 3600 + minuteWITA * 60 + secondWITA;
+
+            if (currentShiftConfig.start < currentShiftConfig.end || currentShiftInfo.key === "shift3") { // Regular day shift or shift 3 (0-8)
+                elapsedShiftDurationSeconds = currentTimeInSeconds - (currentShiftConfig.start * 3600);
+            } else { // Shift crossing midnight, e.g. Shift 2 (16-24/0)
+                elapsedShiftDurationSeconds = currentTimeInSeconds - (currentShiftConfig.start * 3600);
+                //This will be correct as long as currentTimeInSeconds is within 16-24 range
+            }
+             if (currentShiftInfo.key === "shift2" && hourWITA < currentShiftConfig.start) { // Midnight case for Shift 2 if it's just past 00:00
+                elapsedShiftDurationSeconds = ( (24*3600 - currentShiftConfig.start * 3600) + currentTimeInSeconds );
+            }
+
+
             let progressPercentage = (elapsedShiftDurationSeconds / totalShiftDurationSeconds) * 100;
             progressPercentage = Math.max(0, Math.min(100, progressPercentage)); 
 
             document.getElementById('countdownProgressBarFill').style.width = `${progressPercentage}%`;
 
             let nextShiftKey = allShiftKeys[(currentShiftInfo.index + 1) % allShiftKeys.length];
-            let nextShiftDateObj = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' })); 
-            nextShiftDateObj.setSeconds(0);
-            nextShiftDateObj.setMilliseconds(0);
-            nextShiftDateObj.setHours(shiftTimes[nextShiftKey].start, 0, 0, 0);
+            let nextShiftStartTime = shiftTimes[nextShiftKey].start;
+            
+            let nextShiftDateObj = new Date(nowWITA);
+            nextShiftDateObj.setHours(nextShiftStartTime, 0, 0, 0);
 
-            if (nextShiftDateObj.getTime() <= now.getTime()) {
-                 nextShiftDateObj.setDate(nextShiftDateObj.getDate() + 1);
+            if (nextShiftDateObj.getTime() <= nowWITA.getTime()) {
+                nextShiftDateObj.setDate(nextShiftDateObj.getDate() + 1);
             }
             
-            let timeToNextShiftMs = nextShiftDateObj.getTime() - now.getTime();
+            let timeToNextShiftMs = nextShiftDateObj.getTime() - nowWITA.getTime();
             timeToNextShiftMs = Math.max(0, timeToNextShiftMs); 
 
             const totalSecondsRemaining = Math.floor(timeToNextShiftMs / 1000);
@@ -910,7 +740,7 @@
             const seconds = totalSecondsRemaining % 60;
 
             let countdownText;
-            if (progressPercentage < 1 && elapsedShiftDurationSeconds < 60) { 
+            if (progressPercentage < 1 && elapsedShiftDurationSeconds < 60 && elapsedShiftDurationSeconds >=0) { 
                  countdownText = `Shift ${shiftTimes[currentShiftInfo.key].display} Baru Saja Dimulai!`;
             } else {
                  countdownText = `Shift ${shiftTimes[nextShiftKey].display} dimulai dalam ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
@@ -919,13 +749,16 @@
         }
 
         function displayFullDayScheduleVisualization() {
-            const now = new Date(); 
-            const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
+            if (!fullScheduleData) {
+                // console.log("Schedule data not yet loaded for displayFullDayScheduleVisualization.");
+                return;
+            }
+            const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
+            const hourWITA = now.getHours();
             const currentShiftInfo = getCurrentShiftInfo(hourWITA);
-            const scheduleToDisplay = jadwalMinggu1Juni2025;
-            let displayDateForSchedule = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' })); 
-            const namaHariJadwal = getNamaHari(displayDateForSchedule); 
-            const formattedDateForHeader = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Makassar' }).format(displayDateForSchedule);
+            
+            const namaHariJadwal = getNamaHari(now); 
+            const formattedDateForHeader = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Makassar' }).format(now);
             document.getElementById('scheduleDateHeader').textContent = `Jadwal Jaga ${formattedDateForHeader}`;
             
             const shiftsTimelineDiv = document.getElementById('shiftsTimeline');
@@ -947,7 +780,7 @@
 
                 const jagaGrid = document.createElement('div');
                 jagaGrid.className = 'jaga-grid';
-                const jagaNames = getJagaList(namaHariJadwal, shiftKey, scheduleToDisplay);
+                const jagaNames = getJagaList(namaHariJadwal, shiftKey, fullScheduleData);
 
                 if (jagaNames.length > 0) {
                     jagaNames.forEach(nama => {
@@ -955,7 +788,7 @@
                         div.className = 'jaga-card';
                         div.textContent = nama;
                         div.addEventListener('click', () => { 
-                            showPhotoPopup(nama, scheduleToDisplay);
+                            showPhotoPopup(nama, fullScheduleData);
                         });
                         jagaGrid.appendChild(div);
                     });
@@ -970,7 +803,6 @@
             });
         }
 
-        // --- Dark Mode Logic ---
         const toggleSwitch = document.getElementById('checkbox');
         const currentTheme = localStorage.getItem('theme');
 
@@ -996,7 +828,6 @@
         }
         toggleSwitch.addEventListener('change', switchTheme, false);
 
-        // --- Photo Pop-up Logic ---
         const photoPopupOverlay = document.getElementById('photoPopupOverlay');
         const popupImage = document.getElementById('popupImage');
         const popupName = document.getElementById('popupName');
@@ -1011,9 +842,7 @@
                 popupImage.alt = `Foto ${nama}`;
                 popupName.textContent = nama;
                 popupInfo.textContent = employeeData.info || "Informasi tidak tersedia.";
-
                 popupContactLinks.innerHTML = ''; 
-
                 if (employeeData.phone) {
                     const phoneLink = document.createElement('a');
                     phoneLink.href = `tel:${employeeData.phone}`;
@@ -1050,7 +879,6 @@
         });
         popupCloseBtn.addEventListener('click', () => hidePopup(photoPopupOverlay));
 
-        // --- Call Bantuan Logic ---
         const callBantuanBtn = document.getElementById('callBantuanBtn');
         const callBantuanPopupOverlay = document.getElementById('callBantuanPopupOverlay');
         const callBantuanCloseBtn = document.getElementById('callBantuanCloseBtn');
@@ -1074,8 +902,8 @@
             }
         });
 
-        // --- Initial & Interval Updates ---
-        document.addEventListener('DOMContentLoaded', () => {
+        async function initializeApp() {
+            await fetchScheduleData(); // Load data first
             updateDateTimeDisplay();
             displayDynamicGreeting();
             displayFullDayScheduleVisualization(); 
@@ -1088,15 +916,19 @@
 
             setInterval(() => {
                 displayDynamicGreeting();
-                const now = new Date();
-                const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
-                const currentShiftInfo = getCurrentShiftInfo(hourWITA);
-                if (lastActiveShiftKey !== currentShiftInfo.key) {
-                    displayFullDayScheduleVisualization();
-                    lastActiveShiftKey = currentShiftInfo.key;
+                if(fullScheduleData){ // Only update visuals if data is loaded
+                    const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
+                    const hourWITA = now.getHours();
+                    const currentShiftInfo = getCurrentShiftInfo(hourWITA);
+                    if (lastActiveShiftKey !== currentShiftInfo.key) {
+                        displayFullDayScheduleVisualization();
+                        lastActiveShiftKey = currentShiftInfo.key;
+                    }
                 }
             }, 60 * 1000); 
-        });
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
 </body>
 </html>
