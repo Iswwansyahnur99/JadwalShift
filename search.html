@@ -35,6 +35,16 @@
             --status-jaga-color: #28a745; /* Green */
             --status-libur-color: #dc3545; /* Red */
             --status-tidak-jaga-color: #ffc107; /* Orange */
+
+            /* Active Shift highlight colors (from index.html for consistency as search.html currently uses it) */
+            --active-shift-bg: var(--primary-blue);
+            --active-shift-text: white;
+            --active-shift-border: #003a66;
+
+            /* Progress Bar Colors (from index.html) */
+            --progress-bar-track: #e0e0e0;
+            --progress-bar-fill: var(--secondary-red);
+            --progress-bar-text: #555;
         }
 
         /* --- Dark Mode Colors --- */
@@ -61,6 +71,15 @@
             --status-jaga-color: #4caf50;
             --status-libur-color: #f44336;
             --status-tidak-jaga-color: #ff9800;
+
+            /* Active Shift (from index.html) */
+            --active-shift-bg: var(--primary-blue);
+            --active-shift-text: #2d2d2d;
+            --active-shift-border: #3a7fa5;
+             /* Progress Bar (from index.html) */
+            --progress-bar-track: #555;
+            --progress-bar-fill: var(--secondary-red);
+            --progress-bar-text: #ccc;
         }
 
         /* --- Global Styles --- */
@@ -76,10 +95,9 @@
             align-items: center;
             min-height: 100vh;
             transition: background-color 0.3s ease, color 0.3s ease;
-            /* Placeholder background image - you can remove or replace this */
             background-image: url('https://source.unsplash.com/random/1600x900/?broadcasting,studio,controlroom');
             background-size: cover;
-            background-attachment: fixed; /* Parallax-like effect */
+            background-attachment: fixed;
             background-position: center center;
         }
 
@@ -92,7 +110,7 @@
             align-items: center;
         }
 
-        .container { /* Renamed from .container to apply only to outer wrapper */
+        .container, .schedule-visualization-container /* Applied to both for current search.html structure */ {
             background-color: var(--container-bg);
             padding: 30px;
             border-radius: 12px;
@@ -108,11 +126,11 @@
         .navbar {
             background-color: var(--primary-blue);
             width: 100%;
-            max-width: 650px; /* Match container width */
-            border-radius: 12px 12px 0 0; /* Rounded top, flat bottom */
+            max-width: 650px;
+            border-radius: 12px 12px 0 0;
             padding: 10px 0;
-            margin-bottom: -15px; /* Overlap with container below */
-            z-index: 10; /* Ensure it's above container's shadow */
+            margin-bottom: -15px;
+            z-index: 10;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             display: flex;
             justify-content: center;
@@ -130,44 +148,85 @@
             background-color: var(--sub-heading-color);
         }
         .navbar a.active-nav {
-            background-color: var(--sub-heading-color);
+            background-color: var(--sub-heading-color); /* This will be on "Cari Jadwal Saya" if search.html is active */
             box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
         }
 
-        /* --- Header Section (for search.html) --- */
+        /* --- Header Section (shared with index.html styling due to current content) --- */
         .header {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-bottom: 20px;
-            padding-top: 15px; /* Space from navbar */
+            padding-top: 15px;
         }
 
-        /* Logo specific styles for light/dark mode */
         #tvriKaltaraLogo {
-            width: 80px; /* Adjust size as needed */
+            width: 80px;
             height: auto;
             margin-bottom: 10px;
-            /* Default logo for light mode */
             content: url('photos/logo_tvri_kaltara.png');
         }
 
         body.dark-mode #tvriKaltaraLogo {
-            /* Override logo for dark mode */
             content: url('photos/logo_tvri_kaltara_dark_mode.png');
         }
 
-        h1 {
+        h1 { /* Shared h1 style */
             color: var(--primary-blue);
             margin-bottom: 10px;
             font-size: 2.2em;
             letter-spacing: 0.5px;
         }
+        
+        /* Dynamic Greeting & Datetime (from index.html, as search.html currently uses them) */
+        .dynamic-greeting {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--sub-heading-color);
+            margin-bottom: 15px;
+        }
+        .datetime-display {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
 
-        /* --- Search Bar Styles --- */
+        /* Countdown Progress Bar (from index.html) */
+        .countdown-progress-container {
+            width: 100%;
+            margin-top: -15px; /* Adjusted due to weather link removal */
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .countdown-progress-bar {
+            background-color: var(--progress-bar-track);
+            border-radius: 15px;
+            height: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .countdown-progress-fill {
+            background-color: var(--progress-bar-fill);
+            height: 100%;
+            width: 0%;
+            border-radius: 15px;
+            transition: width 1s linear;
+        }
+        .countdown-progress-text {
+            font-size: 0.9em;
+            color: var(--progress-bar-text);
+            margin-top: 8px;
+            font-weight: bold;
+        }
+
+
+        /* --- Search Bar Styles (Defined, but not used by current search.html JS) --- */
         .search-container {
-            padding: 20px 30px;
-            margin-top: 0;
+            padding: 20px 30px; /* This would be inside a .container if used */
+            margin-top: 0; 
             margin-bottom: 30px;
         }
         .search-container input[type="text"] {
@@ -177,13 +236,13 @@
             border-radius: 8px;
             font-size: 1em;
             color: var(--text-color);
-            background-color: var(--container-bg);
+            background-color: var(--container-bg); /* Needs to be distinguished from page bg */
             transition: border-color 0.3s ease;
         }
         .search-container input[type="text"]:focus {
             outline: none;
             border-color: var(--search-focus-border);
-            box-shadow: 0 0 0 3px rgba(0, 80, 140, 0.2);
+            box-shadow: 0 0 0 3px rgba(0, 80, 140, 0.2); /* primary-blue with alpha */
         }
         .search-message {
             margin-top: 10px;
@@ -192,26 +251,22 @@
             display: none; /* Hidden by default */
         }
 
-        /* --- Personal Schedule Result Styles --- */
-        .personal-schedule-result-container {
-            /* This container's display is controlled by JS when search results are available */
-            margin-top: 20px;
-            padding: 25px;
-        }
-        .personal-schedule-result-container h2 {
+        /* --- Personal Schedule Result Styles (Defined, but not used by current search.html JS) --- */
+        /* .personal-schedule-result-container is styled like .schedule-visualization-container for now */
+        .personal-schedule-result-container h2 { /* Shared h2 style with schedule-visualization-container */
             color: var(--primary-blue);
             margin-bottom: 25px;
             font-size: 2em;
             border-bottom: 2px solid var(--border-light);
             padding-bottom: 10px;
         }
-        .personal-schedule-grid {
+        .personal-schedule-grid { /* For actual search results */
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Larger cards for daily view */
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
             margin-top: 20px;
         }
-        .daily-schedule-card {
+        .daily-schedule-card { /* For actual search results */
             background-color: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 10px;
@@ -243,6 +298,94 @@
         .daily-schedule-card .status-jaga { color: var(--status-jaga-color); font-weight: bold; }
         .daily-schedule-card .status-tidak-jaga { color: var(--status-tidak-jaga-color); font-weight: bold; }
         .daily-schedule-card .status-libur { color: var(--status-libur-color); font-weight: bold; }
+
+        /* Schedule Visualization Styles (from index.html, as search.html currently uses them) */
+        .shifts-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .shift-display-block {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .shift-display-block.active-shift {
+            background-color: var(--active-shift-bg);
+            color: var(--active-shift-text);
+            border-color: var(--active-shift-border);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateY(-3px);
+        }
+        .active-shift h3, .active-shift .jaga-grid .jaga-card, .active-shift .no-jaga {
+            color: white !important;
+        }
+        .active-shift .jaga-grid .jaga-card {
+            background-color: rgba(255,255,255,0.2) !important;
+            border-color: rgba(255,255,255,0.3) !important;
+        }
+        .active-shift .jaga-grid .jaga-card:hover {
+            background-color: rgba(255,255,255,0.4) !important;
+            transform: translateY(-2px);
+            box-shadow: none;
+        }
+        .shift-display-block h3 {
+            color: var(--sub-heading-color);
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.4em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .shift-display-block h3 span.time-range {
+            font-size: 0.8em;
+            font-weight: normal;
+            opacity: 0.8;
+        }
+        .jaga-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px;
+            padding: 0;
+            list-style: none;
+        }
+        .jaga-card {
+            background-color: var(--container-bg); /* Should be card-bg or distinct */
+            border: 1px solid var(--card-border);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 500;
+            color: var(--text-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 40px;
+        }
+        .jaga-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background-color: var(--primary-blue);
+            color: white;
+        }
+        .no-jaga {
+            font-style: italic;
+            color: var(--empty-msg-color);
+            text-align: center;
+            display: block;
+            padding: 10px;
+            font-size: 0.9em;
+        }
 
         /* --- Dark Mode Toggle --- */
         .theme-switch-wrapper {
@@ -345,7 +488,7 @@
             right: 15px;
             font-size: 28px;
             font-weight: bold;
-            color: var(--text-color);
+            color: var(--text-color); /* Changed from popup-text-color for better visibility */
             cursor: pointer;
             background: none;
             border: none;
@@ -361,7 +504,7 @@
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            object-position: center center; /* Centering image content */
+            object-position: center center;
             margin-bottom: 15px;
             border: 3px solid var(--primary-blue);
         }
@@ -397,10 +540,10 @@
             opacity: 0.8;
         }
         .popup-contact-links .phone-link {
-            background-color: #33b5e5; /* Light blue for phone */
+            background-color: #33b5e5;
         }
         .popup-contact-links .whatsapp-link {
-            background-color: #25d366; /* WhatsApp green */
+            background-color: #25d366;
         }
         .popup-contact-links a svg {
             margin-right: 5px;
@@ -408,6 +551,56 @@
             height: 16px;
             fill: white;
         }
+        /* Call Bantuan Button (from index.html) */
+        .call-bantuan-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--secondary-red);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.2em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            z-index: 999;
+        }
+        .call-bantuan-button:hover {
+            background-color: #c42727; /* Darker red */
+            transform: translateY(-2px);
+        }
+        .call-bantuan-popup-content h3 {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+        .call-bantuan-popup-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+        }
+        .call-bantuan-popup-content li {
+            margin-bottom: 10px;
+            font-size: 1em;
+            color: var(--popup-text-color);
+        }
+        .call-bantuan-popup-content li strong {
+            color: var(--sub-heading-color);
+        }
+        .call-bantuan-popup-content li a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+        .call-bantuan-popup-content li a:hover {
+            text-decoration: underline;
+        }
+
     </style>
 </head>
 <body class="light-mode">
@@ -421,42 +614,37 @@
 
     <div class="main-content-wrapper">
         <nav class="navbar">
-            <a href="index.html" class="active-nav">Jadwal Harian</a>
-            <a href="search.html">Cari Jadwal Saya</a>
+            <a href="index.html">Jadwal Harian</a>
+            <a href="search.html" class="active-nav">Cari Jadwal Saya</a>
         </nav>
 
         <div class="container">
             <div class="header">
                 <img id="tvriKaltaraLogo" alt="Logo TVRI Kaltara" class="logo">
-                <h1>Jadwal Jaga Shift</h1>
-                <p class="dynamic-greeting" id="dynamicGreeting"></p>
-            </div>
-            <div class="datetime-display" id="currentDateTime">
-                </div>
-            <div class="countdown-progress-container">
+                <h1>Cari Jadwal Karyawan</h1> 
+                <p class="dynamic-greeting" id="dynamicGreeting"></p> </div>
+             <div class="datetime-display" id="currentDateTime"></div>
+             <div class="countdown-progress-container">
                 <div class="countdown-progress-bar">
                     <div class="countdown-progress-fill" id="countdownProgressBarFill"></div>
                 </div>
                 <p class="countdown-progress-text" id="countdownProgressText">Loading countdown...</p>
             </div>
-            <div class="weather-link-container">
-                <a href="https://www.bmkg.go.id/cuaca/prakiraan-cuaca-indonesia.bmkg?id=50130" target="_blank">Cek Cuaca Tanjung Selor (BMKG)</a>
             </div>
-        </div>
 
-        <div class="schedule-visualization-container">
-            <h2 id="scheduleDateHeader">Jadwal Jaga Hari Ini</h2>
-            <div class="shifts-timeline" id="shiftsTimeline">
+        <div class="schedule-visualization-container" id="scheduleResultDisplay"> 
+            <h2 id="scheduleDateHeader">Jadwal Jaga Hari Ini</h2> <div class="shifts-timeline" id="shiftsTimeline">
                 </div>
-        </div>
-    </div> <div class="popup-overlay" id="photoPopupOverlay">
+            </div>
+    </div>
+
+    <div class="popup-overlay" id="photoPopupOverlay">
         <div class="popup-content">
             <button class="popup-close" id="popupCloseBtn">&times;</button>
             <img src="" alt="Foto Karyawan" class="popup-image" id="popupImage">
             <p class="popup-name" id="popupName"></p>
             <p class="popup-info" id="popupInfo"></p>
-            <div class="popup-contact-links" id="popupContactLinks">
-                </div>
+            <div class="popup-contact-links" id="popupContactLinks"></div>
         </div>
     </div>
 
@@ -466,8 +654,7 @@
         <div class="popup-content call-bantuan-popup-content">
             <button class="popup-close" id="callBantuanCloseBtn">&times;</button>
             <h3>Bantuan Darurat / Kontak Penting</h3>
-            <ul id="contactList">
-                </ul>
+            <ul id="contactList"></ul>
         </div>
     </div>
 
@@ -687,9 +874,9 @@
             { role: "Keamanan Kantor", name: "Nomor Kantor", phone: "(021) 1234567" }
         ];
 
-        let lastActiveShiftKey = null; // Used to prevent redundant DOM updates
+        let lastActiveShiftKey = null; 
 
-        // --- Helper Functions ---
+        // --- Helper Functions (same as index.html) ---
         function getNamaHari(date) {
             const days = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
             return days[date.getDay()];
@@ -720,24 +907,11 @@
             return jagaNames;
         }
 
-        function hidePopup(popupElement) {
-            popupElement.classList.remove('active');
-            if (popupElement === photoPopupOverlay) {
-                // Ensure image src is cleared AFTER the popup is fully hidden
-                // This is a common pattern for preventing flicker.
-                setTimeout(() => {
-                    popupImage.src = "";
-                }, 300); // Match CSS transition duration
-                document.getElementById('popupContactLinks').innerHTML = ''; // Clear contact links immediately
-            }
-        }
-
-        // --- UI Update Functions ---
+        // --- UI Update Functions (same as index.html as search.html JS is currently a clone) ---
         function updateDateTimeDisplay() {
             const now = new Date();
             const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Makassar' };
             const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Makassar' };
-
             const currentDate = new Intl.DateTimeFormat('id-ID', optionsDate).format(now);
             const currentTime = new Intl.DateTimeFormat('id-ID', optionsTime).format(now);
             document.getElementById('currentDateTime').innerHTML = `${currentDate}<br>${currentTime} WITA`;
@@ -747,14 +921,14 @@
             const now = new Date();
             const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
             let greeting = "";
-
             if (hourWITA >= 5 && hourWITA < 12) greeting = "Selamat Pagi, Tim TVRI!";
             else if (hourWITA >= 12 && hourWITA < 15) greeting = "Selamat Siang, Tim TVRI!";
             else if (hourWITA >= 15 && hourWITA < 18) greeting = "Selamat Sore, Tim TVRI!";
             else greeting = "Selamat Malam, Tim TVRI!";
-            document.getElementById('dynamicGreeting').textContent = greeting;
+            const dynamicGreetingEl = document.getElementById('dynamicGreeting');
+            if (dynamicGreetingEl) dynamicGreetingEl.textContent = greeting;
         }
-
+        
         function updateCountdownProgressBar() {
             const now = new Date();
             const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
@@ -768,40 +942,33 @@
             let elapsedShiftDurationSeconds;
 
             if (currentShiftInfo.key === "shift3") {
-                totalShiftDurationSeconds = (shiftTimes.shift3.end + 24 - shiftTimes.shift3.start) * 3600;
-                elapsedShiftDurationSeconds = (hourWITA * 3600 + minuteWITA * 60 + secondWITA) - (shiftTimes.shift3.start * 3600);
+                const shiftStartHour = shiftTimes.shift3.start;
+                const shiftEndHour = shiftTimes.shift3.end;
+                totalShiftDurationSeconds = (shiftEndHour - shiftStartHour) * 3600;
+                elapsedShiftDurationSeconds = (hourWITA * 3600 + minuteWITA * 60 + secondWITA) - (shiftStartHour * 3600);
             } else {
                 totalShiftDurationSeconds = (currentShiftTime.end - currentShiftTime.start) * 3600;
                 elapsedShiftDurationSeconds = (hourWITA * 3600 + minuteWITA * 60 + secondWITA) - (currentShiftTime.start * 3600);
             }
             
             let progressPercentage = (elapsedShiftDurationSeconds / totalShiftDurationSeconds) * 100;
-            progressPercentage = Math.max(0, Math.min(100, progressPercentage)); // Clamp between 0 and 100
+            progressPercentage = Math.max(0, Math.min(100, progressPercentage)); 
 
-            document.getElementById('countdownProgressBarFill').style.width = `${progressPercentage}%`;
+            const progressBarFill = document.getElementById('countdownProgressBarFill');
+            if(progressBarFill) progressBarFill.style.width = `${progressPercentage}%`;
 
             let nextShiftKey = allShiftKeys[(currentShiftInfo.index + 1) % allShiftKeys.length];
             let nextShiftDateObj = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
             nextShiftDateObj.setSeconds(0);
             nextShiftDateObj.setMilliseconds(0);
+            nextShiftDateObj.setHours(shiftTimes[nextShiftKey].start, 0, 0, 0);
 
-            if (nextShiftKey === "shift1" && currentShiftInfo.key === "shift3") {
-                 nextShiftDateObj.setHours(shiftTimes.shift1.start, 0, 0, 0);
-                 if (nextShiftDateObj.getTime() < now.getTime()) {
-                    nextShiftDateObj.setDate(nextShiftDateObj.getDate() + 1);
-                 }
-            } else if (nextShiftKey === "shift3" && currentShiftInfo.key === "shift2") {
+            if (nextShiftDateObj.getTime() <= now.getTime()) {
                  nextShiftDateObj.setDate(nextShiftDateObj.getDate() + 1);
-                 nextShiftDateObj.setHours(shiftTimes.shift3.start, 0, 0, 0);
-            } else {
-                 nextShiftDateObj.setHours(shiftTimes[nextShiftKey].start, 0, 0, 0);
-                 if (nextShiftDateObj.getTime() < now.getTime()) {
-                    nextShiftDateObj.setDate(nextShiftDateObj.getDate() + 1);
-                 }
             }
-
+            
             let timeToNextShiftMs = nextShiftDateObj.getTime() - now.getTime();
-            timeToNextShiftMs = Math.max(0, timeToNextShiftMs); // Ensure non-negative
+            timeToNextShiftMs = Math.max(0, timeToNextShiftMs); 
 
             const totalSecondsRemaining = Math.floor(timeToNextShiftMs / 1000);
             const hours = Math.floor(totalSecondsRemaining / 3600);
@@ -809,48 +976,45 @@
             const seconds = totalSecondsRemaining % 60;
 
             let countdownText;
-            if (totalSecondsRemaining <= 0) {
+            if (progressPercentage < 1 && elapsedShiftDurationSeconds < 60) {
                  countdownText = `Shift ${shiftTimes[currentShiftInfo.key].display} Baru Saja Dimulai!`;
             } else {
                  countdownText = `Shift ${shiftTimes[nextShiftKey].display} dimulai dalam ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             }
-            document.getElementById('countdownProgressText').textContent = countdownText;
+            const progressTextEl = document.getElementById('countdownProgressText');
+            if(progressTextEl) progressTextEl.textContent = countdownText;
         }
 
-        function displayFullDayScheduleVisualization() {
+
+        function displayFullDayScheduleVisualization() { // This is from index.html
             const now = new Date();
             const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
             const currentShiftInfo = getCurrentShiftInfo(hourWITA);
-
             const scheduleToDisplay = jadwalMinggu1Juni2025;
-
             let displayDateForSchedule = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
-            if (currentShiftInfo.key === "shift3") { 
-                 displayDateForSchedule.setDate(displayDateForSchedule.getDate() - 1);
-            }
             const namaHariJadwal = getNamaHari(displayDateForSchedule);
-            const formattedDateForHeader = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(displayDateForSchedule);
-            document.getElementById('scheduleDateHeader').textContent = `Jadwal Jaga ${formattedDateForHeader}`;
+            const formattedDateForHeader = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Makassar' }).format(displayDateForSchedule);
+            
+            const scheduleDateHeaderEl = document.getElementById('scheduleDateHeader');
+            if (scheduleDateHeaderEl) scheduleDateHeaderEl.textContent = `Jadwal Jaga ${formattedDateForHeader}`;
             
             const shiftsTimelineDiv = document.getElementById('shiftsTimeline');
+            if (!shiftsTimelineDiv) return; // Exit if the element isn't on the page
             shiftsTimelineDiv.innerHTML = '';
 
             allShiftKeys.forEach(shiftKey => {
                 const shiftDisplayName = shiftTimes[shiftKey].display;
                 const shiftStartTime = shiftTimes[shiftKey].start.toString().padStart(2, '0');
-                const shiftEndTime = shiftTimes[shiftKey].end.toString().padStart(2, '0');
+                const shiftEndTime = (shiftTimes[shiftKey].end === 24 ? "00" : shiftTimes[shiftKey].end.toString().padStart(2, '0'));
 
                 const shiftBlock = document.createElement('div');
                 shiftBlock.className = 'shift-display-block';
                 if (shiftKey === currentShiftInfo.key) { 
                     shiftBlock.classList.add('active-shift');
                 }
-
                 shiftBlock.innerHTML = `<h3>${shiftDisplayName} <span class="time-range">(${shiftStartTime}:00 - ${shiftEndTime}:00)</span></h3>`;
-
                 const jagaGrid = document.createElement('div');
                 jagaGrid.className = 'jaga-grid';
-
                 const jagaNames = getJagaList(namaHariJadwal, shiftKey, scheduleToDisplay);
 
                 if (jagaNames.length > 0) {
@@ -859,7 +1023,7 @@
                         div.className = 'jaga-card';
                         div.textContent = nama;
                         div.addEventListener('click', () => { 
-                            showPhotoPopup(nama);
+                            showPhotoPopup(nama, scheduleToDisplay); // Pass scheduleToDisplay
                         });
                         jagaGrid.appendChild(div);
                     });
@@ -874,11 +1038,9 @@
             });
         }
 
-
         // --- Dark Mode Logic ---
         const toggleSwitch = document.getElementById('checkbox');
         const currentTheme = localStorage.getItem('theme');
-
         if (currentTheme) {
             document.body.classList.add(currentTheme);
             if (currentTheme === 'dark-mode') {
@@ -887,7 +1049,6 @@
         } else {
             document.body.classList.add('light-mode');
         }
-
         function switchTheme(e) {
             if (e.target.checked) {
                 document.body.classList.remove('light-mode');
@@ -906,60 +1067,47 @@
         const popupImage = document.getElementById('popupImage');
         const popupName = document.getElementById('popupName');
         const popupInfo = document.getElementById('popupInfo');
-        const popupContactLinks = document.getElementById('popupContactLinks'); // New element
+        const popupContactLinks = document.getElementById('popupContactLinks');
         const popupCloseBtn = document.getElementById('popupCloseBtn');
 
-        function showPhotoPopup(nama) {
-            const employeeData = jadwalMinggu1Juni2025[nama]; 
+        function showPhotoPopup(nama, scheduleData) { // Added scheduleData
+            const employeeData = scheduleData[nama]; 
             if (employeeData) {
-                const photoPath = employeeData.photo && (employeeData.photo.startsWith('photos/') || employeeData.photo.startsWith('http')) ? employeeData.photo : 'https://via.placeholder.com/150?text=No+Photo';
-                const infoText = employeeData.info || "Informasi tidak tersedia.";
-                const phoneNum = employeeData.phone || "";
-                const whatsappNum = employeeData.whatsapp || "";
-
-                popupImage.src = photoPath;
+                popupImage.src = employeeData.photo || 'https://via.placeholder.com/150?text=No+Photo';
                 popupImage.alt = `Foto ${nama}`;
                 popupName.textContent = nama;
-                popupInfo.textContent = infoText;
-
-                popupContactLinks.innerHTML = ''; // Clear previous links
-
-                if (phoneNum) {
+                popupInfo.textContent = employeeData.info || "Informasi tidak tersedia.";
+                popupContactLinks.innerHTML = '';
+                if (employeeData.phone) {
                     const phoneLink = document.createElement('a');
-                    phoneLink.href = `tel:${phoneNum}`;
+                    phoneLink.href = `tel:${employeeData.phone}`;
                     phoneLink.className = 'phone-link';
-                    // SVG for phone icon (Material Design 'call' icon)
                     phoneLink.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.02.75-.24 1.02l-2.2 2.2z"/></svg>Telepon`;
                     popupContactLinks.appendChild(phoneLink);
                 }
-                if (whatsappNum) {
+                if (employeeData.whatsapp) {
                     const whatsappLink = document.createElement('a');
-                    whatsappLink.href = `https://wa.me/${whatsappNum}`;
-                    whatsappLink.target = "_blank"; // Open in new tab
+                    whatsappLink.href = `https://wa.me/${employeeData.whatsapp}`;
+                    whatsappLink.target = "_blank";
                     whatsappLink.className = 'whatsapp-link';
-                    // SVG for WhatsApp icon
                     whatsappLink.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M.99 24c-.54 0-.99-.45-.99-1s.45-1 1-1h.06c2.09-2.31 3.32-5.4 3.32-8.62C4.38 5.63 8.35 1.57 13.25 1.57c2.3 0 4.41.92 6.01 2.42 1.6 1.5 2.49 3.5 2.49 5.64 0 4.9-3.97 8.96-8.87 8.96h-1.57c-.12 0-.23.01-.35.02-.33 0-.64-.09-.92-.26l-3.05-1.92c-.17-.11-.3-.26-.39-.44-.1-.18-.14-.37-.14-.58v-2.07c0-.12.01-.23.02-.35.02-.09.05-.18.09-.26l1.24-2.45c.18-.36.08-.79-.24-1.07-.31-.28-.75-.3-.97-.04l-1.39 1.63c-.09.11-.14.24-.14.39v.6c0 .41-.09.8-.26 1.15l-1.37 2.7c-.24.47-.46.96-.65 1.45-.19.49-.36.98-.51 1.47l-.06.18c-.02.05-.04.1-.06.14-.01.03-.02.07-.03.1-.01.03-.01.07-.01.1zm12.26-11.85c-.92-.88-2.12-1.35-3.39-1.35-1.33 0-2.58.55-3.56 1.59-1.07 1.12-1.66 2.58-1.66 4.14 0 1.6.59 3.06 1.66 4.18 1.07 1.11 2.5 1.7 3.9 1.7.92 0 1.79-.23 2.56-.63l-.04-.04c.14-.07.26-.17.36-.3l-.03-.04c.09-.13.15-.27.18-.42.03-.15.04-.3.04-.45v-1.12c0-.12-.01-.23-.02-.35-.02-.09-.05-.18-.09-.26l-.42-.85c-.07-.13-.12-.27-.12-.42v-1.42c0-.12.01-.23.02-.35l.09-.26c.03-.09.06-.18.09-.26l.85-1.7c.18-.36.08-.79-.24-1.07-.31-.28-.75-.3-.97-.04l-1.39 1.63c-.09.11-.14.24-.14.39v.6c0 .41-.09.8-.26 1.15l-1.37 2.7c-.24.47-.46.96-.65 1.45-.19.49-.36.98-.51 1.47l-.06.18c-.02.05-.04.1-.06.14-.01.03-.02.07-.03.1-.01.03-.01.07-.01.1z"/></svg>WhatsApp`;
                     popupContactLinks.appendChild(whatsappLink);
                 }
+                photoPopupOverlay.classList.add('active');
             }
         }
-
+        
         function hidePopup(popupElement) {
             popupElement.classList.remove('active');
-            // Ensure image src is cleared *after* transition for flicker prevention
-            setTimeout(() => {
-                if (popupElement === photoPopupOverlay) {
-                    popupImage.src = ""; 
-                }
-            }, 300); // Match CSS transition duration
-            // Clear contact links immediately for better UX
             if (popupElement === photoPopupOverlay) {
-                document.getElementById('popupContactLinks').innerHTML = '';
+                setTimeout(() => {
+                    popupImage.src = ""; 
+                }, 300); 
+                popupContactLinks.innerHTML = '';
             }
         }
 
         photoPopupOverlay.addEventListener('click', (e) => {
-            // Only hide if clicking on the overlay itself, not the content
             if (e.target === photoPopupOverlay) {
                 hidePopup(photoPopupOverlay);
             }
@@ -973,7 +1121,7 @@
         const contactList = document.getElementById('contactList');
 
         function showCallBantuanPopup() {
-            contactList.innerHTML = ''; // Clear previous contacts
+            contactList.innerHTML = ''; 
             emergencyContacts.forEach(contact => {
                 const li = document.createElement('li');
                 li.innerHTML = `<strong>${contact.role}:</strong> ${contact.name} (<a href="tel:${contact.phone}">${contact.phone}</a>)`;
@@ -989,26 +1137,32 @@
                 hidePopup(callBantuanPopupOverlay);
             }
         });
-
+        
         // --- Initial & Interval Updates ---
-        // Update time and countdown every second
-        setInterval(() => {
-            updateDateTimeDisplay();
-            updateCountdownProgressBar();
-        }, 1000);
-
+        // Note: This search.html currently runs the same JS as index.html.
+        // A real search page would have different JS here.
         document.addEventListener('DOMContentLoaded', () => {
             updateDateTimeDisplay();
             displayDynamicGreeting();
-            displayFullDayScheduleVisualization();
+            displayFullDayScheduleVisualization(); // From index.html behavior
             updateCountdownProgressBar();
-        });
 
-        // Update greeting and full day schedule every minute
-        setInterval(() => {
-            displayDynamicGreeting();
-            displayFullDayScheduleVisualization();
-        }, 60 * 1000); // Every minute
+            setInterval(() => {
+                updateDateTimeDisplay();
+                updateCountdownProgressBar();
+            }, 1000);
+
+            setInterval(() => {
+                displayDynamicGreeting();
+                const now = new Date();
+                const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
+                const currentShiftInfo = getCurrentShiftInfo(hourWITA);
+                if (lastActiveShiftKey !== currentShiftInfo.key) {
+                    displayFullDayScheduleVisualization(); // From index.html behavior
+                    lastActiveShiftKey = currentShiftInfo.key;
+                }
+            }, 60 * 1000);
+        });
     </script>
 </body>
 </html>
