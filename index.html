@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jadwal Jaga Harian TVRI</title>
-    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/TVRI_2020.svg/1200px-TVRI_2020.svg.png" type="image/png">
+    <title>Jadwal Jaga Harian TVRI Kaltara</title>
+    <link rel="icon" href="photos/logo_tvri_kaltara.png" type="image/png">
     <style>
         /* --- CSS Variables for Theming (Light and Dark Mode) --- */
         :root {
@@ -145,10 +145,18 @@
             padding-top: 15px; /* Space from navbar */
         }
 
-        .logo {
+        /* Logo specific styles for light/dark mode */
+        #tvriKaltaraLogo {
             width: 80px; /* Adjust size as needed */
             height: auto;
             margin-bottom: 10px;
+            /* Default logo for light mode */
+            content: url('photos/logo_tvri_kaltara.png');
+        }
+
+        body.dark-mode #tvriKaltaraLogo {
+            /* Override logo for dark mode */
+            content: url('photos/logo_tvri_kaltara_dark_mode.png');
         }
 
         h1 {
@@ -171,6 +179,26 @@
             color: var(--text-color);
             margin-bottom: 25px;
             line-height: 1.5;
+        }
+
+        /* --- Weather Link --- */
+        .weather-link-container {
+            margin-top: -10px; /* Pull it slightly up */
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .weather-link-container a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 15px;
+            border: 1px solid var(--primary-blue);
+            border-radius: 8px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .weather-link-container a:hover {
+            background-color: var(--primary-blue);
+            color: white;
         }
 
         /* --- Countdown Progress Bar --- */
@@ -420,7 +448,7 @@
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            object-position: center center; /* NEW: Centering image content */
+            object-position: center center; /* Centering image content */
             margin-bottom: 15px;
             border: 3px solid var(--primary-blue);
         }
@@ -434,7 +462,40 @@
             font-size: 1.1em;
             color: var(--popup-text-color);
         }
-        /* Contact links are NOT part of this version */
+        .popup-contact-links {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .popup-contact-links a {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: opacity 0.2s ease;
+        }
+        .popup-contact-links a:hover {
+            opacity: 0.8;
+        }
+        .popup-contact-links .phone-link {
+            background-color: #33b5e5; /* Light blue for phone */
+        }
+        .popup-contact-links .whatsapp-link {
+            background-color: #25d366; /* WhatsApp green */
+        }
+        .popup-contact-links a svg {
+            margin-right: 5px;
+            width: 16px;
+            height: 16px;
+            fill: white;
+        }
+
 
         /* --- Call Bantuan Button --- */
         .call-bantuan-button {
@@ -510,7 +571,7 @@
 
         <div class="container">
             <div class="header">
-                <img src="photos/logo_tvri_kaltara.png" alt="Logo TVRI Kaltara" class="logo">
+                <img id="tvriKaltaraLogo" alt="Logo TVRI Kaltara" class="logo">
                 <h1>Jadwal Jaga Shift</h1>
                 <p class="dynamic-greeting" id="dynamicGreeting"></p>
             </div>
@@ -521,6 +582,9 @@
                     <div class="countdown-progress-fill" id="countdownProgressBarFill"></div>
                 </div>
                 <p class="countdown-progress-text" id="countdownProgressText">Loading countdown...</p>
+            </div>
+            <div class="weather-link-container">
+                <a href="https://www.bmkg.go.id/cuaca/prakiraan-cuaca-indonesia.bmkg?id=50130" target="_blank">Cek Cuaca Tanjung Selor (BMKG)</a>
             </div>
         </div>
 
@@ -535,7 +599,9 @@
             <img src="" alt="Foto Karyawan" class="popup-image" id="popupImage">
             <p class="popup-name" id="popupName"></p>
             <p class="popup-info" id="popupInfo"></p>
-            </div>
+            <div class="popup-contact-links" id="popupContactLinks">
+                </div>
+        </div>
     </div>
 
     <button class="call-bantuan-button" id="callBantuanBtn">🚨</button>
@@ -557,7 +623,7 @@
             "ALVIANA DAMAYANTI": {
                 "shift": {
                     "SENIN": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
-                    "SELASA": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
                     "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
                     "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
                     "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
@@ -565,8 +631,9 @@
                     "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
                 },
                 "info": "Divisi Admin",
-                "photo": "photos/alviana_damayanti.jpg" /* Pastikan path foto benar! */
-                // Removed phone and whatsapp from data
+                "photo": "photos/alviana_damayanti.jpg",
+                "phone": "081234567890",       // Contoh nomor HP
+                "whatsapp": "6281234567890"    // Contoh nomor WhatsApp (kode negara tanpa +)
             },
             "INA APRIANA": {
                 "shift": {
@@ -579,8 +646,9 @@
                     "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
                 },
                 "info": "Divisi Keuangan",
-                "photo": "photos/ina_apriana.jpg"
-                // Removed phone and whatsapp from data
+                "photo": "photos/ina_apriana.jpg",
+                "phone": "081311223344",
+                "whatsapp": "6281311223344"
             },
             "RAHMA ELVIRA ARIYANTI": {
                 "shift": {
@@ -593,8 +661,9 @@
                     "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
                 },
                 "info": "Divisi HRD",
-                "photo": "photos/rahma_elvira_ariyanti.jpg"
-                // Removed phone and whatsapp from data
+                "photo": "photos/rahma_elvira_ariyanti.jpg",
+                "phone": "085712345678",
+                "whatsapp": "6285712345678"
             },
             "MUH. FADIL PERKASA": {
                 "shift": {
@@ -607,8 +676,9 @@
                     "MINGGU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
                 },
                 "info": "Divisi IT Support",
-                "photo": "photos/muh_fadil_perkasa.jpg"
-                // Removed phone and whatsapp from data
+                "photo": "photos/muh_fadil_perkasa.jpg",
+                "phone": "089678901234",
+                "whatsapp": "6289678901234"
             },
             "M. ISWANSYAH NUR": {
                 "shift": {
@@ -621,8 +691,9 @@
                     "MINGGU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
                 },
                 "info": "Divisi Umum",
-                "photo": "photos/m_iswansyah_nur.jpg"
-                // Removed phone and whatsapp from data
+                "photo": "photos/m_iswansyah_nur.jpg",
+                "phone": "087856789012",
+                "whatsapp": "6287856789012"
             },
             "ABDAN SYAKURO": {
                 "shift": {
@@ -635,8 +706,9 @@
                     "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
                 },
                 "info": "Divisi TI",
-                "photo": "photos/abdan_syakuro.jpg"
-                // Removed phone and whatsapp from data
+                "photo": "photos/abdan_syakuro.jpg",
+                "phone": "081122334455",
+                "whatsapp": "6281122334455"
             },
             "ANDI FAIRUL AMRI": {
                 "shift": {
@@ -649,8 +721,9 @@
                     "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
                 },
                 "info": "Divisi Operasional",
-                "photo": "photos/andi_fairul_amri.jpg"
-                // Removed phone and whatsapp from data
+                "photo": "photos/andi_fairul_amri.jpg",
+                "phone": "081876543210",
+                "whatsapp": "6281876543210"
             },
             "R. AULIA RAHMAN": {
                 "shift": {
@@ -663,8 +736,9 @@
                     "MINGGU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" }
                 },
                 "info": "Divisi Desain",
-                "photo": "photos/r_aulia_rahman.jpg"
-                // Removed phone and whatsapp from data
+                "photo": "photos/r_aulia_rahman.jpg",
+                "phone": "082198765432",
+                "whatsapp": "6282198765432"
             },
             "RAMAZONA NABABAN": {
                 "shift": {
@@ -677,8 +751,9 @@
                     "MINGGU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" }
                 },
                 "info": "Divisi Pemasaran",
-                "photo": "photos/ramazona_nababan.jpg"
-                // Removed phone and whatsapp from data
+                "photo": "photos/ramazona_nababan.jpg",
+                "phone": "085210987654",
+                "whatsapp": "6285210987654"
             },
             "ARI ARDIANSYAH": {
                 "shift": {
@@ -691,8 +766,9 @@
                     "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
                 },
                 "info": "Divisi Keamanan",
-                "photo": "photos/ari_ardiansyah.jpg"
-                // Removed phone and whatsapp from data
+                "photo": "photos/ari_ardiansyah.jpg",
+                "phone": "081945678901",
+                "whatsapp": "6281945678901"
             },
             "BAHRIN": {
                 "shift": {
@@ -705,22 +781,24 @@
                     "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
                 },
                 "info": "Divisi Logistik",
-                "photo": "photos/bahrin.jpg"
-                // Removed phone and whatsapp from data
+                "photo": "photos/bahrin.jpg",
+                "phone": "085323456789",
+                "whatsapp": "6285323456789"
             },
             "WIDHIONO": {
                 "shift": {
                     "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
                     "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
                     "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
-                    "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" },
-                    "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
                     "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" },
                     "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
                 },
                 "info": "Divisi Teknik",
-                "photo": "photos/widhiono.jpg"
-                // Removed phone and whatsapp from data
+                "photo": "photos/widhiono.jpg",
+                "phone": "081590123456",
+                "whatsapp": "6281590123456"
             },
             "WIRA AHMAD GAZALI": {
                 "shift": {
@@ -733,8 +811,9 @@
                     "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
                 },
                 "info": "Divisi Produksi",
-                "photo": "photos/wira_ahmad_gazali.jpg"
-                // Removed phone and whatsapp from data
+                "photo": "photos/wira_ahmad_gazali.jpg",
+                "phone": "087711223344",
+                "whatsapp": "6287711223344"
             }
         };
 
@@ -791,6 +870,7 @@
             popupElement.classList.remove('active');
             if (popupElement === photoPopupOverlay) {
                 popupImage.src = ""; // Clear src to prevent flashing of old image
+                document.getElementById('popupContactLinks').innerHTML = ''; // Clear contact links
             }
         }
 
@@ -969,7 +1049,7 @@
         const popupImage = document.getElementById('popupImage');
         const popupName = document.getElementById('popupName');
         const popupInfo = document.getElementById('popupInfo');
-        // const popupContactLinks = document.getElementById('popupContactLinks'); // Removed for this version
+        const popupContactLinks = document.getElementById('popupContactLinks'); // New element
         const popupCloseBtn = document.getElementById('popupCloseBtn');
 
         function showPhotoPopup(nama) {
@@ -977,16 +1057,33 @@
             if (employeeData) {
                 const photoPath = employeeData.photo && (employeeData.photo.startsWith('photos/') || employeeData.photo.startsWith('http')) ? employeeData.photo : 'https://via.placeholder.com/150?text=No+Photo';
                 const infoText = employeeData.info || "Informasi tidak tersedia.";
+                const phoneNum = employeeData.phone || "";
+                const whatsappNum = employeeData.whatsapp || "";
 
                 popupImage.src = photoPath;
                 popupImage.alt = `Foto ${nama}`;
                 popupName.textContent = nama;
                 popupInfo.textContent = infoText;
 
-                // Removed contact links logic here
-                // if (popupContactLinks) popupContactLinks.innerHTML = ''; 
+                popupContactLinks.innerHTML = ''; // Clear previous links
 
-                photoPopupOverlay.classList.add('active');
+                if (phoneNum) {
+                    const phoneLink = document.createElement('a');
+                    phoneLink.href = `tel:${phoneNum}`;
+                    phoneLink.className = 'phone-link';
+                    // SVG for phone icon (Material Design 'call' icon)
+                    phoneLink.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.02.75-.24 1.02l-2.2 2.2z"/></svg>Telepon`;
+                    popupContactLinks.appendChild(phoneLink);
+                }
+                if (whatsappNum) {
+                    const whatsappLink = document.createElement('a');
+                    whatsappLink.href = `https://wa.me/${whatsappNum}`;
+                    whatsappLink.target = "_blank"; // Open in new tab
+                    whatsappLink.className = 'whatsapp-link';
+                    // SVG for WhatsApp icon
+                    whatsappLink.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M.99 24c-.54 0-.99-.45-.99-1s.45-1 1-1h.06c2.09-2.31 3.32-5.4 3.32-8.62C4.38 5.63 8.35 1.57 13.25 1.57c2.3 0 4.41.92 6.01 2.42 1.6 1.5 2.49 3.5 2.49 5.64 0 4.9-3.97 8.96-8.87 8.96h-1.57c-.12 0-.23.01-.35.02-.33 0-.64-.09-.92-.26l-3.05-1.92c-.17-.11-.3-.26-.39-.44-.1-.18-.14-.37-.14-.58v-2.07c0-.12.01-.23.02-.35.02-.09.05-.18.09-.26l1.24-2.45c.18-.36.08-.79-.24-1.07-.31-.28-.75-.3-.97-.04l-1.39 1.63c-.09.11-.14.24-.14.39v.6c0 .41-.09.8-.26 1.15l-1.37 2.7c-.24.47-.46.96-.65 1.45-.19.49-.36.98-.51 1.47l-.06.18c-.02.05-.04.1-.06.14-.01.03-.02.07-.03.1-.01.03-.01.07-.01.1zm12.26-11.85c-.92-.88-2.12-1.35-3.39-1.35-1.33 0-2.58.55-3.56 1.59-1.07 1.12-1.66 2.58-1.66 4.14 0 1.6.59 3.06 1.66 4.18 1.07 1.11 2.5 1.7 3.9 1.7.92 0 1.79-.23 2.56-.63l-.04-.04c.14-.07.26-.17.36-.3l-.03-.04c.09-.13.15-.27.18-.42.03-.15.04-.3.04-.45v-1.12c0-.12-.01-.23-.02-.35-.02-.09-.05-.18-.09-.26l-.42-.85c-.07-.13-.12-.27-.12-.42v-1.42c0-.12.01-.23.02-.35l.09-.26c.03-.09.06-.18.09-.26l.85-1.7c.18-.36.08-.79-.24-1.07-.31-.28-.75-.3-.97-.04l-1.39 1.63c-.09.11-.14.24-.14.39v.6c0 .41-.09.8-.26 1.15l-1.37 2.7c-.24.47-.46.96-.65 1.45-.19.49-.36.98-.51 1.47l-.06.18c-.02.05-.04.1-.06.14-.01.03-.02.07-.03.1-.01.03-.01.07-.01.1z"/></svg>WhatsApp`;
+                    popupContactLinks.appendChild(whatsappLink);
+                }
             }
         }
 
@@ -994,7 +1091,6 @@
             popupElement.classList.remove('active');
             if (popupElement === photoPopupOverlay) {
                 popupImage.src = ""; 
-                // if (popupContactLinks) popupContactLinks.innerHTML = ''; // Clear contact links
             }
         }
 
