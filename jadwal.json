@@ -11,10 +11,10 @@
                 "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
                 "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
             },
-            "info": "Divisi Admin",
+            "info": "Asisten Teknisi Siaran Pemula",
             "photo": "photos/alviana_damayanti.jpg",
-            "phone": "081234567890",
-            "whatsapp": "6281234567890"
+            "phone": "085251469944",
+            "whatsapp": "6285251469944"
         },
         "INA APRIANA": {
             "shift": {
@@ -26,10 +26,10 @@
                 "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
                 "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
             },
-            "info": "Divisi Keuangan",
+            "info": "Asisten Teknisi Siaran Pemula",
             "photo": "photos/ina_apriana.jpg",
-            "phone": "081311223344",
-            "whatsapp": "6281311223344"
+            "phone": "085158533957",
+            "whatsapp": "6285158533957"
         },
         "RAHMA ELVIRA ARIYANTI": {
             "shift": {
@@ -41,10 +41,10 @@
                 "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
                 "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
             },
-            "info": "Divisi HRD",
+            "info": "Asisten Teknisi Siaran Pemula",
             "photo": "photos/rahma_elvira_ariyanti.jpg",
-            "phone": "085712345678",
-            "whatsapp": "6285712345678"
+            "phone": "081352763910",
+            "whatsapp": "6281352763910"
         },
         "MUH. FADIL PERKASA": {
             "shift": {
@@ -56,10 +56,10 @@
                 "SABTU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
                 "MINGGU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
             },
-            "info": "Divisi IT Support",
+            "info": "Asisten Teknisi Siaran Pemula",
             "photo": "photos/muh_fadil_perkasa.jpg",
-            "phone": "089678901234",
-            "whatsapp": "6289678901234"
+            "phone": "081346839238",
+            "whatsapp": "6281346839238"
         },
         "M. ISWANSYAH NUR": {
             "shift": {
@@ -71,10 +71,10 @@
                 "SABTU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
                 "MINGGU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
             },
-            "info": "Divisi Umum",
+            "info": "Asisten Teknisi Siaran Pemula",
             "photo": "photos/m_iswansyah_nur.jpg",
-            "phone": "087856789012",
-            "whatsapp": "6287856789012"
+            "phone": "085173177156",
+            "whatsapp": "6285173177156"
         },
         "ABDAN SYAKURO": {
             "shift": {
@@ -86,10 +86,10 @@
                 "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
                 "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
             },
-            "info": "Divisi TI",
+            "info": "Asisten Teknisi Siaran Pemula",
             "photo": "photos/abdan_syakuro.jpg",
-            "phone": "081122334455",
-            "whatsapp": "6281122334455"
+            "phone": "085156868501",
+            "whatsapp": "6285156868501"
         },
         "ANDI FAIRUL AMRI": {
             "shift": {
@@ -101,10 +101,10 @@
                 "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
                 "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
             },
-            "info": "Divisi Operasional",
+            "info": "Asisten Teknisi Siaran Pemula",
             "photo": "photos/andi_fairul_amri.jpg",
-            "phone": "081876543210",
-            "whatsapp": "6281876543210"
+            "phone": "082253460919",
+            "whatsapp": "6282253460919"
         },
         "R. AULIA RAHMAN": {
             "shift": {
@@ -116,10 +116,10 @@
                 "SABTU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }, 
                 "MINGGU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" } 
             },
-            "info": "Divisi Desain",
+            "info": "Asisten Teknisi Siaran Pemula",
             "photo": "photos/r_aulia_rahman.jpg",
-            "phone": "082198765432",
-            "whatsapp": "6282198765432"
+            "phone": "082179913754",
+            "whatsapp": "6282179913754"
         },
         "RAMAZONA NABABAN": {
             "shift": {
@@ -131,10 +131,10 @@
                 "SABTU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
                 "MINGGU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" }
             },
-            "info": "Divisi Pemasaran",
+            "info": "Asisten Teknisi Siaran Pemula",
             "photo": "photos/ramazona_nababan.jpg",
-            "phone": "085210987654",
-            "whatsapp": "6285210987654"
+            "phone": "082168093628",
+            "whatsapp": "6282168093628"
         },
         "ARI ARDIANSYAH": {
             "shift": {
@@ -146,10 +146,10 @@
                 "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
                 "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" }
             },
-            "info": "Divisi Keamanan",
+            "info": "Asisten Teknisi Siaran Pemula",
             "photo": "photos/ari_ardiansyah.jpg",
-            "phone": "081945678901",
-            "whatsapp": "6281945678901"
+            "phone": "082251068345",
+            "whatsapp": "6282251068345"
         },
         "BAHRIN": {
             "shift": {
@@ -161,10 +161,10 @@
                 "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
                 "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" }
             },
-            "info": "Divisi Logistik",
+            "info": "Asisten Teknisi Siaran Pemula",
             "photo": "photos/bahrin.jpg",
-            "phone": "085323456789",
-            "whatsapp": "6285323456789"
+            "phone": "082253449895",
+            "whatsapp": "6282253449895"
         },
         "WIDHIONO": {
             "shift": {
@@ -176,10 +176,10 @@
                 "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
                 "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" }
             },
-            "info": "Divisi Teknik",
+            "info": "Asisten Teknisi Siaran Pemula",
             "photo": "photos/widhiono.jpg",
-            "phone": "081590123456",
-            "whatsapp": "6281590123456"
+            "phone": "082250851085",
+            "whatsapp": "6282250851085"
         },
         "WIRA AHMAD GAZALI": {
             "shift": {
@@ -193,8 +193,8 @@
             },
             "info": "Divisi Produksi",
             "photo": "photos/wira_ahmad_gazali.jpg",
-            "phone": "087711223344",
-            "whatsapp": "6287711223344"
+            "phone": "085248766203",
+            "whatsapp": "6285248766203"
         }
     }
 }
