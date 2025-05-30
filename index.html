@@ -56,7 +56,7 @@
             --popup-bg: #3a3a3a;
             --popup-text-color: #e0e0e0;
             --active-shift-bg: var(--primary-blue);
-            --active-shift-text: #2d2d2d; /* Dark text on light blue active */
+            --active-shift-text: #2d2d2d; 
             --active-shift-border: #3a7fa5;
 
             --progress-bar-track: #555;
@@ -73,7 +73,7 @@
             color: var(--text-color);
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start; /* Align content to the top */
             align-items: center;
             min-height: 100vh;
             transition: background-color 0.3s ease, color 0.3s ease;
@@ -92,10 +92,9 @@
             align-items: center;
         }
 
-        .container, .schedule-visualization-container {
+        .container, .schedule-visualization-container, .currently-on-duty-container { /* Added .currently-on-duty-container */
             background-color: var(--container-bg);
             padding: 30px;
-            border-radius: 12px;
             box-shadow: 0 4px 20px var(--shadow-color);
             width: 100%; 
             text-align: center;
@@ -103,6 +102,15 @@
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
             position: relative;
         }
+        /* Specific radius for the first container to merge with navbar */
+        .main-content-wrapper > .container:first-of-type {
+             border-radius: 0 0 12px 12px; /* Top corners flat, bottom rounded */
+        }
+         /* Standard radius for other containers */
+        .schedule-visualization-container, .currently-on-duty-container {
+            border-radius: 12px;
+        }
+
 
         /* --- Navigation Bar --- */
         .navbar {
@@ -111,12 +119,13 @@
             max-width: 650px; 
             border-radius: 12px 12px 0 0; 
             padding: 10px 0;
-            margin-bottom: -15px; 
-            z-index: 10; 
+            /* margin-bottom: -1px; /* Adjusted for cleaner join with flat top container */
+            /* z-index: 10;  */ /* Ensure navbar is above container's top border if not fully overlapped */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             display: flex;
             justify-content: center;
             gap: 15px;
+            position: relative; /* Needed for z-index to work as expected if margin-bottom is negative */
         }
         .navbar a {
             color: white;
@@ -135,13 +144,13 @@
         }
 
 
-        /* --- Header Section --- */
-        .header {
+        /* --- Header Section (inside the first .container) --- */
+        .container .header { /* Make sure this targets header inside .container */
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-bottom: 20px;
-            padding-top: 15px; 
+            padding-top: 15px; /* Initial space from top of container */
         }
 
         #tvriKaltaraLogo {
@@ -155,7 +164,7 @@
             content: url('photos/logo_tvri_kaltara_dark_mode.png');
         }
 
-        h1 {
+        h1 { /* General h1, can be more specific */
             color: var(--primary-blue);
             margin-bottom: 10px;
             font-size: 2.2em;
@@ -179,7 +188,7 @@
 
         .countdown-progress-container {
             width: 100%;
-            margin-top: -15px; 
+            /* margin-top: -15px;  Adjust if navbar overlap changes */
             margin-bottom: 25px;
             text-align: center;
         }
@@ -204,11 +213,61 @@
             font-weight: bold;
         }
 
-        .schedule-visualization-container {
-            margin-top: 20px;
-            padding: 25px;
+        /* --- Currently On Duty Section --- */
+        .currently-on-duty-container {
+            padding: 20px 30px; /* Slightly less padding than main schedule */
         }
-        .schedule-visualization-container h2 {
+        .currently-on-duty-container h2 {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            font-size: 1.6em; 
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 8px;
+        }
+        .currently-on-duty-container h2 .shift-name-display {
+            font-weight: normal;
+            font-size: 0.8em;
+            color: var(--text-color);
+        }
+        .on-duty-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
+            gap: 12px; /* Slightly increased gap */
+            margin-top: 15px;
+        }
+        .on-duty-card { 
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 15px 10px; /* Adjusted padding */
+            border-radius: 8px;
+            font-size: 0.95em; /* Slightly adjusted font size */
+            font-weight: 500;
+            color: var(--text-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.07);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            text-align: center;
+            display: flex; /* For vertical centering if needed */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 50px; /* Ensure cards have some height */
+        }
+        .on-duty-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+            background-color: var(--sub-heading-color);
+            color: white;
+        }
+        .no-one-on-duty {
+            font-style: italic;
+            color: var(--empty-msg-color);
+            padding: 10px;
+        }
+
+
+        /* --- Schedule Visualization (Full Day) --- */
+        .schedule-visualization-container h2 { /* Title like "Jadwal Jaga Hari Ini" */
             color: var(--primary-blue);
             margin-bottom: 25px;
             font-size: 2em;
@@ -273,8 +332,8 @@
             justify-content: center;
             align-items: stretch;
         }
-        .jaga-card {
-            background-color: var(--container-bg);
+        .jaga-card { /* Cards within the full day schedule */
+            background-color: var(--container-bg); /* Should be different from page bg if container is transparent */
             border: 1px solid var(--card-border);
             padding: 10px;
             border-radius: 8px;
@@ -296,7 +355,7 @@
             background-color: var(--primary-blue);
             color: white;
         }
-        .no-jaga {
+        .no-jaga { /* Message when no one is on shift in the full day view */
             font-style: italic;
             color: var(--empty-msg-color);
             text-align: center;
@@ -538,8 +597,7 @@
             <a href="search.html">Cari Jadwal Saya</a>
         </nav>
 
-        <div class="container">
-            <div class="header">
+        <div class="container"> <div class="header">
                 <img id="tvriKaltaraLogo" alt="Logo TVRI Kaltara" class="logo">
                 <h1>Jadwal Jaga Shift</h1>
                 <p class="dynamic-greeting" id="dynamicGreeting"></p>
@@ -553,8 +611,13 @@
             </div>
         </div>
 
-        <div class="schedule-visualization-container">
-            <h2 id="scheduleDateHeader">Memuat Jadwal...</h2>
+        <div class="currently-on-duty-container">
+            <h2>Saat Ini Bertugas <span class="shift-name-display" id="currentShiftNameDisplay"></span></h2>
+            <div class="on-duty-grid" id="onDutyGrid">
+                </div>
+        </div>
+
+        <div class="schedule-visualization-container"> <h2 id="scheduleDateHeader">Memuat Jadwal...</h2>
             <div class="shifts-timeline" id="shiftsTimeline">
             </div>
         </div>
@@ -581,19 +644,16 @@
     </div>
 
     <script>
-        // --- Global Variable for Schedule Data ---
         let fullScheduleData = null;
 
-        // --- Konfigurasi Jam Shift ---
         const shiftTimes = {
             "shift1": { start: 8, end: 16, display: "Shift 1" },
             "shift2": { start: 16, end: 24, display: "Shift 2" },
             "shift3": { start: 0, end: 8, display: "Shift 3" }
         };
         const allShiftKeys = ["shift1", "shift2", "shift3"];
-        const allDays = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"]; // MINGGU is 0
+        const allDays = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
 
-        // --- Kontak Bantuan Darurat ---
         const emergencyContacts = [
             { role: "Manajer Operasional", name: "Budi Santoso", phone: "0812-3456-7890" },
             { role: "PIC IT", name: "Citra Dewi", phone: "0876-5432-1098" },
@@ -602,35 +662,34 @@
 
         let lastActiveShiftKey = null;
 
-        // --- Fetch Schedule Data ---
         async function fetchScheduleData() {
             try {
-                const response = await fetch('jadwal.json'); // Path to your JSON file
+                const response = await fetch('jadwal.json'); 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
-                fullScheduleData = data.karyawan; // Store only the employee data globally
-                // console.log("Schedule data loaded:", fullScheduleData);
+                fullScheduleData = data.karyawan; 
                 return fullScheduleData;
             } catch (error) {
                 console.error("Could not fetch schedule data:", error);
                 document.getElementById('scheduleDateHeader').textContent = "Gagal memuat jadwal.";
+                const onDutyGrid = document.getElementById('onDutyGrid');
+                if (onDutyGrid) onDutyGrid.innerHTML = `<p class="no-one-on-duty">Gagal memuat data petugas.</p>`;
                 return null;
             }
         }
 
-        // --- Helper Functions ---
-        function getNamaHari(date) { // date should be a Date object
+        function getNamaHari(date) { 
             return allDays[date.getDay()];
         }
 
         function getCurrentShiftInfo(hour) {
             if (hour >= shiftTimes.shift1.start && hour < shiftTimes.shift1.end) {
                 return { key: "shift1", name: shiftTimes.shift1.display, index: 0 };
-            } else if (hour >= shiftTimes.shift2.start && hour < shiftTimes.shift2.end) { // Shift 2 ends at 24:00 (midnight)
+            } else if (hour >= shiftTimes.shift2.start && hour < shiftTimes.shift2.end) { 
                 return { key: "shift2", name: shiftTimes.shift2.display, index: 1 };
-            } else { // Shift 3 is from 00:00 to 08:00
+            } else { 
                 return { key: "shift3", name: shiftTimes.shift3.display, index: 2 };
             }
         }
@@ -650,12 +709,10 @@
             return jagaNames;
         }
         
-        // --- UI Update Functions ---
         function updateDateTimeDisplay() {
             const now = new Date();
             const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Makassar' };
             const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'Asia/Makassar' };
-
             const currentDate = new Intl.DateTimeFormat('id-ID', optionsDate).format(now);
             const currentTime = new Intl.DateTimeFormat('id-ID', optionsTime).format(now);
             document.getElementById('currentDateTime').innerHTML = `${currentDate}<br>${currentTime} WITA`;
@@ -665,7 +722,6 @@
             const now = new Date();
             const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
             let greeting = "";
-
             if (hourWITA >= 5 && hourWITA < 12) greeting = "Selamat Pagi, Tim TVRI!";
             else if (hourWITA >= 12 && hourWITA < 15) greeting = "Selamat Siang, Tim TVRI!";
             else if (hourWITA >= 15 && hourWITA < 18) greeting = "Selamat Sore, Tim TVRI!";
@@ -682,40 +738,22 @@
             const currentShiftInfo = getCurrentShiftInfo(hourWITA);
             const currentShiftConfig = shiftTimes[currentShiftInfo.key];
 
-            let shiftStartSeconds = currentShiftConfig.start * 3600;
-            let shiftEndSeconds = currentShiftConfig.end * 3600;
-            if (currentShiftConfig.end === 0 || currentShiftConfig.end === 24) shiftEndSeconds = 24 * 3600; // Midnight case
-            if (currentShiftConfig.start > currentShiftConfig.end && currentShiftConfig.end === 8) { // Shift 3 (00:00 to 08:00)
-                 shiftEndSeconds = currentShiftConfig.end * 3600; // End is 8:00
-                 // Shift start is effectively 0 for duration calculation within its 24h cycle part
-            }
-
-
             let totalShiftDurationSeconds;
-            if (currentShiftConfig.start < currentShiftConfig.end) {
-                totalShiftDurationSeconds = (currentShiftConfig.end - currentShiftConfig.start) * 3600;
-            } else { // Overnight shift (like 00:00-08:00, or if there was 22:00-06:00)
-                totalShiftDurationSeconds = ((24 - currentShiftConfig.start) + currentShiftConfig.end) * 3600;
-            }
-            if (currentShiftInfo.key === "shift3") { // specifically for 00:00 to 08:00
-                totalShiftDurationSeconds = 8 * 3600;
-            }
-
-
-            let elapsedShiftDurationSeconds;
-            const currentTimeInSeconds = hourWITA * 3600 + minuteWITA * 60 + secondWITA;
-
-            if (currentShiftConfig.start < currentShiftConfig.end || currentShiftInfo.key === "shift3") { // Regular day shift or shift 3 (0-8)
-                elapsedShiftDurationSeconds = currentTimeInSeconds - (currentShiftConfig.start * 3600);
-            } else { // Shift crossing midnight, e.g. Shift 2 (16-24/0)
-                elapsedShiftDurationSeconds = currentTimeInSeconds - (currentShiftConfig.start * 3600);
-                //This will be correct as long as currentTimeInSeconds is within 16-24 range
-            }
-             if (currentShiftInfo.key === "shift2" && hourWITA < currentShiftConfig.start) { // Midnight case for Shift 2 if it's just past 00:00
-                elapsedShiftDurationSeconds = ( (24*3600 - currentShiftConfig.start * 3600) + currentTimeInSeconds );
+            if (currentShiftInfo.key === "shift3") { 
+                totalShiftDurationSeconds = 8 * 3600; // 00:00 to 08:00
+            } else if (currentShiftInfo.key === "shift2"){
+                totalShiftDurationSeconds = (24 - currentShiftConfig.start) * 3600; // 16:00 to 24:00
+            } else { // shift1
+                 totalShiftDurationSeconds = (currentShiftConfig.end - currentShiftConfig.start) * 3600;
             }
 
+            const currentTimeInSecondsToday = hourWITA * 3600 + minuteWITA * 60 + secondWITA;
+            let elapsedShiftDurationSeconds = currentTimeInSecondsToday - (currentShiftConfig.start * 3600);
 
+            if (currentShiftInfo.key === "shift3" && currentShiftConfig.start === 0) { // For shift 00:00-08:00
+                 elapsedShiftDurationSeconds = currentTimeInSecondsToday;
+            }
+            
             let progressPercentage = (elapsedShiftDurationSeconds / totalShiftDurationSeconds) * 100;
             progressPercentage = Math.max(0, Math.min(100, progressPercentage)); 
 
@@ -740,7 +778,7 @@
             const seconds = totalSecondsRemaining % 60;
 
             let countdownText;
-            if (progressPercentage < 1 && elapsedShiftDurationSeconds < 60 && elapsedShiftDurationSeconds >=0) { 
+            if (progressPercentage < 1 && elapsedShiftDurationSeconds >=0 && elapsedShiftDurationSeconds < 60 ) { 
                  countdownText = `Shift ${shiftTimes[currentShiftInfo.key].display} Baru Saja Dimulai!`;
             } else {
                  countdownText = `Shift ${shiftTimes[nextShiftKey].display} dimulai dalam ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
@@ -748,17 +786,45 @@
             document.getElementById('countdownProgressText').textContent = countdownText;
         }
 
-        function displayFullDayScheduleVisualization() {
-            if (!fullScheduleData) {
-                // console.log("Schedule data not yet loaded for displayFullDayScheduleVisualization.");
+        function displayCurrentlyOnDuty(currentShiftInfoToDisplay) {
+            if (!fullScheduleData || !currentShiftInfoToDisplay) {
+                // console.log("Data or current shift info not available for 'Currently On Duty'.");
                 return;
             }
-            const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
-            const hourWITA = now.getHours();
-            const currentShiftInfo = getCurrentShiftInfo(hourWITA);
+            const onDutyGrid = document.getElementById('onDutyGrid');
+            const currentShiftNameDisplay = document.getElementById('currentShiftNameDisplay');
+            onDutyGrid.innerHTML = ''; // Clear previous
+
+            currentShiftNameDisplay.textContent = `(${currentShiftInfoToDisplay.name})`;
+
+            const nowForDay = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
+            const namaHariJadwal = getNamaHari(nowForDay);
             
-            const namaHariJadwal = getNamaHari(now); 
-            const formattedDateForHeader = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Makassar' }).format(now);
+            const jagaNames = getJagaList(namaHariJadwal, currentShiftInfoToDisplay.key, fullScheduleData);
+
+            if (jagaNames.length > 0) {
+                jagaNames.forEach(nama => {
+                    const card = document.createElement('div');
+                    card.className = 'on-duty-card';
+                    card.textContent = nama;
+                    card.addEventListener('click', () => {
+                        showPhotoPopup(nama, fullScheduleData);
+                    });
+                    onDutyGrid.appendChild(card);
+                });
+            } else {
+                onDutyGrid.innerHTML = `<p class="no-one-on-duty">Tidak ada yang bertugas pada shift ini.</p>`;
+            }
+        }
+
+        function displayFullDayScheduleVisualization(currentShiftInfoToDisplay) {
+            if (!fullScheduleData || !currentShiftInfoToDisplay) {
+                // console.log("Data or current shift info not available for 'Full Day Schedule'.");
+                return;
+            }
+            const nowForDay = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
+            const namaHariJadwal = getNamaHari(nowForDay); 
+            const formattedDateForHeader = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Makassar' }).format(nowForDay);
             document.getElementById('scheduleDateHeader').textContent = `Jadwal Jaga ${formattedDateForHeader}`;
             
             const shiftsTimelineDiv = document.getElementById('shiftsTimeline');
@@ -772,7 +838,7 @@
                 const shiftBlock = document.createElement('div');
                 shiftBlock.className = 'shift-display-block';
                 
-                if (shiftKey === currentShiftInfo.key) { 
+                if (shiftKey === currentShiftInfoToDisplay.key) { 
                     shiftBlock.classList.add('active-shift');
                 }
 
@@ -903,10 +969,20 @@
         });
 
         async function initializeApp() {
-            await fetchScheduleData(); // Load data first
-            updateDateTimeDisplay();
-            displayDynamicGreeting();
-            displayFullDayScheduleVisualization(); 
+            await fetchScheduleData(); 
+            updateDateTimeDisplay(); 
+            displayDynamicGreeting(); 
+            
+            const initialNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
+            const initialHourWITA = initialNow.getHours();
+            const initialCurrentShiftInfo = getCurrentShiftInfo(initialHourWITA);
+            lastActiveShiftKey = initialCurrentShiftInfo.key;
+
+            if(fullScheduleData){ // Ensure data is loaded before trying to display
+                displayCurrentlyOnDuty(initialCurrentShiftInfo); 
+                displayFullDayScheduleVisualization(initialCurrentShiftInfo); 
+            }
+            
             updateCountdownProgressBar(); 
 
             setInterval(() => {
@@ -916,13 +992,20 @@
 
             setInterval(() => {
                 displayDynamicGreeting();
-                if(fullScheduleData){ // Only update visuals if data is loaded
+                if(fullScheduleData){
                     const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
                     const hourWITA = now.getHours();
                     const currentShiftInfo = getCurrentShiftInfo(hourWITA);
                     if (lastActiveShiftKey !== currentShiftInfo.key) {
-                        displayFullDayScheduleVisualization();
+                        displayCurrentlyOnDuty(currentShiftInfo);
+                        displayFullDayScheduleVisualization(currentShiftInfo);
                         lastActiveShiftKey = currentShiftInfo.key;
+                    } else { // If shift hasn't changed, still update currently on duty in case day changed
+                        const currentDayNama = getNamaHari(now);
+                        const lastDisplayedDayNama = getNamaHari(new Date(initialNow.setDate(initialNow.getDate()))); // crude check, better to store last displayed day
+                        // A more robust check for day change might be needed if app runs over midnight without shift change
+                        // For simplicity, just refresh currently on duty if key is same but might be new day
+                         displayCurrentlyOnDuty(currentShiftInfo);
                     }
                 }
             }, 60 * 1000); 
