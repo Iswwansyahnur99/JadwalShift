@@ -32,6 +32,10 @@
             --active-shift-text: white;
             --active-shift-border: #003a66;
 
+            /* Search bar colors */
+            --search-border: #c9d6e4;
+            --search-focus-border: var(--primary-blue);
+
             /* Shift Status Colors (for personal schedule) */
             --status-jaga-color: #28a745; /* Green */
             --status-libur-color: #dc3545; /* Red */
@@ -91,13 +95,10 @@
             background-size: cover;
             background-attachment: fixed; /* Parallax-like effect */
             background-position: center center;
-            cursor: url('assets/cursors/remote-tv-cursor.png'), auto; /* Feature 48: Custom Cursor (PNG) */
-            /* Fallback to .cur if .png doesn't work well on some OS/browsers */
-            /* For .cur files: cursor: url('assets/cursors/remote-tv-cursor.cur'), auto; */
         }
 
         /* --- Main Containers --- */
-        .container, .schedule-visualization-container {
+        .container, .schedule-visualization-container, .search-container, .personal-schedule-result-container {
             background-color: var(--container-bg);
             padding: 30px;
             border-radius: 12px;
@@ -174,6 +175,86 @@
             font-weight: bold;
         }
 
+        /* --- Search Bar Styles --- */
+        .search-container {
+            padding: 20px 30px;
+            margin-top: 0;
+            margin-bottom: 30px;
+        }
+        .search-container input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            border: 1px solid var(--search-border);
+            border-radius: 8px;
+            font-size: 1em;
+            color: var(--text-color);
+            background-color: var(--container-bg);
+            transition: border-color 0.3s ease;
+        }
+        .search-container input[type="text"]:focus {
+            outline: none;
+            border-color: var(--search-focus-border);
+            box-shadow: 0 0 0 3px rgba(0, 80, 140, 0.2);
+        }
+        .search-message {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: var(--empty-msg-color);
+            display: none; /* Hidden by default */
+        }
+
+        /* --- Personal Schedule Result Styles --- */
+        .personal-schedule-result-container {
+            display: none; /* Hidden by default */
+            margin-top: 20px;
+            padding: 25px;
+        }
+        .personal-schedule-result-container h2 {
+            color: var(--primary-blue);
+            margin-bottom: 25px;
+            font-size: 2em;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 10px;
+        }
+        .personal-schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Larger cards for daily view */
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .daily-schedule-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        .daily-schedule-card h3 {
+            color: var(--sub-heading-color);
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            border-bottom: 1px dashed var(--border-light);
+            padding-bottom: 5px;
+        }
+        .daily-schedule-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9em;
+        }
+        .daily-schedule-card li {
+            padding: 3px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .daily-schedule-card .status-jaga { color: var(--status-jaga-color); font-weight: bold; }
+        .daily-schedule-card .status-tidak-jaga { color: var(--status-tidak-jaga-color); font-weight: bold; }
+        .daily-schedule-card .status-libur { color: var(--status-libur-color); font-weight: bold; }
+
         /* --- Schedule Visualization --- */
         .schedule-visualization-container {
             margin-top: 20px;
@@ -202,14 +283,14 @@
             transition: all 0.3s ease;
         }
         .shift-display-block.active-shift {
-            background-color: var(--active-shift-bg);
-            color: var(--active-shift-text);
+            background-color: var(--primary-blue);
+            color: white;
             border-color: var(--active-shift-border);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             transform: translateY(-3px);
         }
         .active-shift h3, .active-shift .jaga-grid .jaga-card, .active-shift .no-jaga {
-            color: var(--active-shift-text) !important;
+            color: white !important; /* Ensure all text inside active block is white */
         }
         .active-shift .jaga-grid .jaga-card {
             background-color: rgba(255,255,255,0.2) !important;
@@ -222,7 +303,7 @@
         }
 
         .shift-display-block h3 {
-            color: var(--sub-heading-color);
+            color: var(--sub-heading-color); /* Default color, overridden by active-shift */
             margin-top: 0;
             margin-bottom: 10px;
             font-size: 1.4em;
@@ -489,6 +570,18 @@
         </div>
     </div>
 
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Cari jadwal pribadi..." aria-label="Cari jadwal pribadi">
+        <p id="searchMessage" class="search-message">Nama tidak ditemukan.</p>
+    </div>
+
+    <div class="personal-schedule-result-container" id="personalScheduleResultContainer">
+        <h2 id="personalScheduleNameHeader">Jadwal Pribadi:</h2>
+        <div class="personal-schedule-grid" id="personalScheduleGrid">
+            </div>
+        <p style="font-size: 0.9em; color: var(--empty-msg-color); margin-top: 15px;">Data ini diambil dari jadwal minggu ini.</p>
+    </div>
+
     <div class="schedule-visualization-container">
         <h2 id="scheduleDateHeader">Jadwal Jaga Hari Ini</h2>
         <div class="shifts-timeline" id="shiftsTimeline">
@@ -516,7 +609,7 @@
     </div>
 
     <script>
-        // --- DATA JADWAL (HANYA MINGGU 1 SEPERTI AWAL) ---
+        // --- DATA JADWAL (HANYA MINGGU 1) ---
         // Ini adalah data jadwal untuk satu minggu.
         // Jika Anda perlu memperbarui untuk minggu berikutnya, Anda harus MENGEDIT DATA INI SECARA MANUAL.
         const jadwalMinggu1Juni2025 = {
@@ -708,8 +801,8 @@
         ];
 
         // --- Global Variables (Minimum) ---
-        // currentScheduleData now holds the single week's data.
-        // It's not a global state that changes.
+        // currentScheduleData directly references jadwalMinggu1Juni2025
+        const currentScheduleData = jadwalMinggu1Juni2025; 
         let lastActiveShiftKey = null; // Used to prevent redundant DOM updates
 
         // --- Helper Functions ---
@@ -840,7 +933,6 @@
             const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
             const currentShiftInfo = getCurrentShiftInfo(hourWITA);
 
-            // Use the single week's data directly
             const scheduleToDisplay = jadwalMinggu1Juni2025;
 
             let displayDateForSchedule = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
@@ -851,10 +943,6 @@
             const formattedDateForHeader = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(displayDateForSchedule);
             document.getElementById('scheduleDateHeader').textContent = `Jadwal Jaga ${formattedDateForHeader}`;
             
-            // Hide week navigation (if it ever existed and wasn't removed from HTML)
-            const weekNav = document.querySelector('.week-navigation');
-            if (weekNav) weekNav.style.display = 'none';
-
             const shiftsTimelineDiv = document.getElementById('shiftsTimeline');
             shiftsTimelineDiv.innerHTML = '';
 
@@ -865,7 +953,7 @@
 
                 const shiftBlock = document.createElement('div');
                 shiftBlock.className = 'shift-display-block';
-                if (shiftKey === currentShiftInfo.key) { // Highlight active shift for today
+                if (shiftKey === currentShiftInfo.key) { 
                     shiftBlock.classList.add('active-shift');
                 }
 
@@ -950,7 +1038,7 @@
         function hidePopup(popupElement) {
             popupElement.classList.remove('active');
             if (popupElement === photoPopupOverlay) {
-                popupImage.src = "";
+                popupImage.src = ""; // Clear src to prevent flashing of old image
             }
         }
 
@@ -985,6 +1073,102 @@
             }
         });
 
+        // --- Feature: Lihat Jadwal Sendiri (Pencarian Personal) ---
+        const searchInput = document.getElementById('searchInput');
+        const searchMessage = document.getElementById('searchMessage');
+        const personalScheduleResultContainer = document.getElementById('personalScheduleResultContainer');
+        const personalScheduleNameHeader = document.getElementById('personalScheduleNameHeader');
+        const personalScheduleGrid = document.getElementById('personalScheduleGrid');
+        let searchTimeout;
+
+        function searchPersonalSchedule() {
+            const searchTerm = searchInput.value.trim();
+
+            // Hide personal schedule and message if search term is empty
+            if (searchTerm.length === 0) {
+                personalScheduleResultContainer.style.display = 'none';
+                searchMessage.style.display = 'none';
+                return;
+            }
+
+            personalScheduleGrid.innerHTML = ''; // Clear previous results
+            searchMessage.style.display = 'none'; // Hide message initially
+
+            let foundEmployee = null;
+            // Search only within jadwalMinggu1Juni2025
+            for (const nama in jadwalMinggu1Juni2025) {
+                if (nama.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    foundEmployee = nama;
+                    break;
+                }
+            }
+
+            if (foundEmployee) {
+                const employeeData = jadwalMinggu1Juni2025[foundEmployee];
+                personalScheduleNameHeader.textContent = `Jadwal Pribadi: ${foundEmployee}`;
+                personalScheduleResultContainer.style.display = 'block';
+
+                allDays.forEach(day => {
+                    const dailyCard = document.createElement('div');
+                    dailyCard.className = 'daily-schedule-card';
+
+                    const dayHeader = document.createElement('h3');
+                    dayHeader.textContent = day;
+                    dailyCard.appendChild(dayHeader);
+
+                    const ul = document.createElement('ul');
+                    const scheduleForDay = employeeData.shift[day];
+
+                    if (typeof scheduleForDay === 'string' && scheduleForDay === "libur") {
+                        const li = document.createElement('li');
+                        li.textContent = `Seluruh Hari: Libur`;
+                        li.classList.add('status-libur');
+                        ul.appendChild(li);
+                    } else if (typeof scheduleForDay === 'object' && scheduleForDay !== null) {
+                        allShiftKeys.forEach(shiftKey => {
+                            const li = document.createElement('li');
+                            const status = scheduleForDay[shiftKey];
+                            const displayStatus = status === "jaga" ? "Jaga" : (status === "tidak_jaga" ? "Tidak Jaga" : "Tidak Diketahui");
+                            const statusClass = status === "jaga" ? "status-jaga" : (status === "tidak_jaga" ? "status-tidak-jaga" : "status-libur");
+                            li.innerHTML = `<span>${shiftTimes[shiftKey].display}:</span> <span class="${statusClass}">${displayStatus}</span>`;
+                            ul.appendChild(li);
+                        });
+                    } else {
+                        const li = document.createElement('li');
+                        li.textContent = "Jadwal tidak tersedia.";
+                        li.classList.add('status-tidak-jaga');
+                        ul.appendChild(li);
+                    }
+                    dailyCard.appendChild(ul);
+                    personalScheduleGrid.appendChild(dailyCard);
+                });
+            } else {
+                searchMessage.textContent = `"${searchInput.value.trim()}" tidak ditemukan.`;
+                searchMessage.style.display = 'block';
+                personalScheduleResultContainer.style.display = 'none'; // Hide personal schedule if not found
+            }
+        }
+
+        searchInput.addEventListener('input', (event) => {
+            clearTimeout(searchTimeout);
+            const searchTerm = event.target.value.trim();
+            // If input is cleared, hide results and message immediately
+            if (searchTerm.length === 0) {
+                personalScheduleResultContainer.style.display = 'none';
+                searchMessage.style.display = 'none';
+                return;
+            }
+            // Debounce search
+            searchTimeout = setTimeout(() => {
+                searchPersonalSchedule();
+            }, 300);
+        });
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                searchPersonalSchedule();
+            }
+        });
+
 
         // --- Initial & Interval Updates ---
         // Update time and countdown every second
@@ -1005,6 +1189,10 @@
         setInterval(() => {
             displayDynamicGreeting();
             displayFullDayScheduleVisualization();
+            // If personal schedule is open, re-render it too in case data changes (unlikely for static)
+            if (personalScheduleResultContainer.style.display !== 'none' && searchInput.value.trim().length > 0) {
+                searchPersonalSchedule(); // Re-run search logic
+            }
         }, 60 * 1000); // Every minute
     </script>
 </body>
