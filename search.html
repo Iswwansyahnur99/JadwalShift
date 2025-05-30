@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cari Jadwal Pribadi TVRI</title>
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/TVRI_2020.svg/1200px-TVRI_2020.svg.png" type="image/png">
+    <style>
+        /* --- CSS Variables for Theming (Light and Dark Mode) --- */
+        :root {
+            /* Light Mode Colors - Inspired by TVRI Blue (#00508C) & Red (#DC2F2F) */
+            --bg-color: #e6f0f5; /* Very light blue-grey background */
+            --container-bg: #ffffff;
+            --text-color: #333;
+            --primary-blue: #00508C; /* Dominant TVRI Blue */
+            --secondary-red: #DC2F2F; /* TVRI Red for accents */
+            --card-bg: #f5fafd; /* Lighter blue for cards */
+            --card-border: #d0e0e9;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --border-light: #e0eaf2;
+            --sub-heading-color: #003a66;
+            --empty-msg-bg: #f9f9f9;
+            --empty-msg-color: #777;
+
+            /* Pop-up specific colors */
+            --popup-overlay-bg: rgba(0, 0, 0, 0.7);
+            --popup-bg: #ffffff;
+            --popup-text-color: #333;
+
+            /* Search bar colors */
+            --search-border: #c9d6e4;
+            --search-focus-border: var(--primary-blue);
+
+            /* Shift Status Colors (for personal schedule) */
+            --status-jaga-color: #28a745; /* Green */
+            --status-libur-color: #dc3545; /* Red */
+            --status-tidak-jaga-color: #ffc107; /* Orange */
+        }
+
+        /* --- Dark Mode Colors --- */
+        body.dark-mode {
+            --bg-color: #212121;
+            --container-bg: #2d2d2d;
+            --text-color: #e0e0e0;
+            --primary-blue: #4FA8D8; /* Lighter blue for dark mode */
+            --secondary-red: #F15E6E; /* Lighter red for dark mode */
+            --card-bg: #3c3c3c;
+            --card-border: #555555;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --border-light: #3a3a3a;
+            --sub-heading-color: #a0d8f0;
+            --empty-msg-bg: #3a3a3a;
+            --empty-msg-color: #a0a0a0;
+            --popup-overlay-bg: rgba(0, 0, 0, 0.9);
+            --popup-bg: #3a3a3a;
+            --popup-text-color: #e0e0e0;
+
+            --search-border: #555;
+            --search-focus-border: var(--primary-blue);
+
+            --status-jaga-color: #4caf50;
+            --status-libur-color: #f44336;
+            --status-tidak-jaga-color: #ff9800;
+        }
+
+        /* --- Global Styles --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            /* Placeholder background image - you can remove or replace this */
+            background-image: url('https://source.unsplash.com/random/1600x900/?broadcasting,studio,controlroom');
+            background-size: cover;
+            background-attachment: fixed; /* Parallax-like effect */
+            background-position: center center;
+        }
+
+        /* --- Main Containers --- */
+        .main-content-wrapper {
+            max-width: 650px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container { /* Renamed from .container to apply only to outer wrapper */
+            background-color: var(--container-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            width: 100%;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        /* --- Navigation Bar --- */
+        .navbar {
+            background-color: var(--primary-blue);
+            width: 100%;
+            max-width: 650px; /* Match container width */
+            border-radius: 12px 12px 0 0; /* Rounded top, flat bottom */
+            padding: 10px 0;
+            margin-bottom: -15px; /* Overlap with container below */
+            z-index: 10; /* Ensure it's above container's shadow */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            background-color: var(--sub-heading-color);
+        }
+        .navbar a.active-nav {
+            background-color: var(--sub-heading-color);
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Header Section --- */
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-top: 15px; /* Space from navbar */
+        }
+
+        .logo {
+            width: 80px; /* Adjust size as needed */
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+            font-size: 2.2em;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Search Bar Styles --- */
+        .search-container {
+            padding: 20px 30px;
+            margin-top: 0;
+            margin-bottom: 30px;
+        }
+        .search-container input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            border: 1px solid var(--search-border);
+            border-radius: 8px;
+            font-size: 1em;
+            color: var(--text-color);
+            background-color: var(--container-bg);
+            transition: border-color 0.3s ease;
+        }
+        .search-container input[type="text"]:focus {
+            outline: none;
+            border-color: var(--search-focus-border);
+            box-shadow: 0 0 0 3px rgba(0, 80, 140, 0.2);
+        }
+        .search-message {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: var(--empty-msg-color);
+            display: none; /* Hidden by default */
+        }
+
+        /* --- Personal Schedule Result Styles --- */
+        .personal-schedule-result-container {
+            /* No display: none here, as this is its main content */
+            margin-top: 20px;
+            padding: 25px;
+        }
+        .personal-schedule-result-container h2 {
+            color: var(--primary-blue);
+            margin-bottom: 25px;
+            font-size: 2em;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 10px;
+        }
+        .personal-schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Larger cards for daily view */
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .daily-schedule-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        .daily-schedule-card h3 {
+            color: var(--sub-heading-color);
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            border-bottom: 1px dashed var(--border-light);
+            padding-bottom: 5px;
+        }
+        .daily-schedule-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9em;
+        }
+        .daily-schedule-card li {
+            padding: 3px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .daily-schedule-card .status-jaga { color: var(--status-jaga-color); font-weight: bold; }
+        .daily-schedule-card .status-tidak-jaga { color: var(--status-tidak-jaga-color); font-weight: bold; }
+        .daily-schedule-card .status-libur { color: var(--status-libur-color); font-weight: bold; }
+
+        /* --- Dark Mode Toggle --- */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 650px;
+            padding: 0 10px;
+        }
+        .theme-switch {
+            display: inline-block;
+            height: 34px;
+            position: relative;
+            width: 60px;
+        }
+        .theme-switch input {
+            display: none;
+        }
+        .slider {
+            background-color: #ccc;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            background-color: #fff;
+            bottom: 4px;
+            content: "";
+            height: 26px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 26px;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--primary-blue);
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .slider.round {
+            border-radius: 34px;
+        }
+        .slider.round:before {
+            border-radius: 50%;
+        }
+        .theme-switch-wrapper span {
+            margin-right: 10px;
+            font-size: 0.9em;
+            color: var(--text-color);
+        }
+
+        /* --- Pop-up Base Styles --- */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--popup-overlay-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .popup-content {
+            background-color: var(--popup-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            color: var(--popup-text-color);
+        }
+        .popup-overlay.active .popup-content {
+            transform: scale(1);
+        }
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--text-color);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            line-height: 1;
+            transition: color 0.2s ease;
+        }
+        .popup-close:hover {
+            color: var(--secondary-red);
+        }
+        .popup-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid var(--primary-blue);
+        }
+        .popup-name {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+        .popup-info {
+            font-size: 1.1em;
+            color: var(--popup-text-color);
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <div class="theme-switch-wrapper">
+        <span>Dark Mode</span>
+        <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider round"></div>
+        </label>
+    </div>
+
+    <div class="main-content-wrapper">
+        <nav class="navbar">
+            <a href="index.html" class="active-nav">Jadwal Harian</a>
+            <a href="search.html">Cari Jadwal Saya</a>
+        </nav>
+
+        <div class="container">
+            <div class="header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/TVRI_2020.svg/1200px-TVRI_2020.svg.png" alt="Logo TVRI" class="logo">
+                <h1>Jadwal Jaga Shift</h1>
+                </div>
+            </div>
+
+        <div class="container search-container"> <h2>Cari Jadwal Pribadi</h2>
+            <input type="text" id="searchInput" placeholder="Ketik nama Anda di sini..." aria-label="Ketik nama untuk mencari jadwal pribadi">
+            <p id="searchMessage" class="search-message">Nama tidak ditemukan.</p>
+        </div>
+
+        <div class="container personal-schedule-result-container" id="personalScheduleResultContainer">
+            <h2 id="personalScheduleNameHeader">Jadwal Pribadi:</h2>
+            <div class="personal-schedule-grid" id="personalScheduleGrid">
+                </div>
+            <p style="font-size: 0.9em; color: var(--empty-msg-color); margin-top: 15px;">Data ini diambil dari jadwal minggu ini.</p>
+        </div>
+    </div> <div class="popup-overlay" id="photoPopupOverlay">
+        <div class="popup-content">
+            <button class="popup-close" id="popupCloseBtn">&times;</button>
+            <img src="" alt="Foto Karyawan" class="popup-image" id="popupImage">
+            <p class="popup-name" id="popupName"></p>
+            <p class="popup-info" id="popupInfo"></p>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA JADWAL (HANYA MINGGU 1) ---
+        // Ini adalah data jadwal untuk satu minggu.
+        // Jika Anda perlu memperbarui untuk minggu berikutnya, Anda harus MENGEDIT DATA INI SECARA MANUAL.
+        const jadwalMinggu1Juni2025 = {
+            "ALVIANA DAMAYANTI": {
+                "shift": {
+                    "SENIN": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
+                    "SELASA": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
+                    "RABU": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi Admin",
+                "photo": "photos/alviana_damayanti.jpg" /* Pastikan path foto benar! */
+            },
+            "INA APRIANA": {
+                "shift": {
+                    "SENIN": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi Keuangan",
+                "photo": "photos/ina_apriana.jpg"
+            },
+            "RAHMA ELVIRA ARIYANTI": {
+                "shift": {
+                    "SENIN": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi HRD",
+                "photo": "photos/rahma_elvira_ariyanti.jpg"
+            },
+            "MUH. FADIL PERKASA": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi IT Support",
+                "photo": "photos/muh_fadil_perkasa.jpg"
+            },
+            "M. ISWANSYAH NUR": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi Umum",
+                "photo": "photos/m_iswansyah_nur.jpg"
+            },
+            "ABDAN SYAKURO": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi TI",
+                "photo": "photos/abdan_syakuro.jpg"
+            },
+            "ANDI FAIRUL AMRI": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi Operasional",
+                "photo": "photos/andi_fairul_amri.jpg"
+            },
+            "R. AULIA RAHMAN": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi Desain",
+                "photo": "photos/r_aulia_rahman.jpg"
+            },
+            "RAMAZONA NABABAN": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "jaga", "shift3": "tidak_juga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "juga", "shift3": "tidak_juga" }
+                },
+                "info": "Divisi Pemasaran",
+                "photo": "photos/ramazona_nababan.jpg"
+            },
+            "ARI ARDIANSYAH": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
+                },
+                "info": "Divisi Keamanan",
+                "photo": "photos/ari_ardiansyah.jpg"
+            },
+            "BAHRIN": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
+                },
+                "info": "Divisi Logistik",
+                "photo": "photos/bahrin.jpg"
+            },
+            "WIDHIONO": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
+                },
+                "info": "Divisi Teknik",
+                "photo": "photos/widhiono.jpg"
+            },
+            "WIRA AHMAD GAZALI": {
+                "shift": {
+                    "SENIN": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "KAMIS": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "JUMAT": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "jaga" },
+                    "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" },
+                    "MINGGU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "juga" }
+                },
+                "info": "Divisi Produksi",
+                "photo": "photos/wira_ahmad_gazali.jpg"
+            }
+        };
+
+        // --- Konfigurasi Jam Shift ---
+        const shiftTimes = {
+            "shift1": { start: 8, end: 16, display: "Shift 1" },
+            "shift2": { start: 16, end: 24, display: "Shift 2" },
+            "shift3": { start: 0, end: 8, display: "Shift 3" }
+        };
+        const allShiftKeys = ["shift1", "shift2", "shift3"];
+        const allDays = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU"];
+
+        // --- Kontak Bantuan Darurat ---
+        const emergencyContacts = [
+            { role: "Manajer Operasional", name: "Budi Santoso", phone: "0812-3456-7890" },
+            { role: "PIC IT", name: "Citra Dewi", phone: "0876-5432-1098" },
+            { role: "Keamanan Kantor", name: "Nomor Kantor", phone: "(021) 1234567" }
+        ];
+
+        // --- Helper Functions ---
+        function getNamaHari(date) {
+            const days = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
+            return days[date.getDay()];
+        }
+
+        function getCurrentShiftInfo(hour) {
+            if (hour >= shiftTimes.shift1.start && hour < shiftTimes.shift1.end) {
+                return { key: "shift1", name: shiftTimes.shift1.display, index: 0 };
+            } else if (hour >= shiftTimes.shift2.start && hour < shiftTimes.shift2.end) {
+                return { key: "shift2", name: shiftTimes.shift2.display, index: 1 };
+            } else {
+                return { key: "shift3", name: shiftTimes.shift3.display, index: 2 };
+            }
+        }
+
+        function getJagaList(dayName, shiftKey, scheduleData) {
+            const jagaNames = [];
+            if (!scheduleData) return jagaNames;
+            for (const nama in scheduleData) {
+                const jadwalOrang = scheduleData[nama];
+                if (jadwalOrang.shift && typeof jadwalOrang.shift[dayName] === 'object' && jadwalOrang.shift[dayName] !== null) {
+                    const statusShift = jadwalOrang.shift[dayName][shiftKey];
+                    if (statusShift === "jaga") {
+                        jagaNames.push(nama);
+                    }
+                }
+            }
+            return jagaNames;
+        }
+
+        function hidePopup(popupElement) {
+            popupElement.classList.remove('active');
+            if (popupElement === photoPopupOverlay) {
+                popupImage.src = ""; // Clear src to prevent flashing of old image
+            }
+        }
+
+        // --- UI Update Functions ---
+        function updateDateTimeDisplay() {
+            const now = new Date();
+            const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Makassar' };
+            const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Makassar' };
+
+            const currentDate = new Intl.DateTimeFormat('id-ID', optionsDate).format(now);
+            const currentTime = new Intl.DateTimeFormat('id-ID', optionsTime).format(now);
+            document.getElementById('currentDateTime').innerHTML = `${currentDate}<br>${currentTime} WITA`;
+        }
+
+        function displayDynamicGreeting() {
+            const now = new Date();
+            const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
+            let greeting = "";
+
+            if (hourWITA >= 5 && hourWITA < 12) greeting = "Selamat Pagi, Tim TVRI!";
+            else if (hourWITA >= 12 && hourWITA < 15) greeting = "Selamat Siang, Tim TVRI!";
+            else if (hourWITA >= 15 && hourWITA < 18) greeting = "Selamat Sore, Tim TVRI!";
+            else greeting = "Selamat Malam, Tim TVRI!";
+            document.getElementById('dynamicGreeting').textContent = greeting;
+        }
+
+        function updateCountdownProgressBar() {
+            const now = new Date();
+            const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
+            const minuteWITA = parseInt(new Intl.DateTimeFormat('en-US', { minute: '2-digit', timeZone: 'Asia/Makassar' }).format(now));
+            const secondWITA = parseInt(new Intl.DateTimeFormat('en-US', { second: '2-digit', timeZone: 'Asia/Makassar' }).format(now));
+
+            const currentShiftInfo = getCurrentShiftInfo(hourWITA);
+            const currentShiftTime = shiftTimes[currentShiftInfo.key];
+
+            let totalShiftDurationSeconds;
+            let elapsedShiftDurationSeconds;
+
+            if (currentShiftInfo.key === "shift3") {
+                totalShiftDurationSeconds = (shiftTimes.shift3.end + 24 - shiftTimes.shift3.start) * 3600;
+                elapsedShiftDurationSeconds = (hourWITA * 3600 + minuteWITA * 60 + secondWITA) - (shiftTimes.shift3.start * 3600);
+            } else {
+                totalShiftDurationSeconds = (currentShiftTime.end - currentShiftTime.start) * 3600;
+                elapsedShiftDurationSeconds = (hourWITA * 3600 + minuteWITA * 60 + secondWITA) - (currentShiftTime.start * 3600);
+            }
+            
+            let progressPercentage = (elapsedShiftDurationSeconds / totalShiftDurationSeconds) * 100;
+            progressPercentage = Math.max(0, Math.min(100, progressPercentage)); // Clamp between 0 and 100
+
+            document.getElementById('countdownProgressBarFill').style.width = `${progressPercentage}%`;
+
+            let nextShiftKey = allShiftKeys[(currentShiftInfo.index + 1) % allShiftKeys.length];
+            let nextShiftDateObj = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
+            nextShiftDateObj.setSeconds(0);
+            nextShiftDateObj.setMilliseconds(0);
+
+            if (nextShiftKey === "shift1" && currentShiftInfo.key === "shift3") {
+                 nextShiftDateObj.setHours(shiftTimes.shift1.start, 0, 0, 0);
+                 if (nextShiftDateObj.getTime() < now.getTime()) {
+                    nextShiftDateObj.setDate(nextShiftDateObj.getDate() + 1);
+                 }
+            } else if (nextShiftKey === "shift3" && currentShiftInfo.key === "shift2") {
+                 nextShiftDateObj.setDate(nextShiftDateObj.getDate() + 1);
+                 nextShiftDateObj.setHours(shiftTimes.shift3.start, 0, 0, 0);
+            } else {
+                 nextShiftDateObj.setHours(shiftTimes[nextShiftKey].start, 0, 0, 0);
+                 if (nextShiftDateObj.getTime() < now.getTime()) {
+                    nextShiftDateObj.setDate(nextShiftDateObj.getDate() + 1);
+                 }
+            }
+
+            let timeToNextShiftMs = nextShiftDateObj.getTime() - now.getTime();
+            timeToNextShiftMs = Math.max(0, timeToNextShiftMs); // Ensure non-negative
+
+            const totalSecondsRemaining = Math.floor(timeToNextShiftMs / 1000);
+            const hours = Math.floor(totalSecondsRemaining / 3600);
+            const minutes = Math.floor((totalSecondsRemaining % 3600) / 60);
+            const seconds = totalSecondsRemaining % 60;
+
+            let countdownText;
+            if (totalSecondsRemaining <= 0) {
+                 countdownText = `Shift ${shiftTimes[currentShiftInfo.key].display} Baru Saja Dimulai!`;
+            } else {
+                 countdownText = `Shift ${shiftTimes[nextShiftKey].display} dimulai dalam ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            document.getElementById('countdownProgressText').textContent = countdownText;
+        }
+
+        function displayFullDayScheduleVisualization() {
+            const now = new Date();
+            const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
+            const currentShiftInfo = getCurrentShiftInfo(hourWITA);
+
+            const scheduleToDisplay = jadwalMinggu1Juni2025;
+
+            let displayDateForSchedule = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
+            if (currentShiftInfo.key === "shift3") { 
+                 displayDateForSchedule.setDate(displayDateForSchedule.getDate() - 1);
+            }
+            const namaHariJadwal = getNamaHari(displayDateForSchedule);
+            const formattedDateForHeader = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(displayDateForSchedule);
+            document.getElementById('scheduleDateHeader').textContent = `Jadwal Jaga ${formattedDateForHeader}`;
+            
+            const shiftsTimelineDiv = document.getElementById('shiftsTimeline');
+            shiftsTimelineDiv.innerHTML = '';
+
+            allShiftKeys.forEach(shiftKey => {
+                const shiftDisplayName = shiftTimes[shiftKey].display;
+                const shiftStartTime = shiftTimes[shiftKey].start.toString().padStart(2, '0');
+                const shiftEndTime = shiftTimes[shiftKey].end.toString().padStart(2, '0');
+
+                const shiftBlock = document.createElement('div');
+                shiftBlock.className = 'shift-display-block';
+                if (shiftKey === currentShiftInfo.key) { 
+                    shiftBlock.classList.add('active-shift');
+                }
+
+                shiftBlock.innerHTML = `<h3>${shiftDisplayName} <span class="time-range">(${shiftStartTime}:00 - ${shiftEndTime}:00)</span></h3>`;
+
+                const jagaGrid = document.createElement('div');
+                jagaGrid.className = 'jaga-grid';
+
+                const jagaNames = getJagaList(namaHariJadwal, shiftKey, scheduleToDisplay);
+
+                if (jagaNames.length > 0) {
+                    jagaNames.forEach(nama => {
+                        const div = document.createElement('div');
+                        div.className = 'jaga-card';
+                        div.textContent = nama;
+                        div.addEventListener('click', (e) => {
+                            e.stopPropagation(); // Prevent clicks on card from affecting other elements
+                            showPhotoPopup(nama);
+                        });
+                        jagaGrid.appendChild(div);
+                    });
+                } else {
+                    const p = document.createElement('p');
+                    p.className = 'no-jaga';
+                    p.textContent = "Tidak ada yang jaga di shift ini.";
+                    jagaGrid.appendChild(p);
+                }
+                shiftBlock.appendChild(jagaGrid);
+                shiftsTimelineDiv.appendChild(shiftBlock);
+            });
+        }
+
+
+        // --- Dark Mode Logic ---
+        const toggleSwitch = document.getElementById('checkbox');
+        const currentTheme = localStorage.getItem('theme');
+
+        if (currentTheme) {
+            document.body.classList.add(currentTheme);
+            if (currentTheme === 'dark-mode') {
+                toggleSwitch.checked = true;
+            }
+        } else {
+            document.body.classList.add('light-mode');
+        }
+
+        function switchTheme(e) {
+            if (e.target.checked) {
+                document.body.classList.remove('light-mode');
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.body.classList.add('light-mode');
+                localStorage.setItem('theme', 'light-mode');
+            }
+        }
+        toggleSwitch.addEventListener('change', switchTheme, false);
+
+        // --- Photo Pop-up Logic ---
+        const photoPopupOverlay = document.getElementById('photoPopupOverlay');
+        const popupImage = document.getElementById('popupImage');
+        const popupName = document.getElementById('popupName');
+        const popupInfo = document.getElementById('popupInfo');
+        const popupCloseBtn = document.getElementById('popupCloseBtn');
+
+        function showPhotoPopup(nama) {
+            const employeeData = jadwalMinggu1Juni2025[nama]; 
+            if (employeeData) {
+                const photoPath = employeeData.photo && (employeeData.photo.startsWith('photos/') || employeeData.photo.startsWith('http')) ? employeeData.photo : 'https://via.placeholder.com/150?text=No+Photo';
+                const infoText = employeeData.info || "Informasi tidak tersedia.";
+
+                popupImage.src = photoPath;
+                popupImage.alt = `Foto ${nama}`;
+                popupName.textContent = nama;
+                popupInfo.textContent = infoText;
+
+                photoPopupOverlay.classList.add('active');
+            }
+        }
+
+        function hidePopup(popupElement) {
+            popupElement.classList.remove('active');
+            if (popupElement === photoPopupOverlay) {
+                popupImage.src = ""; 
+            }
+        }
+
+        photoPopupOverlay.addEventListener('click', (e) => {
+            if (e.target === photoPopupOverlay) {
+                hidePopup(photoPopupOverlay);
+            }
+        });
+        popupCloseBtn.addEventListener('click', () => hidePopup(photoPopupOverlay));
+
+        // --- Call Bantuan Logic ---
+        const callBantuanBtn = document.getElementById('callBantuanBtn');
+        const callBantuanPopupOverlay = document.getElementById('callBantuanPopupOverlay');
+        const callBantuanCloseBtn = document.getElementById('callBantuanCloseBtn');
+        const contactList = document.getElementById('contactList');
+
+        function showCallBantuanPopup() {
+            contactList.innerHTML = '';
+            emergencyContacts.forEach(contact => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${contact.role}:</strong> ${contact.name} (<a href="tel:${contact.phone}">${contact.phone}</a>)`;
+                contactList.appendChild(li);
+            });
+            callBantuanPopupOverlay.classList.add('active');
+        }
+
+        callBantuanBtn.addEventListener('click', showCallBantuanPopup);
+        callBantuanCloseBtn.addEventListener('click', () => hidePopup(callBantuanPopupOverlay));
+        callBantuanPopupOverlay.addEventListener('click', (e) => {
+            if (e.target === callBantuanPopupOverlay) {
+                hidePopup(callBantuanPopupOverlay);
+            }
+        });
+
+        // --- Initial & Interval Updates ---
+        // Update time and countdown every second
+        setInterval(() => {
+            updateDateTimeDisplay();
+            updateCountdownProgressBar();
+        }, 1000);
+
+        // Initial load on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDateTimeDisplay();
+            displayDynamicGreeting();
+            displayFullDayScheduleVisualization();
+            updateCountdownProgressBar();
+        });
+
+        // Update greeting and full day schedule every minute
+        setInterval(() => {
+            displayDynamicGreeting();
+            displayFullDayScheduleVisualization();
+        }, 60 * 1000); // Every minute
+    </script>
+</body>
+</html>
