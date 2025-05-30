@@ -132,7 +132,7 @@
         }
         .navbar a.active-nav {
             background-color: var(--sub-heading-color);
-            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+            box-shadow: none; /* MODIFIED for precision */
         }
 
 
@@ -180,8 +180,6 @@
             margin-bottom: 25px;
             line-height: 1.5;
         }
-
-        /* --- Weather Link --- (REMOVED) */
 
         /* --- Countdown Progress Bar --- */
         .countdown-progress-container {
@@ -239,8 +237,8 @@
             transition: all 0.3s ease;
         }
         .shift-display-block.active-shift {
-            background-color: var(--primary-blue);
-            color: white;
+            background-color: var(--primary-blue); /* Changed to var(--active-shift-bg) for consistency */
+            color: white; /* Changed to var(--active-shift-text) */
             border-color: var(--active-shift-border);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             transform: translateY(-3px);
@@ -596,8 +594,6 @@
 
     <script>
         // --- DATA JADWAL (HANYA MINGGU 1) ---
-        // Ini adalah data jadwal untuk satu minggu.
-        // Jika Anda perlu memperbarui untuk minggu berikutnya, Anda harus MENGEDIT DATA INI SECARA MANUAL.
         const jadwalMinggu1Juni2025 = {
             "ALVIANA DAMAYANTI": {
                 "shift": {
@@ -611,8 +607,8 @@
                 },
                 "info": "Divisi Admin",
                 "photo": "photos/alviana_damayanti.jpg",
-                "phone": "081234567890",       // Contoh nomor HP
-                "whatsapp": "6281234567890"    // Contoh nomor WhatsApp (kode negara tanpa +)
+                "phone": "081234567890",
+                "whatsapp": "6281234567890"
             },
             "INA APRIANA": {
                 "shift": {
@@ -812,7 +808,7 @@
             { role: "Keamanan Kantor", name: "Nomor Kantor", phone: "(021) 1234567" }
         ];
 
-        let lastActiveShiftKey = null; // Used to prevent redundant DOM updates
+        let lastActiveShiftKey = null;
 
         // --- Helper Functions ---
         function getNamaHari(date) {
@@ -880,20 +876,11 @@
             let totalShiftDurationSeconds;
             let elapsedShiftDurationSeconds;
 
-            if (currentShiftInfo.key === "shift3") { // Handle overnight shift 3
-                const shiftStartHour = shiftTimes.shift3.start; // 0
-                const shiftEndHour = shiftTimes.shift3.end;     // 8
-                // Total duration is fixed (8 hours)
+            if (currentShiftInfo.key === "shift3") { 
+                const shiftStartHour = shiftTimes.shift3.start; 
+                const shiftEndHour = shiftTimes.shift3.end;     
                 totalShiftDurationSeconds = (shiftEndHour - shiftStartHour) * 3600;
-                
-                // Elapsed time calculation needs to consider crossing midnight
-                // If current hour is past midnight (e.g. 0 to 7), it's straightforward
-                // If the shift started on the "previous day" effectively (e.g. hour 0 for a shift that conceptually runs from 00:00 to 08:00)
                 elapsedShiftDurationSeconds = (hourWITA * 3600 + minuteWITA * 60 + secondWITA) - (shiftStartHour * 3600);
-                if (elapsedShiftDurationSeconds < 0) { // This can happen if now is e.g. 23:00 and shift starts at 00:00
-                     elapsedShiftDurationSeconds += 24 * 3600; // Should not be needed if currentShiftInfo is correct
-                }
-
             } else {
                 totalShiftDurationSeconds = (currentShiftTime.end - currentShiftTime.start) * 3600;
                 elapsedShiftDurationSeconds = (hourWITA * 3600 + minuteWITA * 60 + secondWITA) - (currentShiftTime.start * 3600);
@@ -905,16 +892,11 @@
             document.getElementById('countdownProgressBarFill').style.width = `${progressPercentage}%`;
 
             let nextShiftKey = allShiftKeys[(currentShiftInfo.index + 1) % allShiftKeys.length];
-            let nextShiftDateObj = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' })); // Current date/time in WITA
+            let nextShiftDateObj = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' })); 
             nextShiftDateObj.setSeconds(0);
             nextShiftDateObj.setMilliseconds(0);
-
-            // Set to the start hour of the next shift
             nextShiftDateObj.setHours(shiftTimes[nextShiftKey].start, 0, 0, 0);
 
-            // If the calculated next shift time is in the past (e.g. next shift is 8 AM but current time is 10 AM)
-            // or if we are moving from shift 2 (ends 24:00) to shift 3 (starts 00:00 next day)
-            // or from shift 3 (ends 08:00) to shift 1 (starts 08:00 same day, but could be calculated as past if not handled)
             if (nextShiftDateObj.getTime() <= now.getTime()) {
                  nextShiftDateObj.setDate(nextShiftDateObj.getDate() + 1);
             }
@@ -928,7 +910,7 @@
             const seconds = totalSecondsRemaining % 60;
 
             let countdownText;
-            if (progressPercentage < 1 && elapsedShiftDurationSeconds < 60) { // If just started (less than 1 minute in)
+            if (progressPercentage < 1 && elapsedShiftDurationSeconds < 60) { 
                  countdownText = `Shift ${shiftTimes[currentShiftInfo.key].display} Baru Saja Dimulai!`;
             } else {
                  countdownText = `Shift ${shiftTimes[nextShiftKey].display} dimulai dalam ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
@@ -937,27 +919,12 @@
         }
 
         function displayFullDayScheduleVisualization() {
-            const now = new Date(); // Local time
+            const now = new Date(); 
             const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
             const currentShiftInfo = getCurrentShiftInfo(hourWITA);
-
             const scheduleToDisplay = jadwalMinggu1Juni2025;
-
-            // Determine the date for which to display the schedule
-            // For Shift 3 (00:00 - 08:00), it belongs to the "operational day" that started the previous calendar day for Shift 1 & 2
-            // However, the schedule is generally viewed for the current calendar day.
-            // The logic of "namaHariJadwal" should reflect the day whose shifts are being shown.
-            // If current time is 02:00 AM on Tuesday (Shift 3), the schedule displayed is for Monday's Shift 3, Tuesday's Shift 1 & 2.
-            // Or, it shows Tuesday's Shift 3, Shift 1, Shift 2. This seems more intuitive.
-
-            let displayDateForSchedule = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' })); // Current date in WITA
-
-            // If it's Shift 3 (e.g., 00:00-08:00), it's part of the "next day's" morning but often associated with the previous day's end of operations.
-            // For displaying a full day's cycle (S1, S2, S3), we usually refer to the calendar day.
-            // Example: On Tuesday 02:00 (Shift 3), it's Tuesday's Shift 3.
-            // The current logic seems fine: `namaHariJadwal` uses the current calendar day in WITA.
-            
-            const namaHariJadwal = getNamaHari(displayDateForSchedule); // Use current WITA day name
+            let displayDateForSchedule = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' })); 
+            const namaHariJadwal = getNamaHari(displayDateForSchedule); 
             const formattedDateForHeader = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Makassar' }).format(displayDateForSchedule);
             document.getElementById('scheduleDateHeader').textContent = `Jadwal Jaga ${formattedDateForHeader}`;
             
@@ -969,13 +936,9 @@
                 const shiftStartTime = shiftTimes[shiftKey].start.toString().padStart(2, '0');
                 const shiftEndTime = (shiftTimes[shiftKey].end === 24 ? "00" : shiftTimes[shiftKey].end.toString().padStart(2, '0'));
 
-
                 const shiftBlock = document.createElement('div');
                 shiftBlock.className = 'shift-display-block';
                 
-                // Active shift highlighting logic
-                // currentShiftInfo.key is the key of the currently active shift.
-                // shiftKey is the key of the shift block being rendered.
                 if (shiftKey === currentShiftInfo.key) { 
                     shiftBlock.classList.add('active-shift');
                 }
@@ -984,10 +947,6 @@
 
                 const jagaGrid = document.createElement('div');
                 jagaGrid.className = 'jaga-grid';
-
-                // Get personnel for this shift on `namaHariJadwal`
-                // If it's Shift 3, and we are in early hours of "Tuesday", `namaHariJadwal` is "SELASA".
-                // The data `jadwalMinggu1Juni2025.PERSON.shift.SELASA.shift3` should be correct.
                 const jagaNames = getJagaList(namaHariJadwal, shiftKey, scheduleToDisplay);
 
                 if (jagaNames.length > 0) {
@@ -996,7 +955,7 @@
                         div.className = 'jaga-card';
                         div.textContent = nama;
                         div.addEventListener('click', () => { 
-                            showPhotoPopup(nama, scheduleToDisplay); // Pass scheduleToDisplay
+                            showPhotoPopup(nama, scheduleToDisplay);
                         });
                         jagaGrid.appendChild(div);
                     });
@@ -1011,7 +970,6 @@
             });
         }
 
-
         // --- Dark Mode Logic ---
         const toggleSwitch = document.getElementById('checkbox');
         const currentTheme = localStorage.getItem('theme');
@@ -1022,7 +980,7 @@
                 toggleSwitch.checked = true;
             }
         } else {
-            document.body.classList.add('light-mode'); // Default to light
+            document.body.classList.add('light-mode'); 
         }
 
         function switchTheme(e) {
@@ -1046,7 +1004,7 @@
         const popupContactLinks = document.getElementById('popupContactLinks');
         const popupCloseBtn = document.getElementById('popupCloseBtn');
 
-        function showPhotoPopup(nama, scheduleData) { // Added scheduleData parameter
+        function showPhotoPopup(nama, scheduleData) { 
             const employeeData = scheduleData[nama]; 
             if (employeeData) {
                 popupImage.src = employeeData.photo || 'https://via.placeholder.com/150?text=No+Photo';
@@ -1054,7 +1012,7 @@
                 popupName.textContent = nama;
                 popupInfo.textContent = employeeData.info || "Informasi tidak tersedia.";
 
-                popupContactLinks.innerHTML = ''; // Clear previous links
+                popupContactLinks.innerHTML = ''; 
 
                 if (employeeData.phone) {
                     const phoneLink = document.createElement('a');
@@ -1078,21 +1036,19 @@
         function hidePopup(popupElement) {
             popupElement.classList.remove('active');
             if (popupElement === photoPopupOverlay) {
-                // Ensure image src is cleared AFTER the popup is fully hidden to prevent flicker
                 setTimeout(() => {
                     popupImage.src = ""; 
-                }, 300); // Match CSS transition duration (0.3s)
-                document.getElementById('popupContactLinks').innerHTML = ''; // Clear contact links immediately
+                }, 300); 
+                document.getElementById('popupContactLinks').innerHTML = ''; 
             }
         }
         
         photoPopupOverlay.addEventListener('click', (e) => {
-            if (e.target === photoPopupOverlay) { // Only hide if overlay itself is clicked
+            if (e.target === photoPopupOverlay) { 
                 hidePopup(photoPopupOverlay);
             }
         });
         popupCloseBtn.addEventListener('click', () => hidePopup(photoPopupOverlay));
-
 
         // --- Call Bantuan Logic ---
         const callBantuanBtn = document.getElementById('callBantuanBtn');
@@ -1122,22 +1078,19 @@
         document.addEventListener('DOMContentLoaded', () => {
             updateDateTimeDisplay();
             displayDynamicGreeting();
-            displayFullDayScheduleVisualization(); // Initial call
-            updateCountdownProgressBar(); // Initial call
+            displayFullDayScheduleVisualization(); 
+            updateCountdownProgressBar(); 
 
-            // Update time and countdown every second
             setInterval(() => {
                 updateDateTimeDisplay();
                 updateCountdownProgressBar();
             }, 1000);
 
-            // Update greeting and full day schedule visualization every minute
             setInterval(() => {
                 displayDynamicGreeting();
                 const now = new Date();
                 const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
                 const currentShiftInfo = getCurrentShiftInfo(hourWITA);
-                // Only refresh the main schedule display if the active shift key has changed, to avoid unnecessary redraws
                 if (lastActiveShiftKey !== currentShiftInfo.key) {
                     displayFullDayScheduleVisualization();
                     lastActiveShiftKey = currentShiftInfo.key;
