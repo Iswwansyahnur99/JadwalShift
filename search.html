@@ -134,7 +134,7 @@
             box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
         }
 
-        /* --- Header Section --- */
+        /* --- Header Section (for search.html) --- */
         .header {
             display: flex;
             flex-direction: column;
@@ -186,7 +186,7 @@
 
         /* --- Personal Schedule Result Styles --- */
         .personal-schedule-result-container {
-            /* No display: none here, as this is its main content */
+            /* This container's display is controlled by JS when search results are available */
             margin-top: 20px;
             padding: 25px;
         }
@@ -379,18 +379,19 @@
 
     <div class="main-content-wrapper">
         <nav class="navbar">
-            <a href="index.html" class="active-nav">Jadwal Harian</a>
-            <a href="search.html">Cari Jadwal Saya</a>
+            <a href="index.html">Jadwal Harian</a>
+            <a href="search.html" class="active-nav">Cari Jadwal Saya</a>
         </nav>
 
         <div class="container">
             <div class="header">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/TVRI_2020.svg/1200px-TVRI_2020.svg.png" alt="Logo TVRI" class="logo">
-                <h1>Jadwal Jaga Shift</h1>
-                </div>
+                <h1>Cari Jadwal Pribadi</h1>
+                <p>Ketik nama Anda di bawah untuk melihat jadwal jaga Anda untuk seminggu ini.</p>
             </div>
+        </div>
 
-        <div class="container search-container"> <h2>Cari Jadwal Pribadi</h2>
+        <div class="container search-container">
             <input type="text" id="searchInput" placeholder="Ketik nama Anda di sini..." aria-label="Ketik nama untuk mencari jadwal pribadi">
             <p id="searchMessage" class="search-message">Nama tidak ditemukan.</p>
         </div>
@@ -418,8 +419,8 @@
             "ALVIANA DAMAYANTI": {
                 "shift": {
                     "SENIN": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
-                    "SELASA": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
-                    "RABU": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_juga" },
+                    "SELASA": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_juga" },
+                    "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
                     "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
                     "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
                     "SABTU": { "shift1": "tidak_juga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
@@ -595,27 +596,15 @@
         const allShiftKeys = ["shift1", "shift2", "shift3"];
         const allDays = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU"];
 
-        // --- Kontak Bantuan Darurat ---
-        const emergencyContacts = [
-            { role: "Manajer Operasional", name: "Budi Santoso", phone: "0812-3456-7890" },
-            { role: "PIC IT", name: "Citra Dewi", phone: "0876-5432-1098" },
-            { role: "Keamanan Kantor", name: "Nomor Kantor", phone: "(021) 1234567" }
-        ];
-
-        // --- Helper Functions ---
+        // --- Helper Functions (Duplicated for search.html) ---
         function getNamaHari(date) {
             const days = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
             return days[date.getDay()];
         }
 
-        function getCurrentShiftInfo(hour) {
-            if (hour >= shiftTimes.shift1.start && hour < shiftTimes.shift1.end) {
-                return { key: "shift1", name: shiftTimes.shift1.display, index: 0 };
-            } else if (hour >= shiftTimes.shift2.start && hour < shiftTimes.shift2.end) {
-                return { key: "shift2", name: shiftTimes.shift2.display, index: 1 };
-            } else {
-                return { key: "shift3", name: shiftTimes.shift3.display, index: 2 };
-            }
+        // Dummy getCurrentShiftInfo needed for getJagaList even if not used for active highlight
+        function getCurrentShiftInfo(hour) { 
+            return { key: "dummy", name: "Dummy Shift", index: -1 };
         }
 
         function getJagaList(dayName, shiftKey, scheduleData) {
@@ -623,7 +612,7 @@
             if (!scheduleData) return jagaNames;
             for (const nama in scheduleData) {
                 const jadwalOrang = scheduleData[nama];
-                if (jadwalOrang.shift && typeof jadwalOrang.shift[dayName] === 'object' && jadwalOrang.shift[dayName] !== null) {
+                if (jadwalOrang.shift && typeof jadwalOrgal.shift[dayName] === 'object' && jadwalOrang.shift[dayName] !== null) {
                     const statusShift = jadwalOrang.shift[dayName][shiftKey];
                     if (statusShift === "jaga") {
                         jagaNames.push(nama);
@@ -640,151 +629,7 @@
             }
         }
 
-        // --- UI Update Functions ---
-        function updateDateTimeDisplay() {
-            const now = new Date();
-            const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Makassar' };
-            const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Makassar' };
-
-            const currentDate = new Intl.DateTimeFormat('id-ID', optionsDate).format(now);
-            const currentTime = new Intl.DateTimeFormat('id-ID', optionsTime).format(now);
-            document.getElementById('currentDateTime').innerHTML = `${currentDate}<br>${currentTime} WITA`;
-        }
-
-        function displayDynamicGreeting() {
-            const now = new Date();
-            const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
-            let greeting = "";
-
-            if (hourWITA >= 5 && hourWITA < 12) greeting = "Selamat Pagi, Tim TVRI!";
-            else if (hourWITA >= 12 && hourWITA < 15) greeting = "Selamat Siang, Tim TVRI!";
-            else if (hourWITA >= 15 && hourWITA < 18) greeting = "Selamat Sore, Tim TVRI!";
-            else greeting = "Selamat Malam, Tim TVRI!";
-            document.getElementById('dynamicGreeting').textContent = greeting;
-        }
-
-        function updateCountdownProgressBar() {
-            const now = new Date();
-            const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
-            const minuteWITA = parseInt(new Intl.DateTimeFormat('en-US', { minute: '2-digit', timeZone: 'Asia/Makassar' }).format(now));
-            const secondWITA = parseInt(new Intl.DateTimeFormat('en-US', { second: '2-digit', timeZone: 'Asia/Makassar' }).format(now));
-
-            const currentShiftInfo = getCurrentShiftInfo(hourWITA);
-            const currentShiftTime = shiftTimes[currentShiftInfo.key];
-
-            let totalShiftDurationSeconds;
-            let elapsedShiftDurationSeconds;
-
-            if (currentShiftInfo.key === "shift3") {
-                totalShiftDurationSeconds = (shiftTimes.shift3.end + 24 - shiftTimes.shift3.start) * 3600;
-                elapsedShiftDurationSeconds = (hourWITA * 3600 + minuteWITA * 60 + secondWITA) - (shiftTimes.shift3.start * 3600);
-            } else {
-                totalShiftDurationSeconds = (currentShiftTime.end - currentShiftTime.start) * 3600;
-                elapsedShiftDurationSeconds = (hourWITA * 3600 + minuteWITA * 60 + secondWITA) - (currentShiftTime.start * 3600);
-            }
-            
-            let progressPercentage = (elapsedShiftDurationSeconds / totalShiftDurationSeconds) * 100;
-            progressPercentage = Math.max(0, Math.min(100, progressPercentage)); // Clamp between 0 and 100
-
-            document.getElementById('countdownProgressBarFill').style.width = `${progressPercentage}%`;
-
-            let nextShiftKey = allShiftKeys[(currentShiftInfo.index + 1) % allShiftKeys.length];
-            let nextShiftDateObj = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
-            nextShiftDateObj.setSeconds(0);
-            nextShiftDateObj.setMilliseconds(0);
-
-            if (nextShiftKey === "shift1" && currentShiftInfo.key === "shift3") {
-                 nextShiftDateObj.setHours(shiftTimes.shift1.start, 0, 0, 0);
-                 if (nextShiftDateObj.getTime() < now.getTime()) {
-                    nextShiftDateObj.setDate(nextShiftDateObj.getDate() + 1);
-                 }
-            } else if (nextShiftKey === "shift3" && currentShiftInfo.key === "shift2") {
-                 nextShiftDateObj.setDate(nextShiftDateObj.getDate() + 1);
-                 nextShiftDateObj.setHours(shiftTimes.shift3.start, 0, 0, 0);
-            } else {
-                 nextShiftDateObj.setHours(shiftTimes[nextShiftKey].start, 0, 0, 0);
-                 if (nextShiftDateObj.getTime() < now.getTime()) {
-                    nextShiftDateObj.setDate(nextShiftDateObj.getDate() + 1);
-                 }
-            }
-
-            let timeToNextShiftMs = nextShiftDateObj.getTime() - now.getTime();
-            timeToNextShiftMs = Math.max(0, timeToNextShiftMs); // Ensure non-negative
-
-            const totalSecondsRemaining = Math.floor(timeToNextShiftMs / 1000);
-            const hours = Math.floor(totalSecondsRemaining / 3600);
-            const minutes = Math.floor((totalSecondsRemaining % 3600) / 60);
-            const seconds = totalSecondsRemaining % 60;
-
-            let countdownText;
-            if (totalSecondsRemaining <= 0) {
-                 countdownText = `Shift ${shiftTimes[currentShiftInfo.key].display} Baru Saja Dimulai!`;
-            } else {
-                 countdownText = `Shift ${shiftTimes[nextShiftKey].display} dimulai dalam ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            }
-            document.getElementById('countdownProgressText').textContent = countdownText;
-        }
-
-        function displayFullDayScheduleVisualization() {
-            const now = new Date();
-            const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
-            const currentShiftInfo = getCurrentShiftInfo(hourWITA);
-
-            const scheduleToDisplay = jadwalMinggu1Juni2025;
-
-            let displayDateForSchedule = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
-            if (currentShiftInfo.key === "shift3") { 
-                 displayDateForSchedule.setDate(displayDateForSchedule.getDate() - 1);
-            }
-            const namaHariJadwal = getNamaHari(displayDateForSchedule);
-            const formattedDateForHeader = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(displayDateForSchedule);
-            document.getElementById('scheduleDateHeader').textContent = `Jadwal Jaga ${formattedDateForHeader}`;
-            
-            const shiftsTimelineDiv = document.getElementById('shiftsTimeline');
-            shiftsTimelineDiv.innerHTML = '';
-
-            allShiftKeys.forEach(shiftKey => {
-                const shiftDisplayName = shiftTimes[shiftKey].display;
-                const shiftStartTime = shiftTimes[shiftKey].start.toString().padStart(2, '0');
-                const shiftEndTime = shiftTimes[shiftKey].end.toString().padStart(2, '0');
-
-                const shiftBlock = document.createElement('div');
-                shiftBlock.className = 'shift-display-block';
-                if (shiftKey === currentShiftInfo.key) { 
-                    shiftBlock.classList.add('active-shift');
-                }
-
-                shiftBlock.innerHTML = `<h3>${shiftDisplayName} <span class="time-range">(${shiftStartTime}:00 - ${shiftEndTime}:00)</span></h3>`;
-
-                const jagaGrid = document.createElement('div');
-                jagaGrid.className = 'jaga-grid';
-
-                const jagaNames = getJagaList(namaHariJadwal, shiftKey, scheduleToDisplay);
-
-                if (jagaNames.length > 0) {
-                    jagaNames.forEach(nama => {
-                        const div = document.createElement('div');
-                        div.className = 'jaga-card';
-                        div.textContent = nama;
-                        div.addEventListener('click', (e) => {
-                            e.stopPropagation(); // Prevent clicks on card from affecting other elements
-                            showPhotoPopup(nama);
-                        });
-                        jagaGrid.appendChild(div);
-                    });
-                } else {
-                    const p = document.createElement('p');
-                    p.className = 'no-jaga';
-                    p.textContent = "Tidak ada yang jaga di shift ini.";
-                    jagaGrid.appendChild(p);
-                }
-                shiftBlock.appendChild(jagaGrid);
-                shiftsTimelineDiv.appendChild(shiftBlock);
-            });
-        }
-
-
-        // --- Dark Mode Logic ---
+        // --- Dark Mode Logic (Duplicated for search.html) ---
         const toggleSwitch = document.getElementById('checkbox');
         const currentTheme = localStorage.getItem('theme');
 
@@ -810,7 +655,7 @@
         }
         toggleSwitch.addEventListener('change', switchTheme, false);
 
-        // --- Photo Pop-up Logic ---
+        // --- Photo Pop-up Logic (Duplicated for search.html) ---
         const photoPopupOverlay = document.getElementById('photoPopupOverlay');
         const popupImage = document.getElementById('popupImage');
         const popupName = document.getElementById('popupName');
@@ -832,13 +677,6 @@
             }
         }
 
-        function hidePopup(popupElement) {
-            popupElement.classList.remove('active');
-            if (popupElement === photoPopupOverlay) {
-                popupImage.src = ""; 
-            }
-        }
-
         photoPopupOverlay.addEventListener('click', (e) => {
             if (e.target === photoPopupOverlay) {
                 hidePopup(photoPopupOverlay);
@@ -846,50 +684,112 @@
         });
         popupCloseBtn.addEventListener('click', () => hidePopup(photoPopupOverlay));
 
-        // --- Call Bantuan Logic ---
-        const callBantuanBtn = document.getElementById('callBantuanBtn');
-        const callBantuanPopupOverlay = document.getElementById('callBantuanPopupOverlay');
-        const callBantuanCloseBtn = document.getElementById('callBantuanCloseBtn');
-        const contactList = document.getElementById('contactList');
+        // --- Search Personal Schedule Logic (Main Logic for search.html) ---
+        const searchInput = document.getElementById('searchInput');
+        const searchMessage = document.getElementById('searchMessage');
+        const personalScheduleResultContainer = document.getElementById('personalScheduleResultContainer');
+        const personalScheduleNameHeader = document.getElementById('personalScheduleNameHeader');
+        const personalScheduleGrid = document.getElementById('personalScheduleGrid');
+        let searchTimeout;
 
-        function showCallBantuanPopup() {
-            contactList.innerHTML = '';
-            emergencyContacts.forEach(contact => {
-                const li = document.createElement('li');
-                li.innerHTML = `<strong>${contact.role}:</strong> ${contact.name} (<a href="tel:${contact.phone}">${contact.phone}</a>)`;
-                contactList.appendChild(li);
-            });
-            callBantuanPopupOverlay.classList.add('active');
+        function searchPersonalSchedule() {
+            const searchTerm = searchInput.value.trim();
+
+            // Hide personal schedule and message if search term is empty
+            if (searchTerm.length === 0) {
+                personalScheduleResultContainer.style.display = 'none';
+                searchMessage.style.display = 'none';
+                return;
+            }
+
+            personalScheduleGrid.innerHTML = ''; // Clear previous results
+            searchMessage.style.display = 'none'; // Hide message initially
+
+            let foundEmployee = null;
+            // Search only within jadwalMinggu1Juni2025
+            for (const nama in jadwalMinggu1Juni2025) {
+                if (nama.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    foundEmployee = nama;
+                    break;
+                }
+            }
+
+            if (foundEmployee) {
+                const employeeData = jadwalMinggu1Juni2025[foundEmployee];
+                personalScheduleNameHeader.textContent = `Jadwal Pribadi: ${foundEmployee}`;
+                personalScheduleResultContainer.style.display = 'block';
+
+                allDays.forEach(day => {
+                    const dailyCard = document.createElement('div');
+                    dailyCard.className = 'daily-schedule-card';
+
+                    const dayHeader = document.createElement('h3');
+                    dayHeader.textContent = day;
+                    dailyCard.appendChild(dayHeader);
+
+                    const ul = document.createElement('ul');
+                    const scheduleForDay = employeeData.shift[day];
+
+                    if (typeof scheduleForDay === 'string' && scheduleForDay === "libur") {
+                        const li = document.createElement('li');
+                        li.textContent = `Seluruh Hari: Libur`;
+                        li.classList.add('status-libur');
+                        ul.appendChild(li);
+                    } else if (typeof scheduleForDay === 'object' && scheduleForDay !== null) {
+                        allShiftKeys.forEach(shiftKey => {
+                            const li = document.createElement('li');
+                            const status = scheduleForDay[shiftKey];
+                            const displayStatus = status === "jaga" ? "Jaga" : (status === "tidak_jaga" ? "Tidak Jaga" : "Tidak Diketahui");
+                            const statusClass = status === "jaga" ? "status-jaga" : (status === "tidak_jaga" ? "status-tidak-jaga" : "status-libur");
+                            li.innerHTML = `<span>${shiftTimes[shiftKey].display}:</span> <span class="${statusClass}">${displayStatus}</span>`;
+                            ul.appendChild(li);
+                        });
+                    } else {
+                        const li = document.createElement('li');
+                        li.textContent = "Jadwal tidak tersedia.";
+                        li.classList.add('status-tidak-jaga');
+                        ul.appendChild(li);
+                    }
+                    dailyCard.appendChild(ul);
+                    personalScheduleGrid.appendChild(dailyCard);
+                });
+            } else {
+                searchMessage.textContent = `"${searchInput.value.trim()}" tidak ditemukan.`;
+                searchMessage.style.display = 'block';
+                personalScheduleResultContainer.style.display = 'none'; // Hide personal schedule if not found
+            }
         }
 
-        callBantuanBtn.addEventListener('click', showCallBantuanPopup);
-        callBantuanCloseBtn.addEventListener('click', () => hidePopup(callBantuanPopupOverlay));
-        callBantuanPopupOverlay.addEventListener('click', (e) => {
-            if (e.target === callBantuanPopupOverlay) {
-                hidePopup(callBantuanPopupOverlay);
+        searchInput.addEventListener('input', (event) => {
+            clearTimeout(searchTimeout);
+            const searchTerm = event.target.value.trim();
+            // If input is cleared, hide results and message immediately
+            if (searchTerm.length === 0) {
+                personalScheduleResultContainer.style.display = 'none';
+                searchMessage.style.display = 'none';
+                return;
+            }
+            // Debounce search
+            searchTimeout = setTimeout(() => {
+                searchPersonalSchedule();
+            }, 300);
+        });
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                searchPersonalSchedule();
             }
         });
 
-        // --- Initial & Interval Updates ---
-        // Update time and countdown every second
-        setInterval(() => {
-            updateDateTimeDisplay();
-            updateCountdownProgressBar();
-        }, 1000);
-
-        // Initial load on DOMContentLoaded
+        // --- Initial Load for search.html ---
         document.addEventListener('DOMContentLoaded', () => {
-            updateDateTimeDisplay();
-            displayDynamicGreeting();
-            displayFullDayScheduleVisualization();
-            updateCountdownProgressBar();
+            // Check if there's a search term in the URL (for deep linking or quick search)
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialSearchTerm = urlParams.get('q'); // e.g., search.html?q=Alviana
+            if (initialSearchTerm) {
+                searchInput.value = initialSearchTerm;
+                searchPersonalSchedule();
+            }
         });
-
-        // Update greeting and full day schedule every minute
-        setInterval(() => {
-            displayDynamicGreeting();
-            displayFullDayScheduleVisualization();
-        }, 60 * 1000); // Every minute
     </script>
 </body>
 </html>
