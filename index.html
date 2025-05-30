@@ -181,30 +181,12 @@
             line-height: 1.5;
         }
 
-        /* --- Weather Link --- */
-        .weather-link-container {
-            margin-top: -10px; /* Pull it slightly up */
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .weather-link-container a {
-            color: var(--primary-blue);
-            text-decoration: none;
-            font-weight: bold;
-            padding: 8px 15px;
-            border: 1px solid var(--primary-blue);
-            border-radius: 8px;
-            transition: background-color 0.2s ease, color 0.2s ease;
-        }
-        .weather-link-container a:hover {
-            background-color: var(--primary-blue);
-            color: white;
-        }
+        /* --- Weather Link --- (REMOVED) */
 
         /* --- Countdown Progress Bar --- */
         .countdown-progress-container {
             width: 100%;
-            margin-top: -15px;
+            margin-top: -15px; /* Adjusted due to weather link removal */
             margin-bottom: 25px;
             text-align: center;
         }
@@ -583,10 +565,7 @@
                 </div>
                 <p class="countdown-progress-text" id="countdownProgressText">Loading countdown...</p>
             </div>
-            <div class="weather-link-container">
-                <a href="https://www.bmkg.go.id/cuaca/prakiraan-cuaca-indonesia.bmkg?id=50130" target="_blank">Cek Cuaca Tanjung Selor (BMKG)</a>
             </div>
-        </div>
 
         <div class="schedule-visualization-container">
             <h2 id="scheduleDateHeader">Jadwal Jaga Hari Ini</h2>
@@ -865,16 +844,7 @@
             }
             return jagaNames;
         }
-
-        function hidePopup(popupElement) {
-            popupElement.classList.remove('active');
-            // Only clear image src if it's the photo popup
-            if (popupElement === photoPopupOverlay) {
-                popupImage.src = "";
-                document.getElementById('popupContactLinks').innerHTML = ''; // Clear contact links
-            }
-        }
-
+        
         // --- UI Update Functions ---
         function updateDateTimeDisplay() {
             const now = new Date();
@@ -910,41 +880,47 @@
             let totalShiftDurationSeconds;
             let elapsedShiftDurationSeconds;
 
-            if (currentShiftInfo.key === "shift3") {
-                totalShiftDurationSeconds = (shiftTimes.shift3.end + 24 - shiftTimes.shift3.start) * 3600;
-                elapsedShiftDurationSeconds = (hourWITA * 3600 + minuteWITA * 60 + secondWITA) - (shiftTimes.shift3.start * 3600);
+            if (currentShiftInfo.key === "shift3") { // Handle overnight shift 3
+                const shiftStartHour = shiftTimes.shift3.start; // 0
+                const shiftEndHour = shiftTimes.shift3.end;     // 8
+                // Total duration is fixed (8 hours)
+                totalShiftDurationSeconds = (shiftEndHour - shiftStartHour) * 3600;
+                
+                // Elapsed time calculation needs to consider crossing midnight
+                // If current hour is past midnight (e.g. 0 to 7), it's straightforward
+                // If the shift started on the "previous day" effectively (e.g. hour 0 for a shift that conceptually runs from 00:00 to 08:00)
+                elapsedShiftDurationSeconds = (hourWITA * 3600 + minuteWITA * 60 + secondWITA) - (shiftStartHour * 3600);
+                if (elapsedShiftDurationSeconds < 0) { // This can happen if now is e.g. 23:00 and shift starts at 00:00
+                     elapsedShiftDurationSeconds += 24 * 3600; // Should not be needed if currentShiftInfo is correct
+                }
+
             } else {
                 totalShiftDurationSeconds = (currentShiftTime.end - currentShiftTime.start) * 3600;
                 elapsedShiftDurationSeconds = (hourWITA * 3600 + minuteWITA * 60 + secondWITA) - (currentShiftTime.start * 3600);
             }
             
             let progressPercentage = (elapsedShiftDurationSeconds / totalShiftDurationSeconds) * 100;
-            progressPercentage = Math.max(0, Math.min(100, progressPercentage)); // Clamp between 0 and 100
+            progressPercentage = Math.max(0, Math.min(100, progressPercentage)); 
 
             document.getElementById('countdownProgressBarFill').style.width = `${progressPercentage}%`;
 
             let nextShiftKey = allShiftKeys[(currentShiftInfo.index + 1) % allShiftKeys.length];
-            let nextShiftDateObj = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
+            let nextShiftDateObj = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' })); // Current date/time in WITA
             nextShiftDateObj.setSeconds(0);
             nextShiftDateObj.setMilliseconds(0);
 
-            if (nextShiftKey === "shift1" && currentShiftInfo.key === "shift3") {
-                 nextShiftDateObj.setHours(shiftTimes.shift1.start, 0, 0, 0);
-                 if (nextShiftDateObj.getTime() < now.getTime()) {
-                    nextShiftDateObj.setDate(nextShiftDateObj.getDate() + 1);
-                 }
-            } else if (nextShiftKey === "shift3" && currentShiftInfo.key === "shift2") {
-                 nextShiftDateObj.setDate(nextShiftDateObj.getDate() + 1);
-                 nextShiftDateObj.setHours(shiftTimes.shift3.start, 0, 0, 0);
-            } else {
-                 nextShiftDateObj.setHours(shiftTimes[nextShiftKey].start, 0, 0, 0);
-                 if (nextShiftDateObj.getTime() < now.getTime()) {
-                    nextShiftDateObj.setDate(nextShiftDateObj.getDate() + 1);
-                 }
-            }
+            // Set to the start hour of the next shift
+            nextShiftDateObj.setHours(shiftTimes[nextShiftKey].start, 0, 0, 0);
 
+            // If the calculated next shift time is in the past (e.g. next shift is 8 AM but current time is 10 AM)
+            // or if we are moving from shift 2 (ends 24:00) to shift 3 (starts 00:00 next day)
+            // or from shift 3 (ends 08:00) to shift 1 (starts 08:00 same day, but could be calculated as past if not handled)
+            if (nextShiftDateObj.getTime() <= now.getTime()) {
+                 nextShiftDateObj.setDate(nextShiftDateObj.getDate() + 1);
+            }
+            
             let timeToNextShiftMs = nextShiftDateObj.getTime() - now.getTime();
-            timeToNextShiftMs = Math.max(0, timeToNextShiftMs); // Ensure non-negative
+            timeToNextShiftMs = Math.max(0, timeToNextShiftMs); 
 
             const totalSecondsRemaining = Math.floor(timeToNextShiftMs / 1000);
             const hours = Math.floor(totalSecondsRemaining / 3600);
@@ -952,7 +928,7 @@
             const seconds = totalSecondsRemaining % 60;
 
             let countdownText;
-            if (totalSecondsRemaining <= 0) {
+            if (progressPercentage < 1 && elapsedShiftDurationSeconds < 60) { // If just started (less than 1 minute in)
                  countdownText = `Shift ${shiftTimes[currentShiftInfo.key].display} Baru Saja Dimulai!`;
             } else {
                  countdownText = `Shift ${shiftTimes[nextShiftKey].display} dimulai dalam ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
@@ -961,18 +937,28 @@
         }
 
         function displayFullDayScheduleVisualization() {
-            const now = new Date();
+            const now = new Date(); // Local time
             const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
             const currentShiftInfo = getCurrentShiftInfo(hourWITA);
 
             const scheduleToDisplay = jadwalMinggu1Juni2025;
 
-            let displayDateForSchedule = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
-            if (currentShiftInfo.key === "shift3") { 
-                 displayDateForSchedule.setDate(displayDateForSchedule.getDate() - 1);
-            }
-            const namaHariJadwal = getNamaHari(displayDateForSchedule);
-            const formattedDateForHeader = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(displayDateForSchedule);
+            // Determine the date for which to display the schedule
+            // For Shift 3 (00:00 - 08:00), it belongs to the "operational day" that started the previous calendar day for Shift 1 & 2
+            // However, the schedule is generally viewed for the current calendar day.
+            // The logic of "namaHariJadwal" should reflect the day whose shifts are being shown.
+            // If current time is 02:00 AM on Tuesday (Shift 3), the schedule displayed is for Monday's Shift 3, Tuesday's Shift 1 & 2.
+            // Or, it shows Tuesday's Shift 3, Shift 1, Shift 2. This seems more intuitive.
+
+            let displayDateForSchedule = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Makassar' })); // Current date in WITA
+
+            // If it's Shift 3 (e.g., 00:00-08:00), it's part of the "next day's" morning but often associated with the previous day's end of operations.
+            // For displaying a full day's cycle (S1, S2, S3), we usually refer to the calendar day.
+            // Example: On Tuesday 02:00 (Shift 3), it's Tuesday's Shift 3.
+            // The current logic seems fine: `namaHariJadwal` uses the current calendar day in WITA.
+            
+            const namaHariJadwal = getNamaHari(displayDateForSchedule); // Use current WITA day name
+            const formattedDateForHeader = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Makassar' }).format(displayDateForSchedule);
             document.getElementById('scheduleDateHeader').textContent = `Jadwal Jaga ${formattedDateForHeader}`;
             
             const shiftsTimelineDiv = document.getElementById('shiftsTimeline');
@@ -981,10 +967,15 @@
             allShiftKeys.forEach(shiftKey => {
                 const shiftDisplayName = shiftTimes[shiftKey].display;
                 const shiftStartTime = shiftTimes[shiftKey].start.toString().padStart(2, '0');
-                const shiftEndTime = shiftTimes[shiftKey].end.toString().padStart(2, '0');
+                const shiftEndTime = (shiftTimes[shiftKey].end === 24 ? "00" : shiftTimes[shiftKey].end.toString().padStart(2, '0'));
+
 
                 const shiftBlock = document.createElement('div');
                 shiftBlock.className = 'shift-display-block';
+                
+                // Active shift highlighting logic
+                // currentShiftInfo.key is the key of the currently active shift.
+                // shiftKey is the key of the shift block being rendered.
                 if (shiftKey === currentShiftInfo.key) { 
                     shiftBlock.classList.add('active-shift');
                 }
@@ -994,6 +985,9 @@
                 const jagaGrid = document.createElement('div');
                 jagaGrid.className = 'jaga-grid';
 
+                // Get personnel for this shift on `namaHariJadwal`
+                // If it's Shift 3, and we are in early hours of "Tuesday", `namaHariJadwal` is "SELASA".
+                // The data `jadwalMinggu1Juni2025.PERSON.shift.SELASA.shift3` should be correct.
                 const jagaNames = getJagaList(namaHariJadwal, shiftKey, scheduleToDisplay);
 
                 if (jagaNames.length > 0) {
@@ -1001,8 +995,8 @@
                         const div = document.createElement('div');
                         div.className = 'jaga-card';
                         div.textContent = nama;
-                        div.addEventListener('click', () => { // Removed e.stopPropagation() here
-                            showPhotoPopup(nama);
+                        div.addEventListener('click', () => { 
+                            showPhotoPopup(nama, scheduleToDisplay); // Pass scheduleToDisplay
                         });
                         jagaGrid.appendChild(div);
                     });
@@ -1028,7 +1022,7 @@
                 toggleSwitch.checked = true;
             }
         } else {
-            document.body.classList.add('light-mode');
+            document.body.classList.add('light-mode'); // Default to light
         }
 
         function switchTheme(e) {
@@ -1049,60 +1043,56 @@
         const popupImage = document.getElementById('popupImage');
         const popupName = document.getElementById('popupName');
         const popupInfo = document.getElementById('popupInfo');
-        const popupContactLinks = document.getElementById('popupContactLinks'); // New element
+        const popupContactLinks = document.getElementById('popupContactLinks');
         const popupCloseBtn = document.getElementById('popupCloseBtn');
 
-        function showPhotoPopup(nama) {
-            const employeeData = jadwalMinggu1Juni2025[nama]; 
+        function showPhotoPopup(nama, scheduleData) { // Added scheduleData parameter
+            const employeeData = scheduleData[nama]; 
             if (employeeData) {
-                const photoPath = employeeData.photo && (employeeData.photo.startsWith('photos/') || employeeData.photo.startsWith('http')) ? employeeData.photo : 'https://via.placeholder.com/150?text=No+Photo';
-                const infoText = employeeData.info || "Informasi tidak tersedia.";
-                const phoneNum = employeeData.phone || "";
-                const whatsappNum = employeeData.whatsapp || "";
-
-                popupImage.src = photoPath;
+                popupImage.src = employeeData.photo || 'https://via.placeholder.com/150?text=No+Photo';
                 popupImage.alt = `Foto ${nama}`;
                 popupName.textContent = nama;
-                popupInfo.textContent = infoText;
+                popupInfo.textContent = employeeData.info || "Informasi tidak tersedia.";
 
                 popupContactLinks.innerHTML = ''; // Clear previous links
 
-                if (phoneNum) {
+                if (employeeData.phone) {
                     const phoneLink = document.createElement('a');
-                    phoneLink.href = `tel:${phoneNum}`;
+                    phoneLink.href = `tel:${employeeData.phone}`;
                     phoneLink.className = 'phone-link';
-                    // SVG for phone icon (Material Design 'call' icon)
                     phoneLink.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.02.75-.24 1.02l-2.2 2.2z"/></svg>Telepon`;
                     popupContactLinks.appendChild(phoneLink);
                 }
-                if (whatsappNum) {
+                if (employeeData.whatsapp) {
                     const whatsappLink = document.createElement('a');
-                    whatsappLink.href = `https://wa.me/${whatsappNum}`;
-                    whatsappLink.target = "_blank"; // Open in new tab
+                    whatsappLink.href = `https://wa.me/${employeeData.whatsapp}`;
+                    whatsappLink.target = "_blank";
                     whatsappLink.className = 'whatsapp-link';
-                    // SVG for WhatsApp icon
                     whatsappLink.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M.99 24c-.54 0-.99-.45-.99-1s.45-1 1-1h.06c2.09-2.31 3.32-5.4 3.32-8.62C4.38 5.63 8.35 1.57 13.25 1.57c2.3 0 4.41.92 6.01 2.42 1.6 1.5 2.49 3.5 2.49 5.64 0 4.9-3.97 8.96-8.87 8.96h-1.57c-.12 0-.23.01-.35.02-.33 0-.64-.09-.92-.26l-3.05-1.92c-.17-.11-.3-.26-.39-.44-.1-.18-.14-.37-.14-.58v-2.07c0-.12.01-.23.02-.35.02-.09.05-.18.09-.26l1.24-2.45c.18-.36.08-.79-.24-1.07-.31-.28-.75-.3-.97-.04l-1.39 1.63c-.09.11-.14.24-.14.39v.6c0 .41-.09.8-.26 1.15l-1.37 2.7c-.24.47-.46.96-.65 1.45-.19.49-.36.98-.51 1.47l-.06.18c-.02.05-.04.1-.06.14-.01.03-.02.07-.03.1-.01.03-.01.07-.01.1zm12.26-11.85c-.92-.88-2.12-1.35-3.39-1.35-1.33 0-2.58.55-3.56 1.59-1.07 1.12-1.66 2.58-1.66 4.14 0 1.6.59 3.06 1.66 4.18 1.07 1.11 2.5 1.7 3.9 1.7.92 0 1.79-.23 2.56-.63l-.04-.04c.14-.07.26-.17.36-.3l-.03-.04c.09-.13.15-.27.18-.42.03-.15.04-.3.04-.45v-1.12c0-.12-.01-.23-.02-.35-.02-.09-.05-.18-.09-.26l-.42-.85c-.07-.13-.12-.27-.12-.42v-1.42c0-.12.01-.23.02-.35l.09-.26c.03-.09.06-.18.09-.26l.85-1.7c.18-.36.08-.79-.24-1.07-.31-.28-.75-.3-.97-.04l-1.39 1.63c-.09.11-.14.24-.14.39v.6c0 .41-.09.8-.26 1.15l-1.37 2.7c-.24.47-.46.96-.65 1.45-.19.49-.36.98-.51 1.47l-.06.18c-.02.05-.04.1-.06.14-.01.03-.02.07-.03.1-.01.03-.01.07-.01.1z"/></svg>WhatsApp`;
                     popupContactLinks.appendChild(whatsappLink);
                 }
+                photoPopupOverlay.classList.add('active');
             }
         }
 
         function hidePopup(popupElement) {
             popupElement.classList.remove('active');
             if (popupElement === photoPopupOverlay) {
-                // IMPORTANT FIX: Clear src *after* transition to avoid flicker, or if the popup is already hidden
-                // For simplicity and immediate fix, we ensure it's cleared when hidden
-                popupImage.src = ""; 
-                document.getElementById('popupContactLinks').innerHTML = ''; // Clear contact links
+                // Ensure image src is cleared AFTER the popup is fully hidden to prevent flicker
+                setTimeout(() => {
+                    popupImage.src = ""; 
+                }, 300); // Match CSS transition duration (0.3s)
+                document.getElementById('popupContactLinks').innerHTML = ''; // Clear contact links immediately
             }
         }
-
+        
         photoPopupOverlay.addEventListener('click', (e) => {
-            if (e.target === photoPopupOverlay) {
+            if (e.target === photoPopupOverlay) { // Only hide if overlay itself is clicked
                 hidePopup(photoPopupOverlay);
             }
         });
         popupCloseBtn.addEventListener('click', () => hidePopup(photoPopupOverlay));
+
 
         // --- Call Bantuan Logic ---
         const callBantuanBtn = document.getElementById('callBantuanBtn');
@@ -1129,24 +1119,31 @@
         });
 
         // --- Initial & Interval Updates ---
-        // Update time and countdown every second
-        setInterval(() => {
-            updateDateTimeDisplay();
-            updateCountdownProgressBar();
-        }, 1000);
-
         document.addEventListener('DOMContentLoaded', () => {
             updateDateTimeDisplay();
             displayDynamicGreeting();
-            displayFullDayScheduleVisualization();
-            updateCountdownProgressBar();
-        });
+            displayFullDayScheduleVisualization(); // Initial call
+            updateCountdownProgressBar(); // Initial call
 
-        // Update greeting and full day schedule every minute
-        setInterval(() => {
-            displayDynamicGreeting();
-            displayFullDayScheduleVisualization();
-        }, 60 * 1000); // Every minute
+            // Update time and countdown every second
+            setInterval(() => {
+                updateDateTimeDisplay();
+                updateCountdownProgressBar();
+            }, 1000);
+
+            // Update greeting and full day schedule visualization every minute
+            setInterval(() => {
+                displayDynamicGreeting();
+                const now = new Date();
+                const hourWITA = parseInt(new Intl.DateTimeFormat('en-US', { hour: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(now));
+                const currentShiftInfo = getCurrentShiftInfo(hourWITA);
+                // Only refresh the main schedule display if the active shift key has changed, to avoid unnecessary redraws
+                if (lastActiveShiftKey !== currentShiftInfo.key) {
+                    displayFullDayScheduleVisualization();
+                    lastActiveShiftKey = currentShiftInfo.key;
+                }
+            }, 60 * 1000); 
+        });
     </script>
 </body>
 </html>
