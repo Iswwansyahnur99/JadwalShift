@@ -623,7 +623,7 @@
             "ALVIANA DAMAYANTI": {
                 "shift": {
                     "SENIN": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
-                    "SELASA": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_jaga" },
+                    "SELASA": { "shift1": "jaga", "shift2": "tidak_jaga", "shift3": "tidak_juga" },
                     "RABU": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
                     "KAMIS": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
                     "JUMAT": { "shift1": "jaga", "shift2": "tidak_juga", "shift3": "tidak_juga" },
@@ -868,8 +868,9 @@
 
         function hidePopup(popupElement) {
             popupElement.classList.remove('active');
+            // Only clear image src if it's the photo popup
             if (popupElement === photoPopupOverlay) {
-                popupImage.src = ""; // Clear src to prevent flashing of old image
+                popupImage.src = "";
                 document.getElementById('popupContactLinks').innerHTML = ''; // Clear contact links
             }
         }
@@ -1000,8 +1001,7 @@
                         const div = document.createElement('div');
                         div.className = 'jaga-card';
                         div.textContent = nama;
-                        div.addEventListener('click', (e) => {
-                            e.stopPropagation(); // Prevent clicks on card from affecting other elements
+                        div.addEventListener('click', () => { // Removed e.stopPropagation() here
                             showPhotoPopup(nama);
                         });
                         jagaGrid.appendChild(div);
@@ -1090,7 +1090,10 @@
         function hidePopup(popupElement) {
             popupElement.classList.remove('active');
             if (popupElement === photoPopupOverlay) {
+                // IMPORTANT FIX: Clear src *after* transition to avoid flicker, or if the popup is already hidden
+                // For simplicity and immediate fix, we ensure it's cleared when hidden
                 popupImage.src = ""; 
+                document.getElementById('popupContactLinks').innerHTML = ''; // Clear contact links
             }
         }
 
