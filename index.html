@@ -119,13 +119,11 @@
             max-width: 650px; 
             border-radius: 12px 12px 0 0; 
             padding: 10px 0;
-            /* margin-bottom: -1px; /* Adjusted for cleaner join with flat top container */
-            /* z-index: 10;  */ /* Ensure navbar is above container's top border if not fully overlapped */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             display: flex;
             justify-content: center;
             gap: 15px;
-            position: relative; /* Needed for z-index to work as expected if margin-bottom is negative */
+            position: relative;
         }
         .navbar a {
             color: white;
@@ -145,12 +143,12 @@
 
 
         /* --- Header Section (inside the first .container) --- */
-        .container .header { /* Make sure this targets header inside .container */
+        .container .header { 
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-bottom: 20px;
-            padding-top: 15px; /* Initial space from top of container */
+            padding-top: 15px; 
         }
 
         #tvriKaltaraLogo {
@@ -164,7 +162,7 @@
             content: url('photos/logo_tvri_kaltara_dark_mode.png');
         }
 
-        h1 { /* General h1, can be more specific */
+        h1 { 
             color: var(--primary-blue);
             margin-bottom: 10px;
             font-size: 2.2em;
@@ -188,7 +186,6 @@
 
         .countdown-progress-container {
             width: 100%;
-            /* margin-top: -15px;  Adjust if navbar overlap changes */
             margin-bottom: 25px;
             text-align: center;
         }
@@ -215,11 +212,12 @@
 
         /* --- Currently On Duty Section --- */
         .currently-on-duty-container {
-            padding: 20px 30px; /* Slightly less padding than main schedule */
+            padding: 20px 30px; 
         }
         .currently-on-duty-container h2 {
             color: var(--primary-blue);
-            margin-bottom: 15px;
+            margin-top: 0;
+            margin-bottom: 20px;
             font-size: 1.6em; 
             border-bottom: 1px solid var(--border-light);
             padding-bottom: 8px;
@@ -231,33 +229,41 @@
         }
         .on-duty-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
-            gap: 12px; /* Slightly increased gap */
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Adjusted min-width for photo */
+            gap: 20px; 
             margin-top: 15px;
         }
         .on-duty-card { 
             background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            padding: 15px 10px; /* Adjusted padding */
-            border-radius: 8px;
-            font-size: 0.95em; /* Slightly adjusted font size */
-            font-weight: 500;
+            padding: 15px; 
+            border-radius: 12px; /* Softer radius */
             color: var(--text-color);
             box-shadow: 0 2px 5px rgba(0,0,0,0.07);
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
             text-align: center;
-            display: flex; /* For vertical centering if needed */
+            display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start; /* Align content to top */
             align-items: center;
-            min-height: 50px; /* Ensure cards have some height */
+            gap: 10px; /* Space between photo and name */
         }
         .on-duty-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-            background-color: var(--sub-heading-color);
-            color: white;
+        }
+        .on-duty-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%; /* Circular photo */
+            object-fit: cover;
+            object-position: center;
+            border: 3px solid var(--container-bg);
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .on-duty-name {
+            font-weight: 600;
+            font-size: 0.9em;
         }
         .no-one-on-duty {
             font-style: italic;
@@ -267,7 +273,7 @@
 
 
         /* --- Schedule Visualization (Full Day) --- */
-        .schedule-visualization-container h2 { /* Title like "Jadwal Jaga Hari Ini" */
+        .schedule-visualization-container h2 {
             color: var(--primary-blue);
             margin-bottom: 25px;
             font-size: 2em;
@@ -332,8 +338,8 @@
             justify-content: center;
             align-items: stretch;
         }
-        .jaga-card { /* Cards within the full day schedule */
-            background-color: var(--container-bg); /* Should be different from page bg if container is transparent */
+        .jaga-card { 
+            background-color: var(--container-bg);
             border: 1px solid var(--card-border);
             padding: 10px;
             border-radius: 8px;
@@ -355,7 +361,7 @@
             background-color: var(--primary-blue);
             color: white;
         }
-        .no-jaga { /* Message when no one is on shift in the full day view */
+        .no-jaga { 
             font-style: italic;
             color: var(--empty-msg-color);
             text-align: center;
@@ -597,7 +603,8 @@
             <a href="search.html">Cari Jadwal Saya</a>
         </nav>
 
-        <div class="container"> <div class="header">
+        <div class="container"> 
+            <div class="header">
                 <img id="tvriKaltaraLogo" alt="Logo TVRI Kaltara" class="logo">
                 <h1>Shift Pemancar Siaran TVRI Kaltara</h1>
                 <p class="dynamic-greeting" id="dynamicGreeting"></p>
@@ -614,10 +621,11 @@
         <div class="currently-on-duty-container">
             <h2>Saat Ini Bertugas <span class="shift-name-display" id="currentShiftNameDisplay"></span></h2>
             <div class="on-duty-grid" id="onDutyGrid">
-                </div>
+            </div>
         </div>
 
-        <div class="schedule-visualization-container"> <h2 id="scheduleDateHeader">Memuat Jadwal...</h2>
+        <div class="schedule-visualization-container"> 
+            <h2 id="scheduleDateHeader">Memuat Jadwal...</h2>
             <div class="shifts-timeline" id="shiftsTimeline">
             </div>
         </div>
@@ -788,12 +796,11 @@
 
         function displayCurrentlyOnDuty(currentShiftInfoToDisplay) {
             if (!fullScheduleData || !currentShiftInfoToDisplay) {
-                // console.log("Data or current shift info not available for 'Currently On Duty'.");
                 return;
             }
             const onDutyGrid = document.getElementById('onDutyGrid');
             const currentShiftNameDisplay = document.getElementById('currentShiftNameDisplay');
-            onDutyGrid.innerHTML = ''; // Clear previous
+            onDutyGrid.innerHTML = ''; 
 
             currentShiftNameDisplay.textContent = `(${currentShiftInfoToDisplay.name})`;
 
@@ -804,9 +811,15 @@
 
             if (jagaNames.length > 0) {
                 jagaNames.forEach(nama => {
+                    const employeeData = fullScheduleData[nama];
+                    const photoSrc = (employeeData && employeeData.photo) ? employeeData.photo : 'https://via.placeholder.com/150?text=No+Photo';
+                    
                     const card = document.createElement('div');
                     card.className = 'on-duty-card';
-                    card.textContent = nama;
+                    card.innerHTML = `
+                        <img src="${photoSrc}" alt="Foto ${nama}" class="on-duty-photo">
+                        <span class="on-duty-name">${nama}</span>
+                    `;
                     card.addEventListener('click', () => {
                         showPhotoPopup(nama, fullScheduleData);
                     });
@@ -819,7 +832,6 @@
 
         function displayFullDayScheduleVisualization(currentShiftInfoToDisplay) {
             if (!fullScheduleData || !currentShiftInfoToDisplay) {
-                // console.log("Data or current shift info not available for 'Full Day Schedule'.");
                 return;
             }
             const nowForDay = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
@@ -978,7 +990,7 @@
             const initialCurrentShiftInfo = getCurrentShiftInfo(initialHourWITA);
             lastActiveShiftKey = initialCurrentShiftInfo.key;
 
-            if(fullScheduleData){ // Ensure data is loaded before trying to display
+            if(fullScheduleData){ 
                 displayCurrentlyOnDuty(initialCurrentShiftInfo); 
                 displayFullDayScheduleVisualization(initialCurrentShiftInfo); 
             }
@@ -1000,11 +1012,9 @@
                         displayCurrentlyOnDuty(currentShiftInfo);
                         displayFullDayScheduleVisualization(currentShiftInfo);
                         lastActiveShiftKey = currentShiftInfo.key;
-                    } else { // If shift hasn't changed, still update currently on duty in case day changed
+                    } else { 
                         const currentDayNama = getNamaHari(now);
-                        const lastDisplayedDayNama = getNamaHari(new Date(initialNow.setDate(initialNow.getDate()))); // crude check, better to store last displayed day
-                        // A more robust check for day change might be needed if app runs over midnight without shift change
-                        // For simplicity, just refresh currently on duty if key is same but might be new day
+                        const lastDisplayedDayNama = getNamaHari(new Date(initialNow.setDate(initialNow.getDate()))); 
                          displayCurrentlyOnDuty(currentShiftInfo);
                     }
                 }
