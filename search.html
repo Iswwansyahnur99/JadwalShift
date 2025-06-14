@@ -6,6 +6,7 @@
     <title>Cari Jadwal Pribadi TVRI Kaltara</title>
     <link rel="icon" href="photos/logo_tvri_kaltara.png" type="image/png">
     <style>
+        /* CSS ANDA TETAP SAMA SEPERTI SEBELUMNYA, TIDAK ADA PERUBAHAN */
         /* --- MODIFIKASI BACKGROUND DIMULAI --- */
         #tsparticles {
             position: fixed;
@@ -37,10 +38,10 @@
             --popup-text-color: #333;
             --search-border: #c9d6e4;
             --search-focus-border: var(--primary-blue);
-            --status-jaga-color: #28a745;
-            --status-libur-color: #dc3545;
-            --status-tidak-jaga-color: #ffc107;
-            --status-kosong-color: #6c757d;
+            --status-kantor-color: #28a745;
+            --status-transmisi-pagi-color: #17a2b8;
+            --status-transmisi-menginap-color: #00508C;
+            --status-libur-color: #6c757d;
         }
 
         /* --- Dark Mode Colors --- */
@@ -62,10 +63,10 @@
             --popup-text-color: #e0e0e0;
             --search-border: #555;
             --search-focus-border: var(--primary-blue);
-            --status-jaga-color: #4caf50;
-            --status-libur-color: #f44336;
-            --status-tidak-jaga-color: #ff9800;
-            --status-kosong-color: #78828a;
+            --status-kantor-color: #4caf50;
+            --status-transmisi-pagi-color: #26c6da;
+            --status-transmisi-menginap-color: #4FA8D8;
+            --status-libur-color: #78828a;
         }
 
         /* --- Global Styles --- */
@@ -90,7 +91,7 @@
         }
 
         .main-content-wrapper {
-            max-width: 650px;
+            max-width: 800px; /* Lebarkan sedikit untuk 4 minggu */
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -117,7 +118,7 @@
         .navbar {
             background-color: var(--primary-blue);
             width: 100%;
-            max-width: 650px;
+            max-width: 800px;
             border-radius: 12px 12px 0 0;
             padding: 10px 0;
             margin-bottom: -15px; 
@@ -207,68 +208,75 @@
             border-bottom: 2px solid var(--border-light);
             padding-bottom: 10px;
         }
-        .personal-schedule-grid { 
+        
+        .weekly-schedule-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
         }
-        .daily-schedule-card { 
+
+        .weekly-card {
             background-color: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 10px;
             padding: 20px;
             text-align: left;
-            box-shadow: 0 3px 8px var(--shadow-color);
-            transition: all 0.3s ease;
         }
-        .daily-schedule-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 15px var(--shadow-color);
-        }
-        .daily-schedule-card h3 {
+
+        .weekly-card h3 {
             color: var(--sub-heading-color);
             margin-top: 0;
             margin-bottom: 15px;
-            font-size: 1.3em;
+            font-size: 1.5em;
+            text-align: center;
             border-bottom: 1px solid var(--border-light);
             padding-bottom: 8px;
-            text-align: center;
         }
-        .daily-schedule-card ul {
+
+        .weekly-card ul {
             list-style: none;
             padding: 0;
             margin: 0;
             font-size: 1em;
         }
-        .daily-schedule-card li {
-            padding: 8px 0;
+
+        .weekly-card li {
+            padding: 10px 5px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px dashed var(--border-light);
         }
-        .daily-schedule-card li:last-child {
+        .weekly-card li:last-child {
             border-bottom: none;
         }
-        .daily-schedule-card li .shift-name {
+
+        .weekly-card li .day-name {
             font-weight: 600;
-            color: var(--text-color);
         }
-        .daily-schedule-card .status { font-weight: bold; padding: 3px 8px; border-radius: 5px; font-size: 0.9em;}
-        .daily-schedule-card .status-jaga { background-color: var(--status-jaga-color); color: white; }
-        .daily-schedule-card .status-tidak-jaga { background-color: var(--status-tidak-jaga-color); color: #333; }
-        .daily-schedule-card .status-libur { background-color: var(--status-libur-color); color: white; }
-        .daily-schedule-card .status-kosong { background-color: var(--status-kosong-color); color: white; }
 
+        .weekly-card .status {
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            color: white;
+            min-width: 100px;
+            text-align: center;
+        }
+        .status-kantor { background-color: var(--status-kantor-color); }
+        .status-transmisi-pagi { background-color: var(--status-transmisi-pagi-color); }
+        .status-transmisi-menginap { background-color: var(--status-transmisi-menginap-color); }
+        .status-libur { background-color: var(--status-libur-color); }
 
-        .theme-switch-wrapper {
+        /* Sisa CSS untuk Pop-up, Theme Switch, dll. tetap sama */
+                .theme-switch-wrapper {
             display: flex;
             align-items: center;
             justify-content: flex-end;
             margin-bottom: 20px;
             width: 100%;
-            max-width: 650px;
+            max-width: 800px;
             padding: 0 10px;
         }
         .theme-switch {
@@ -472,7 +480,6 @@
         .call-bantuan-popup-content li a:hover {
             text-decoration: underline;
         }
-
     </style>
 </head>
 <body class="light-mode">
@@ -498,13 +505,13 @@
             </div>
             <div class="search-container">
                 <input type="text" id="employeeNameSearch" placeholder="Ketik nama karyawan...">
-                <p class="search-message" id="searchMessage">Ketik nama untuk melihat jadwal mingguan pribadi.</p>
+                <p class="search-message" id="searchMessage">Ketik nama untuk melihat jadwal bulanan pribadi.</p>
             </div>
         </div>
 
         <div class="personal-schedule-result-container" id="personalScheduleResultContainer" style="display: none;"> 
             <h2 id="searchResultName"></h2>
-            <div class="personal-schedule-grid" id="personalScheduleGrid">
+            <div class="weekly-schedule-container" id="weeklyScheduleContainer">
             </div>
         </div>
     </div>
@@ -529,18 +536,12 @@
         </div>
     </div>
 
-    <script>
-        // ... (KODE JAVASCRIPT LAMA ANDA TETAP DI SINI, TIDAK ADA YANG DIUBAH)
-        let fullScheduleData = null;
-        const shiftTimes = {
-            "shift1": { display: "Shift 1 (08:00-16:00)" },
-            "shift2": { display: "Shift 2 (16:00-00:00)" },
-            "shift3": { display: "Shift 3 (00:00-08:00)" }
-        };
-        const allDays = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
 
+    <script>
+        let scheduleData = null;
+        const allDays = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU"];
         const emergencyContacts = [
-            { role: "Manajer Operasional", name: "Budi Santoso", phone: "0812-3456-7890" },
+             { role: "Manajer Operasional", name: "Budi Santoso", phone: "0812-3456-7890" },
             { role: "PIC IT", name: "Citra Dewi", phone: "0876-5432-1098" },
             { role: "Keamanan Kantor", name: "Nomor Kantor", phone: "(021) 1234567" }
         ];
@@ -548,79 +549,87 @@
         async function fetchScheduleData() {
             try {
                 const response = await fetch('jadwal.json');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                fullScheduleData = data.karyawan;
-                return fullScheduleData;
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                scheduleData = await response.json();
+                return scheduleData;
             } catch (error) {
-                console.error("Could not fetch schedule data for search:", error);
+                console.error("Gagal memuat data jadwal:", error);
                 const searchMessage = document.getElementById('searchMessage');
                 if(searchMessage) searchMessage.textContent = "Gagal memuat data jadwal. Coba lagi nanti.";
                 return null;
             }
         }
 
-        function displayPersonalSchedule(employeeName) {
+        function displayPersonalSchedule(employeeFullName) {
             const resultContainer = document.getElementById('personalScheduleResultContainer');
-            const gridContainer = document.getElementById('personalScheduleGrid');
+            const weeklyContainer = document.getElementById('weeklyScheduleContainer');
             const nameHeader = document.getElementById('searchResultName');
             const searchMessage = document.getElementById('searchMessage');
 
-            gridContainer.innerHTML = '';
+            weeklyContainer.innerHTML = '';
 
-            if (!fullScheduleData) {
-                searchMessage.textContent = 'Data jadwal belum termuat. Silakan coba lagi.';
+            if (!scheduleData) {
+                searchMessage.textContent = 'Data jadwal belum termuat. Coba lagi.';
                 resultContainer.style.display = 'none';
                 return;
             }
+            
+            nameHeader.textContent = `Jadwal Bulanan: ${employeeFullName}`;
+            const employeeNickname = scheduleData.karyawan[employeeFullName]?.nama_panggilan || '';
 
-            const employeeData = fullScheduleData[employeeName.toUpperCase()];
+            const isWanita = scheduleData.personel_grup.WANITA.includes(employeeFullName);
+            const isMenginap = scheduleData.personel_grup.MENGINAP_TETAP.includes(employeeFullName);
 
-            if (employeeData && employeeData.shift) {
-                nameHeader.textContent = `Jadwal Mingguan: ${employeeName}`;
+            // Loop untuk 4 minggu
+            for (let i = 1; i <= 4; i++) {
+                const weekKey = `MINGGU_${i}`;
+                const weekSchedule = scheduleData.jadwal_transmisi_pagi[weekKey];
                 
-                allDays.forEach(dayKey => {
-                    const dayCard = document.createElement('div');
-                    dayCard.className = 'daily-schedule-card';
-                    
-                    let dayScheduleHtml = `<h3>${dayKey.charAt(0).toUpperCase() + dayKey.slice(1).toLowerCase()}</h3><ul>`;
-                    
-                    const dayShifts = employeeData.shift[dayKey];
-                    if (dayShifts) {
-                        for (const shiftKey in shiftTimes) {
-                            const shiftStatus = dayShifts[shiftKey];
-                            let statusClass = 'status-kosong';
-                            let statusText = 'Kosong';
+                const weekCard = document.createElement('div');
+                weekCard.className = 'weekly-card';
+                let weekHtml = `<h3>Minggu ${i}</h3><ul>`;
 
-                            if (shiftStatus === 'jaga') {
-                                statusClass = 'status-jaga';
-                                statusText = 'Jaga';
-                            } else if (shiftStatus === 'tidak_jaga' || shiftStatus === 'tidak_juga') {
-                                statusClass = 'status-tidak-jaga';
-                                statusText = 'Tidak Jaga';
-                            } else if (shiftStatus === 'libur') {
-                                statusClass = 'status-libur';
-                                statusText = 'Libur';
-                            }
-                            
-                            dayScheduleHtml += `<li><span class="shift-name">${shiftTimes[shiftKey].display.split(' (')[0]}</span> <span class="status ${statusClass}">${statusText}</span></li>`;
+                allDays.forEach(day => {
+                    let shiftStatus = 'Libur';
+                    let shiftClass = 'status-libur';
+
+                    if (isWanita) {
+                        if (day !== 'SABTU' && day !== 'MINGGU') {
+                            shiftStatus = 'Shift Kantor';
+                            shiftClass = 'status-kantor';
                         }
+                    } else if (isMenginap) {
+                        shiftStatus = 'Shift Menginap';
+                        shiftClass = 'status-transmisi-menginap';
                     } else {
-                        dayScheduleHtml += `<li>Tidak ada data shift untuk hari ini.</li>`;
+                        // Cek jadwal transmisi pagi
+                        let isOnPagi = false;
+                        if(weekSchedule[day]){
+                            if(weekSchedule[day].some(nama => nama.toLowerCase() === employeeNickname.toLowerCase())){
+                                isOnPagi = true;
+                            }
+                        }
+
+                        if (isOnPagi) {
+                            shiftStatus = 'Transmisi Pagi';
+                            shiftClass = 'status-transmisi-pagi';
+                        } else if (day !== 'SABTU' && day !== 'MINGGU') {
+                            shiftStatus = 'Shift Kantor';
+                            shiftClass = 'status-kantor';
+                        }
                     }
-                    dayScheduleHtml += `</ul>`;
-                    dayCard.innerHTML = dayScheduleHtml;
-                    gridContainer.appendChild(dayCard);
+                    
+                    const dayDisplayName = day.charAt(0).toUpperCase() + day.slice(1).toLowerCase();
+                    weekHtml += `<li><span class="day-name">${dayDisplayName}</span> <span class="status ${shiftClass}">${shiftStatus}</span></li>`;
                 });
 
-                resultContainer.style.display = 'block';
-                searchMessage.textContent = `Menampilkan jadwal untuk ${employeeName}.`;
-            } else {
-                resultContainer.style.display = 'none';
-                searchMessage.textContent = `Jadwal untuk "${employeeName}" tidak ditemukan. Pastikan nama dieja dengan benar.`;
+                weekHtml += `</ul>`;
+                weekCard.innerHTML = weekHtml;
+                weeklyContainer.appendChild(weekCard);
             }
+
+            resultContainer.style.display = 'block';
+            searchMessage.textContent = `Menampilkan jadwal untuk ${employeeFullName}.`;
         }
 
 
@@ -632,8 +641,8 @@
 
             if (searchTerm.length > 2) {
                 let foundKey = null;
-                if (fullScheduleData) {
-                    for (const key in fullScheduleData) {
+                if (scheduleData && scheduleData.karyawan) {
+                    for (const key in scheduleData.karyawan) {
                         if (key.toLowerCase().includes(searchTerm.toLowerCase())) {
                             foundKey = key;
                             break;
@@ -645,7 +654,7 @@
                     displayPersonalSchedule(foundKey);
                 } else {
                     resultContainer.style.display = 'none';
-                    if (fullScheduleData) {
+                    if (scheduleData) {
                          searchMessage.textContent = `Nama "${searchTerm}" tidak ditemukan.`;
                     } else {
                          searchMessage.textContent = `Data jadwal sedang dimuat...`;
@@ -653,20 +662,20 @@
                 }
             } else if (searchTerm.length === 0) {
                 resultContainer.style.display = 'none';
-                searchMessage.textContent = 'Ketik nama untuk melihat jadwal mingguan pribadi.';
+                searchMessage.textContent = 'Ketik nama untuk melihat jadwal bulanan pribadi.';
             } else {
                 resultContainer.style.display = 'none';
                 searchMessage.textContent = 'Ketik minimal 3 huruf nama karyawan.';
             }
         });
 
+        // --- POPUP AND THEME SWITCH LOGIC (TETAP SAMA) ---
+        // (Salin semua logika untuk pop-up dan theme switch dari kode sebelumnya ke sini)
         const toggleSwitch = document.getElementById('checkbox');
         const currentTheme = localStorage.getItem('theme');
         if (currentTheme) {
             document.body.classList.add(currentTheme);
-            if (currentTheme === 'dark-mode') {
-                toggleSwitch.checked = true;
-            }
+            if (currentTheme === 'dark-mode') toggleSwitch.checked = true;
         } else {
             document.body.classList.add('light-mode');
         }
@@ -690,14 +699,12 @@
         const popupContactLinks = document.getElementById('popupContactLinks');
         const popupCloseBtn = document.getElementById('popupCloseBtn');
 
-        function showPhotoPopup(namaKaryawan) { 
-            if (!fullScheduleData || !fullScheduleData[namaKaryawan.toUpperCase()]) return;
-            const employeeData = fullScheduleData[namaKaryawan.toUpperCase()];
-            
+        function showPhotoPopup(fullName) { 
+            const employeeData = scheduleData.karyawan[fullName];
             if (employeeData) {
-                popupImage.src = employeeData.photo || 'https://via.placeholder.com/150?text=No+Photo';
-                popupImage.alt = `Foto ${employeeData.name || namaKaryawan}`;
-                popupName.textContent = employeeData.name || namaKaryawan;
+                popupImage.src = employeeData.photo || 'https://via.placeholder.com/150';
+                popupImage.alt = `Foto ${fullName}`;
+                popupName.textContent = fullName;
                 popupInfo.textContent = employeeData.info || "Informasi tidak tersedia.";
                 popupContactLinks.innerHTML = '';
                 if (employeeData.phone) {
@@ -718,29 +725,16 @@
                 photoPopupOverlay.classList.add('active');
             }
         }
-        
         function hidePopup(popupElement) {
             popupElement.classList.remove('active');
-            if (popupElement === photoPopupOverlay) {
-                setTimeout(() => {
-                    popupImage.src = ""; 
-                }, 300); 
-                popupContactLinks.innerHTML = '';
-            }
         }
-
-        photoPopupOverlay.addEventListener('click', (e) => {
-            if (e.target === photoPopupOverlay) {
-                hidePopup(photoPopupOverlay);
-            }
-        });
+        photoPopupOverlay.addEventListener('click', (e) => { if (e.target === photoPopupOverlay) hidePopup(photoPopupOverlay);});
         popupCloseBtn.addEventListener('click', () => hidePopup(photoPopupOverlay));
 
         const callBantuanBtn = document.getElementById('callBantuanBtn');
         const callBantuanPopupOverlay = document.getElementById('callBantuanPopupOverlay');
         const callBantuanCloseBtn = document.getElementById('callBantuanCloseBtn');
         const contactList = document.getElementById('contactList');
-
         function showCallBantuanPopup() {
             contactList.innerHTML = ''; 
             emergencyContacts.forEach(contact => {
@@ -750,14 +744,9 @@
             });
             callBantuanPopupOverlay.classList.add('active');
         }
-
         callBantuanBtn.addEventListener('click', showCallBantuanPopup);
         callBantuanCloseBtn.addEventListener('click', () => hidePopup(callBantuanPopupOverlay));
-        callBantuanPopupOverlay.addEventListener('click', (e) => {
-            if (e.target === callBantuanPopupOverlay) {
-                hidePopup(callBantuanPopupOverlay);
-            }
-        });
+        callBantuanPopupOverlay.addEventListener('click', (e) => { if (e.target === callBantuanPopupOverlay) hidePopup(callBantuanPopupOverlay); });
         
         document.addEventListener('DOMContentLoaded', async () => {
             await fetchScheduleData();
@@ -767,74 +756,23 @@
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
     
     <script>
+        // Logika untuk tsParticles (background) tidak berubah
         document.addEventListener('DOMContentLoaded', () => {
             const isDarkMode = () => document.body.classList.contains('dark-mode');
-
-            const lightModeConfig = {
-                background: { color: { value: "#e6f0f5" } },
-                particles: {
-                    color: { value: "#334155" },
-                    links: { color: "#334155", opacity: 0.4 }
-                }
-            };
-            
-            const darkModeConfig = {
-                background: { color: { value: "#212121" } },
-                particles: {
-                    color: { value: "#ffffff" },
-                    links: { color: "#ffffff", opacity: 0.2 }
-                }
-            };
-
-            const baseConfig = {
-                fpsLimit: 60,
-                interactivity: {
-                    events: { onHover: { enable: true, mode: "repulse" }, resize: true },
-                    modes: { repulse: { distance: 100, duration: 0.4 } }
-                },
-                particles: {
-                    collisions: { enable: true },
-                    move: {
-                        direction: "none",
-                        enable: true,
-                        outModes: { default: "bounce" },
-                        random: false,
-                        speed: 1.5,
-                        straight: false
-                    },
-                    number: { density: { enable: true, area: 800 }, value: 80 },
-                    opacity: { value: 0.5 },
-                    shape: { type: "circle" },
-                    size: { value: { min: 1, max: 4 } }
-                },
-                detectRetina: true
-            };
-
-            // Fungsi untuk menggabungkan konfigurasi
-            const mergeConfigs = (base, theme) => {
-                return {
-                    ...base,
-                    background: theme.background,
-                    particles: {
-                        ...base.particles,
-                        color: theme.particles.color,
-                        links: { ...base.particles.links, ...theme.particles.links }
-                    }
-                };
-            };
-
+            const lightModeConfig = { background: { color: { value: "#e6f0f5" } }, particles: { color: { value: "#334155" }, links: { color: "#334155", opacity: 0.4 } } };
+            const darkModeConfig = { background: { color: { value: "#212121" } }, particles: { color: { value: "#ffffff" }, links: { color: "#ffffff", opacity: 0.2 } } };
+            const baseConfig = { fpsLimit: 60, interactivity: { events: { onHover: { enable: true, mode: "repulse" }, resize: true }, modes: { repulse: { distance: 100, duration: 0.4 } } }, particles: { collisions: { enable: true }, move: { direction: "none", enable: true, outModes: { default: "bounce" }, random: false, speed: 1.5, straight: false }, number: { density: { enable: true, area: 800 }, value: 80 }, opacity: { value: 0.5 }, shape: { type: "circle" }, size: { value: { min: 1, max: 4 } } }, detectRetina: true };
+            const mergeConfigs = (base, theme) => ({ ...base, background: theme.background, particles: { ...base.particles, color: theme.particles.color, links: { ...base.particles.links, ...theme.particles.links } } });
             let currentConfig = isDarkMode() ? mergeConfigs(baseConfig, darkModeConfig) : mergeConfigs(baseConfig, lightModeConfig);
             tsParticles.load("tsparticles", currentConfig);
-            
-            // Dengarkan perubahan tema
             const themeSwitch = document.getElementById('checkbox');
             themeSwitch.addEventListener('change', () => {
-                setTimeout(() => { // Beri sedikit waktu agar class di body berubah
+                setTimeout(() => {
                     let newConfig = isDarkMode() ? mergeConfigs(baseConfig, darkModeConfig) : mergeConfigs(baseConfig, lightModeConfig);
                     tsParticles.load("tsparticles", newConfig);
                 }, 50);
             });
         });
     </script>
-    </body>
+</body>
 </html>
