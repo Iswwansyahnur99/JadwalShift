@@ -6,19 +6,16 @@
     <title>Jadwal Shift Pemancar Transmisi TVRI Kaltara</title>
     <link rel="icon" href="photos/logo_tvri_kaltara.png" type="image/png">
     <style>
-        /* CSS ANDA TETAP SAMA SEPERTI SEBELUMNYA, TIDAK ADA PERUBAHAN */
-        /* --- MODIFIKASI BACKGROUND DIMULAI --- */
+        
         #tsparticles {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* Penting! Agar berada di belakang konten */
+            z-index: -1; 
         }
-        /* --- MODIFIKASI BACKGROUND SELESAI --- */
-
-        /* --- CSS Variables for Theming (Light and Dark Mode) --- */
+        
         :root {
             /* Light Mode Colors - Inspired by TVRI Blue (#00508C) & Red (#DC2F2F) */
             --bg-color: #e6f0f5; /* Very light blue-grey background */
@@ -68,7 +65,7 @@
             --popup-bg: #3a3a3a;
             --popup-text-color: #e0e0e0;
             --active-shift-bg: var(--primary-blue);
-            --active-shift-text: #2d2d2d; 
+            --active-shift-text: #2d2d2d;
             --active-shift-border: #3a7fa5;
 
             --progress-bar-track: #555;
@@ -93,7 +90,7 @@
             /* HAPUS background-image dari body */
             /* background-image: url('...'); */
             background-size: cover;
-            background-attachment: fixed; 
+            background-attachment: fixed;
             background-position: center center;
         }
 
@@ -106,22 +103,22 @@
             align-items: center;
         }
 
-        .container, .schedule-visualization-container, .currently-on-duty-container {
+        .container, .schedule-visualization-container, .currently-on-duty-container, .tomorrow-schedule-container {
             background-color: var(--container-bg);
             padding: 30px;
             box-shadow: 0 4px 20px var(--shadow-color);
-            width: 100%; 
+            width: 100%;
             text-align: center;
             margin-bottom: 30px;
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
             position: relative;
         }
-        
+
         .main-content-wrapper > .container:first-of-type {
              border-radius: 0 0 12px 12px;
         }
-        
-        .schedule-visualization-container, .currently-on-duty-container {
+
+        .schedule-visualization-container, .currently-on-duty-container, .tomorrow-schedule-container {
             border-radius: 12px;
         }
 
@@ -130,8 +127,8 @@
         .navbar {
             background-color: var(--primary-blue);
             width: 100%;
-            max-width: 650px; 
-            border-radius: 12px 12px 0 0; 
+            max-width: 650px;
+            border-radius: 12px 12px 0 0;
             padding: 10px 0;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             display: flex;
@@ -152,21 +149,21 @@
         }
         .navbar a.active-nav {
             background-color: var(--sub-heading-color);
-            box-shadow: none; 
+            box-shadow: none;
         }
 
 
         /* --- Header Section (inside the first .container) --- */
-        .container .header { 
+        .container .header {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-bottom: 20px;
-            padding-top: 15px; 
+            padding-top: 15px;
         }
 
         #tvriKaltaraLogo {
-            width: 80px; 
+            width: 80px;
             height: auto;
             margin-bottom: 10px;
             content: url('photos/logo_tvri_kaltara.png');
@@ -176,7 +173,7 @@
             content: url('photos/logo_tvri_kaltara_dark_mode.png');
         }
 
-        h1 { 
+        h1 {
             color: var(--primary-blue);
             margin-bottom: 10px;
             font-size: 2.2em;
@@ -226,13 +223,13 @@
 
         /* --- Currently On Duty Section --- */
         .currently-on-duty-container {
-            padding: 20px 30px; 
+            padding: 20px 30px;
         }
         .currently-on-duty-container h2 {
             color: var(--primary-blue);
             margin-top: 0;
             margin-bottom: 20px;
-            font-size: 1.6em; 
+            font-size: 1.6em;
             border-bottom: 1px solid var(--border-light);
             padding-bottom: 8px;
         }
@@ -244,12 +241,12 @@
         .on-duty-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 20px; 
+            gap: 20px;
             margin-top: 15px;
         }
-        .on-duty-card { 
+        .on-duty-card {
             background-color: var(--card-bg);
-            padding: 15px; 
+            padding: 15px;
             border-radius: 12px;
             color: var(--text-color);
             box-shadow: 0 2px 5px rgba(0,0,0,0.07);
@@ -283,11 +280,12 @@
             font-style: italic;
             color: var(--empty-msg-color);
             padding: 10px;
+            grid-column: 1 / -1; /* Span full width */
         }
 
 
-        /* --- Schedule Visualization (Full Day) --- */
-        .schedule-visualization-container h2 {
+        /* --- Schedule Visualization (Full Day & Tomorrow) --- */
+        .schedule-visualization-container h2, .tomorrow-schedule-container h2 {
             color: var(--primary-blue);
             margin-bottom: 25px;
             font-size: 2em;
@@ -310,14 +308,14 @@
             transition: all 0.3s ease;
         }
         .shift-display-block.active-shift {
-            background-color: var(--active-shift-bg); 
-            color: var(--active-shift-text); 
+            background-color: var(--active-shift-bg);
+            color: var(--active-shift-text);
             border-color: var(--active-shift-border);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             transform: translateY(-3px);
         }
         .active-shift h3, .active-shift .jaga-grid .jaga-card, .active-shift .no-jaga {
-            color: white !important; 
+            color: white !important;
         }
         .active-shift .jaga-grid .jaga-card {
             background-color: rgba(255,255,255,0.2) !important;
@@ -330,7 +328,7 @@
         }
 
         .shift-display-block h3 {
-            color: var(--sub-heading-color); 
+            color: var(--sub-heading-color);
             margin-top: 0;
             margin-bottom: 10px;
             font-size: 1.4em;
@@ -352,7 +350,7 @@
             justify-content: center;
             align-items: stretch;
         }
-        .jaga-card { 
+        .jaga-card {
             background-color: var(--container-bg);
             border: 1px solid var(--card-border);
             padding: 10px;
@@ -375,7 +373,7 @@
             background-color: var(--primary-blue);
             color: white;
         }
-        .no-jaga { 
+        .no-jaga {
             font-style: italic;
             color: var(--empty-msg-color);
             text-align: center;
@@ -499,7 +497,7 @@
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            object-position: center center; 
+            object-position: center center;
             margin-bottom: 15px;
             border: 3px solid var(--primary-blue);
         }
@@ -535,10 +533,10 @@
             opacity: 0.8;
         }
         .popup-contact-links .phone-link {
-            background-color: #33b5e5; 
+            background-color: #33b5e5;
         }
         .popup-contact-links .whatsapp-link {
-            background-color: #25d366; 
+            background-color: #25d366;
         }
         .popup-contact-links a svg {
             margin-right: 5px;
@@ -618,7 +616,7 @@
             <a href="search.html">Cari Jadwal Saya</a>
         </nav>
 
-        <div class="container"> 
+        <div class="container">
             <div class="header">
                 <img id="tvriKaltaraLogo" alt="Logo TVRI Kaltara" class="logo">
                 <h1>Shift Pemancar Siaran TVRI Kaltara</h1>
@@ -633,13 +631,19 @@
             </div>
         </div>
 
-        <div class="schedule-visualization-container"> 
+        <div class="schedule-visualization-container">
             <h2 id="scheduleDateHeader">Memuat Jadwal...</h2>
             <div class="shifts-timeline" id="shiftsTimeline">
             </div>
         </div>
-    </div> 
-    
+
+        <div class="tomorrow-schedule-container">
+            <h2 id="tomorrowScheduleHeader">Jadwal Besok</h2>
+            <div class="shifts-timeline" id="tomorrowShiftsTimeline">
+                 </div>
+        </div>
+    </div>
+
     <div class="popup-overlay" id="photoPopupOverlay">
         <div class="popup-content">
             <button class="popup-close" id="popupCloseBtn">&times;</button>
@@ -671,7 +675,7 @@
 
         async function fetchScheduleData() {
             try {
-                const response = await fetch('jadwal.json'); 
+                const response = await fetch('jadwal.json');
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 scheduleData = await response.json();
                 return scheduleData;
@@ -695,27 +699,28 @@
         function getCurrentShiftInfo(now) {
             const day = now.getDay(); // 0 for Sunday, 1 for Monday, etc.
             const hour = now.getHours();
+            const minutes = now.getMinutes();
 
-            // Sabtu (6) atau Minggu (0)
+            // Sabtu (6) atau Minggu (0) -> tidak ada shift pagi terjadwal
             if (day === 0 || day === 6) {
-                return { key: "TRANSMISI_MENGINAP", name: scheduleData.shift_definitions.TRANSMISI_MENGINAP.display };
+                return null;
             }
 
             // Jumat (5)
             if (day === 5) {
-                if (hour >= 7 && (hour < 16 || (hour === 16 && now.getMinutes() < 30))) {
+                if (hour >= 7 && (hour < 16 || (hour === 16 && minutes < 30))) {
                     return { key: "TRANSMISI_PAGI", name: scheduleData.shift_definitions.TRANSMISI_PAGI.display };
-                } else {
-                    return { key: "TRANSMISI_MENGINAP", name: scheduleData.shift_definitions.TRANSMISI_MENGINAP.display };
                 }
             }
-            
+
             // Senin (1) - Kamis (4)
-            if (hour >= 7 && hour < 16) {
-                return { key: "TRANSMISI_PAGI", name: scheduleData.shift_definitions.TRANSMISI_PAGI.display };
-            } else {
-                return { key: "TRANSMISI_MENGINAP", name: scheduleData.shift_definitions.TRANSMISI_MENGINAP.display };
+            if (day >= 1 && day <= 4) {
+                 if (hour >= 7 && hour < 16) {
+                    return { key: "TRANSMISI_PAGI", name: scheduleData.shift_definitions.TRANSMISI_PAGI.display };
+                }
             }
+
+            return null; // Tidak ada shift yang aktif
         }
 
         function findEmployeeFullName(nickname) {
@@ -738,113 +743,171 @@
         function displayOnDuty(currentShift) {
             if (!scheduleData) return;
             const now = getWitaTime();
-            const dayName = allDays[now.getDay()];
-            const weekOfMonth = getWeekOfMonth(now);
-            const weekKey = `MINGGU_${weekOfMonth}`;
-
-            let onDutyNames = [];
-            
             const onDutyGrid = document.getElementById('onDutyGrid');
             const currentShiftNameDisplay = document.getElementById('currentShiftNameDisplay');
             onDutyGrid.innerHTML = '';
-            currentShiftNameDisplay.textContent = `(${currentShift.name})`;
 
-            if (currentShift.key === 'TRANSMISI_PAGI') {
+            if (currentShift && currentShift.key === 'TRANSMISI_PAGI') {
+                const dayName = allDays[now.getDay()];
+                const weekOfMonth = getWeekOfMonth(now);
+                const weekKey = `MINGGU_${weekOfMonth}`;
+
+                let onDutyNames = [];
                 const dailySchedule = scheduleData.jadwal_transmisi_pagi[weekKey];
                 if (dailySchedule && dailySchedule[dayName]) {
                     onDutyNames = dailySchedule[dayName];
                 }
-            } else { // TRANSMISI_MENGINAP
-                onDutyNames = scheduleData.personel_grup.MENGINAP_TETAP;
-            }
 
-            if (onDutyNames.length > 0) {
-                onDutyNames.forEach(nama => {
-                    const fullName = findEmployeeFullName(nama);
-                    const employeeData = scheduleData.karyawan[fullName];
-                    const photoSrc = (employeeData && employeeData.photo) ? employeeData.photo : 'https://via.placeholder.com/150';
-                    
-                    const card = document.createElement('div');
-                    card.className = 'on-duty-card';
-                    card.innerHTML = `
-                        <img src="${photoSrc}" alt="Foto ${fullName}" class="on-duty-photo">
-                        <span class="on-duty-name">${fullName}</span>
-                    `;
-                    card.addEventListener('click', () => showPhotoPopup(fullName));
-                    onDutyGrid.appendChild(card);
-                });
+                currentShiftNameDisplay.textContent = `(${currentShift.name})`;
+
+                if (onDutyNames.length > 0) {
+                    onDutyNames.forEach(nama => {
+                         if (!nama) return; // Skip empty strings
+                        const fullName = findEmployeeFullName(nama);
+                        const employeeData = scheduleData.karyawan[fullName];
+                        const photoSrc = (employeeData && employeeData.photo) ? employeeData.photo : 'https://via.placeholder.com/150';
+
+                        const card = document.createElement('div');
+                        card.className = 'on-duty-card';
+                        card.innerHTML = `
+                            <img src="${photoSrc}" alt="Foto ${fullName}" class="on-duty-photo">
+                            <span class="on-duty-name">${fullName}</span>
+                        `;
+                        card.addEventListener('click', () => showPhotoPopup(fullName));
+                        onDutyGrid.appendChild(card);
+                    });
+                } else {
+                    onDutyGrid.innerHTML = `<p class="no-one-on-duty">Tidak ada yang bertugas pada shift ini.</p>`;
+                }
             } else {
-                onDutyGrid.innerHTML = `<p class="no-one-on-duty">Tidak ada yang bertugas pada shift ini.</p>`;
+                 currentShiftNameDisplay.textContent = '';
+                 onDutyGrid.innerHTML = `<p class="no-one-on-duty">Tidak ada shift yang sedang berlangsung.</p>`;
             }
         }
-        
+
         function displayFullDaySchedule(currentShift) {
             if (!scheduleData) return;
             const now = getWitaTime();
             const dayName = allDays[now.getDay()];
             const weekOfMonth = getWeekOfMonth(now);
             const weekKey = `MINGGU_${weekOfMonth}`;
-            
+
             const formattedDate = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Makassar' }).format(now);
             document.getElementById('scheduleDateHeader').textContent = `Jadwal Jaga ${formattedDate}`;
-            
+
             const shiftsTimelineDiv = document.getElementById('shiftsTimeline');
             shiftsTimelineDiv.innerHTML = '';
 
-            const shiftsToDisplay = ['TRANSMISI_PAGI', 'TRANSMISI_MENGINAP'];
+            // Hanya tampilkan Shift Transmisi Pagi
+            const shiftKey = 'TRANSMISI_PAGI';
+            const shiftDef = scheduleData.shift_definitions[shiftKey];
+            let jagaNames = [];
 
-            shiftsToDisplay.forEach(shiftKey => {
-                const shiftDef = scheduleData.shift_definitions[shiftKey];
-                let jagaNames = [];
+            // Tidak ada jadwal pagi di hari Sabtu atau Minggu
+            if (dayName === "SABTU" || dayName === "MINGGU") {
+                const p = document.createElement('p');
+                p.className = 'no-jaga';
+                p.textContent = "Tidak ada jadwal transmisi pada hari libur.";
+                shiftsTimelineDiv.appendChild(p);
+                return;
+            }
 
-                if (dayName === "SABTU" || dayName === "MINGGU") {
-                    if (shiftKey !== 'TRANSMISI_MENGINAP') return; // Hanya tampilkan shift menginap di weekend
-                     jagaNames = scheduleData.personel_grup.MENGINAP_TETAP;
-                } else {
-                    if (shiftKey === 'TRANSMISI_PAGI') {
-                        const dailySchedule = scheduleData.jadwal_transmisi_pagi[weekKey];
-                        if (dailySchedule && dailySchedule[dayName]) {
-                            jagaNames = dailySchedule[dayName];
-                        }
-                    } else {
-                        jagaNames = scheduleData.personel_grup.MENGINAP_TETAP;
-                    }
-                }
-                
-                const shiftBlock = document.createElement('div');
-                shiftBlock.className = 'shift-display-block';
-                if (shiftKey === currentShift.key) {
-                    shiftBlock.classList.add('active-shift');
-                }
-                
-                let timeRange = dayName === 'JUMAT' ? shiftDef.waktu_jumat : shiftDef.waktu_senin_kamis;
-                if(dayName === "SABTU" || dayName === "MINGGU") timeRange = shiftDef.waktu_weekend;
+            const dailySchedule = scheduleData.jadwal_transmisi_pagi[weekKey];
+            if (dailySchedule && dailySchedule[dayName]) {
+                jagaNames = dailySchedule[dayName].filter(name => name); // Filter out empty names
+            }
 
-                shiftBlock.innerHTML = `<h3>${shiftDef.display} <span class="time-range">(${timeRange})</span></h3>`;
+            const shiftBlock = document.createElement('div');
+            shiftBlock.className = 'shift-display-block';
+            if (currentShift && shiftKey === currentShift.key) {
+                shiftBlock.classList.add('active-shift');
+            }
 
-                const jagaGrid = document.createElement('div');
-                jagaGrid.className = 'jaga-grid';
+            let timeRange = dayName === 'JUMAT' ? shiftDef.waktu_jumat : shiftDef.waktu_senin_kamis;
+            shiftBlock.innerHTML = `<h3>${shiftDef.display} <span class="time-range">(${timeRange})</span></h3>`;
 
-                if (jagaNames.length > 0) {
-                    jagaNames.forEach(nama => {
-                        const fullName = findEmployeeFullName(nama);
-                        const div = document.createElement('div');
-                        div.className = 'jaga-card';
-                        div.textContent = fullName;
-                        div.addEventListener('click', () => showPhotoPopup(fullName));
-                        jagaGrid.appendChild(div);
-                    });
-                } else {
-                    const p = document.createElement('p');
-                    p.className = 'no-jaga';
-                    p.textContent = "Tidak ada jadwal jaga di shift ini.";
-                    jagaGrid.appendChild(p);
-                }
-                shiftBlock.appendChild(jagaGrid);
-                shiftsTimelineDiv.appendChild(shiftBlock);
-            });
+            const jagaGrid = document.createElement('div');
+            jagaGrid.className = 'jaga-grid';
+
+            if (jagaNames.length > 0) {
+                jagaNames.forEach(nama => {
+                    const fullName = findEmployeeFullName(nama);
+                    const div = document.createElement('div');
+                    div.className = 'jaga-card';
+                    div.textContent = fullName;
+                    div.addEventListener('click', () => showPhotoPopup(fullName));
+                    jagaGrid.appendChild(div);
+                });
+            } else {
+                const p = document.createElement('p');
+                p.className = 'no-jaga';
+                p.textContent = "Tidak ada jadwal jaga di shift ini.";
+                jagaGrid.appendChild(p);
+            }
+            shiftBlock.appendChild(jagaGrid);
+            shiftsTimelineDiv.appendChild(shiftBlock);
         }
-        
+
+        function displayTomorrowSchedulePreview() {
+            if (!scheduleData) return;
+
+            const tomorrow = getWitaTime();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+
+            const dayName = allDays[tomorrow.getDay()];
+            const weekOfMonth = getWeekOfMonth(tomorrow);
+            const weekKey = `MINGGU_${weekOfMonth}`;
+
+            const formattedDate = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long' }).format(tomorrow);
+            document.getElementById('tomorrowScheduleHeader').textContent = `Jadwal Besok, ${formattedDate}`;
+
+            const timelineDiv = document.getElementById('tomorrowShiftsTimeline');
+            timelineDiv.innerHTML = '';
+
+            if (dayName === "SABTU" || dayName === "MINGGU") {
+                timelineDiv.innerHTML = `<p class="no-jaga">Besok adalah hari libur, tidak ada jadwal transmisi.</p>`;
+                return;
+            }
+
+            const shiftKey = 'TRANSMISI_PAGI';
+            const shiftDef = scheduleData.shift_definitions[shiftKey];
+            let jagaNames = [];
+            const dailySchedule = scheduleData.jadwal_transmisi_pagi[weekKey];
+
+            if (dailySchedule && dailySchedule[dayName]) {
+                 jagaNames = dailySchedule[dayName].filter(name => name); // Filter out empty names
+            }
+
+            const shiftBlock = document.createElement('div');
+            shiftBlock.className = 'shift-display-block';
+
+            let timeRange = dayName === 'JUMAT' ? shiftDef.waktu_jumat : shiftDef.waktu_senin_kamis;
+            shiftBlock.innerHTML = `<h3>${shiftDef.display} <span class="time-range">(${timeRange})</span></h3>`;
+
+            const jagaGrid = document.createElement('div');
+            jagaGrid.className = 'jaga-grid';
+
+            if (jagaNames.length > 0) {
+                jagaNames.forEach(nama => {
+                    const fullName = findEmployeeFullName(nama);
+                    const div = document.createElement('div');
+                    div.className = 'jaga-card';
+                    div.textContent = fullName;
+                    div.addEventListener('click', () => showPhotoPopup(fullName));
+                    jagaGrid.appendChild(div);
+                });
+            } else {
+                const p = document.createElement('p');
+                p.className = 'no-jaga';
+                p.textContent = "Tidak ada jadwal jaga yang ditemukan untuk besok.";
+                jagaGrid.appendChild(p);
+            }
+
+            shiftBlock.appendChild(jagaGrid);
+            timelineDiv.appendChild(shiftBlock);
+        }
+
+
         function updateDateTimeDisplay() {
             const now = getWitaTime();
             const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Makassar' };
@@ -863,37 +926,41 @@
         }
 
         async function initializeApp() {
-            await fetchScheduleData(); 
+            await fetchScheduleData();
             if (!scheduleData) return;
 
-            updateDateTimeDisplay(); 
-            displayDynamicGreeting(); 
-            
+            updateDateTimeDisplay();
+            displayDynamicGreeting();
+
             const now = getWitaTime();
             const currentShift = getCurrentShiftInfo(now);
 
-            displayOnDuty(currentShift); 
+            displayOnDuty(currentShift);
             displayFullDaySchedule(currentShift);
-            
+            displayTomorrowSchedulePreview();
+
             setInterval(updateDateTimeDisplay, 1000);
             setInterval(() => {
                 const now = getWitaTime();
                 const currentShift = getCurrentShiftInfo(now);
-                displayOnDuty(currentShift); 
+                displayOnDuty(currentShift);
                 displayFullDaySchedule(currentShift);
                 displayDynamicGreeting();
+                // Check if date has changed to update tomorrow's schedule
+                if (now.getHours() === 0 && now.getMinutes() === 0) {
+                    displayTomorrowSchedulePreview();
+                }
             }, 60 * 1000); // Update every minute
         }
 
         // --- POPUP AND THEME SWITCH LOGIC (TETAP SAMA) ---
-        // (Salin semua logika untuk pop-up dan theme switch dari kode sebelumnya ke sini)
         const toggleSwitch = document.getElementById('checkbox');
         const currentTheme = localStorage.getItem('theme');
         if (currentTheme) {
             document.body.classList.add(currentTheme);
             if (currentTheme === 'dark-mode') toggleSwitch.checked = true;
         } else {
-            document.body.classList.add('light-mode'); 
+            document.body.classList.add('light-mode');
         }
         function switchTheme(e) {
             if (e.target.checked) {
@@ -915,14 +982,14 @@
         const popupContactLinks = document.getElementById('popupContactLinks');
         const popupCloseBtn = document.getElementById('popupCloseBtn');
 
-        function showPhotoPopup(fullName) { 
-            const employeeData = scheduleData.karyawan[fullName]; 
+        function showPhotoPopup(fullName) {
+            const employeeData = scheduleData.karyawan[fullName];
             if (employeeData) {
                 popupImage.src = employeeData.photo || 'https://via.placeholder.com/150';
                 popupImage.alt = `Foto ${fullName}`;
                 popupName.textContent = fullName;
                 popupInfo.textContent = employeeData.info || "Informasi tidak tersedia.";
-                popupContactLinks.innerHTML = ''; 
+                popupContactLinks.innerHTML = '';
                 if (employeeData.phone) {
                     const phoneLink = document.createElement('a');
                     phoneLink.href = `tel:${employeeData.phone}`;
@@ -963,12 +1030,12 @@
         callBantuanBtn.addEventListener('click', showCallBantuanPopup);
         callBantuanCloseBtn.addEventListener('click', () => hidePopup(callBantuanPopupOverlay));
         callBantuanPopupOverlay.addEventListener('click', (e) => { if (e.target === callBantuanPopupOverlay) hidePopup(callBantuanPopupOverlay); });
-        
+
         document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
-    
+
     <script>
         // Logika untuk tsParticles (background) tidak berubah
         document.addEventListener('DOMContentLoaded', () => {
@@ -981,7 +1048,7 @@
             tsParticles.load("tsparticles", currentConfig);
             const themeSwitch = document.getElementById('checkbox');
             themeSwitch.addEventListener('change', () => {
-                setTimeout(() => { 
+                setTimeout(() => {
                     let newConfig = isDarkMode() ? mergeConfigs(baseConfig, darkModeConfig) : mergeConfigs(baseConfig, lightModeConfig);
                     tsParticles.load("tsparticles", newConfig);
                 }, 50);
