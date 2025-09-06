@@ -6,6 +6,15 @@
     <title>Cari Jadwal Pribadi TVRI Kaltara</title>
     <link rel="icon" href="photos/logo_tvri_kaltara.png" type="image/png">
     <style>
+        /* Quick Search Overlay */
+        .qs-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:1000}
+        .qs-overlay.active{display:flex}
+        .qs-box{background:var(--container-bg);color:var(--text-color);width:min(620px,90vw);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:12px}
+        .qs-input{width:100%;padding:12px;border:1px solid var(--card-border);border-radius:8px;background:var(--bg-color);color:var(--text-color);font-size:1rem}
+        .qs-list{max-height:50vh;overflow:auto;margin-top:10px;border-top:1px solid var(--border-light)}
+        .qs-item{padding:8px 10px;cursor:pointer;display:flex;align-items:center;gap:10px}
+        .qs-item img{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid var(--card-border)}
+        .qs-item:hover,.qs-item.active{background:var(--card-bg)}
         /* Presisi layout */
         *, *::before, *::after { box-sizing: border-box; }
         /* --- MODIFIKASI BACKGROUND DIMULAI --- */
@@ -463,6 +472,7 @@
             <a href="swap.html">Tukar Jadwal</a>
             <a href="attendance.html">Absensi</a>
             <a href="recap.html">Rekapan</a>
+            <a href="#" id="openQuickSearch">Cari Pegawai</a>
         </nav>
 
         <div class="container">
@@ -720,29 +730,66 @@
         
         document.addEventListener('DOMContentLoaded', async () => {
             await fetchScheduleData();
+            // Prefill from query
+            const params = new URLSearchParams(window.location.search);
+            const q = params.get('q') || params.get('name');
+            if (q) {
+                const inp = document.getElementById('employeeNameSearch');
+                inp.value = q;
+                // trigger search
+                const event = new Event('keyup');
+                inp.dispatchEvent(event);
+            }
         });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
     
     <script>
-        // Logika untuk tsParticles (background) tidak berubah
+        // Logika untuk tsParticles (background) dimatikan di mobile/reduced-motion
         document.addEventListener('DOMContentLoaded', () => {
             const isDarkMode = () => document.body.classList.contains('dark-mode');
             const lightModeConfig = { background: { color: { value: "#e6f0f5" } }, particles: { color: { value: "#334155" }, links: { color: "#334155", opacity: 0.4 } } };
             const darkModeConfig = { background: { color: { value: "#212121" } }, particles: { color: { value: "#ffffff" }, links: { color: "#ffffff", opacity: 0.2 } } };
             const baseConfig = { fpsLimit: 60, interactivity: { events: { onHover: { enable: true, mode: "repulse" }, resize: true }, modes: { repulse: { distance: 100, duration: 0.4 } } }, particles: { collisions: { enable: true }, move: { direction: "none", enable: true, outModes: { default: "bounce" }, random: false, speed: 1.5, straight: false }, number: { density: { enable: true, area: 800 }, value: 80 }, opacity: { value: 0.5 }, shape: { type: "circle" }, size: { value: { min: 1, max: 4 } } }, detectRetina: true };
             const mergeConfigs = (base, theme) => ({ ...base, background: theme.background, particles: { ...base.particles, color: theme.particles.color, links: { ...base.particles.links, ...theme.particles.links } } });
-            let currentConfig = isDarkMode() ? mergeConfigs(baseConfig, darkModeConfig) : mergeConfigs(baseConfig, lightModeConfig);
-            tsParticles.load("tsparticles", currentConfig);
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const isSmall = window.matchMedia('(max-width: 640px)').matches;
+            if (!reduceMotion && !isSmall) {
+                let currentConfig = isDarkMode() ? mergeConfigs(baseConfig, darkModeConfig) : mergeConfigs(baseConfig, lightModeConfig);
+                tsParticles.load("tsparticles", currentConfig);
+            }
             const themeSwitch = document.getElementById('checkbox');
             themeSwitch.addEventListener('change', () => {
                 setTimeout(() => {
-                    let newConfig = isDarkMode() ? mergeConfigs(baseConfig, darkModeConfig) : mergeConfigs(baseConfig, lightModeConfig);
-                    tsParticles.load("tsparticles", newConfig);
+                    if (!reduceMotion && !isSmall) {
+                        let newConfig = isDarkMode() ? mergeConfigs(baseConfig, darkModeConfig) : mergeConfigs(baseConfig, lightModeConfig);
+                        tsParticles.load("tsparticles", newConfig);
+                    }
                 }, 50);
             });
         });
     </script>
+
+    <script>
+        // Quick Search overlay (consisten dengan index)
+        let qsData=null;
+        async function loadQsData(){ if(qsData) return qsData; try{ const r=await fetch('jadwal.json'); qsData=await r.json(); return qsData; }catch{return null;} }
+        function openQs(){ document.getElementById('qsOverlay').classList.add('active'); const inp=document.getElementById('qsInput'); inp.value=''; renderQsList(''); setTimeout(()=>inp.focus(), 10); }
+        function closeQs(){ document.getElementById('qsOverlay').classList.remove('active'); }
+        function renderQsList(q){ const list=document.getElementById('qsList'); list.innerHTML=''; const data=qsData; if(!data) return; const names=Object.keys(data.karyawan||{}); const ql=q.trim().toLowerCase(); const filtered=names.filter(n=>n.toLowerCase().includes(ql)).slice(0,20); filtered.forEach(n=>{ const emp=(data.karyawan||{})[n]||{}; const photo=emp.photo||'https://via.placeholder.com/64'; const div=document.createElement('div'); div.className='qs-item'; div.innerHTML=`<img src="${photo}" alt="${n}"><div>${n}</div>`; div.onclick=()=>{ window.location.href = `search.html?q=${encodeURIComponent(n)}`; }; list.appendChild(div); }); }
+        const openQsLink=document.getElementById('openQuickSearch'); openQsLink.addEventListener('click', async (e)=>{ e.preventDefault(); await loadQsData(); openQs(); });
+        document.getElementById('qsInput').addEventListener('input', (e)=>renderQsList(e.target.value));
+        document.getElementById('qsOverlay').addEventListener('click', (e)=>{ if(e.target.id==='qsOverlay') closeQs(); });
+        document.addEventListener('keydown', async (e)=>{ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){ e.preventDefault(); await loadQsData(); openQs(); } if(e.key==='Escape') closeQs(); });
+    </script>
+
+    <!-- Quick Search Modal -->
+    <div class="qs-overlay" id="qsOverlay" aria-hidden="true">
+        <div class="qs-box" role="dialog" aria-modal="true" aria-label="Cari Pegawai Cepat">
+            <input id="qsInput" class="qs-input" placeholder="Ketik nama pegawai (Ctrl/⌘+K untuk membuka)" />
+            <div id="qsList" class="qs-list"></div>
+        </div>
+    </div>
 </body>
 </html>

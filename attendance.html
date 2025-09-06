@@ -41,6 +41,7 @@
       .form-grid{grid-template-columns:1fr}
       .actions{flex-wrap:wrap;justify-content:stretch}
       .actions button{flex:1 1 100%}
+      .mobile-sticky{display:flex;gap:8px}
     }
     @media print{.navbar,.theme-switch-wrapper,.actions{display:none} body{padding:0} .container{box-shadow:none;border-radius:0} }
   </style>
@@ -80,6 +81,12 @@
         </div>
       </div>
       <datalist id="names"></datalist>
+      
+      <!-- Sticky actions for mobile -->
+      <div class="actions mobile-sticky" style="position:sticky;bottom:0;background:var(--container);padding:8px;border-top:1px solid var(--border);display:none">
+        <button id="addBtnSticky">Simpan/Perbarui</button>
+        <button onclick="window.print()">Cetak</button>
+      </div>
       <div class="actions">
         <button id="addBtn">Simpan/Perbarui</button>
         <button class="secondary" id="clearFormBtn" type="button">Bersihkan Form</button>
