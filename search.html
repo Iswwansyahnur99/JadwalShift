@@ -6,7 +6,8 @@
     <title>Cari Jadwal Pribadi TVRI Kaltara</title>
     <link rel="icon" href="photos/logo_tvri_kaltara.png" type="image/png">
     <style>
-        /* CSS ANDA TETAP SAMA SEPERTI SEBELUMNYA, TIDAK ADA PERUBAHAN */
+        /* Presisi layout */
+        *, *::before, *::after { box-sizing: border-box; }
         /* --- MODIFIKASI BACKGROUND DIMULAI --- */
         #tsparticles {
             position: fixed;
@@ -40,7 +41,7 @@
             --search-focus-border: var(--primary-blue);
             --status-kantor-color: #28a745;
             --status-transmisi-pagi-color: #17a2b8;
-            --status-transmisi-menginap-color: #00508C;
+            /* menginap dihilangkan */
             --status-libur-color: #6c757d;
         }
 
@@ -65,7 +66,7 @@
             --search-focus-border: var(--primary-blue);
             --status-kantor-color: #4caf50;
             --status-transmisi-pagi-color: #26c6da;
-            --status-transmisi-menginap-color: #4FA8D8;
+            /* menginap dihilangkan */
             --status-libur-color: #78828a;
         }
 
@@ -91,7 +92,7 @@
         }
 
         .main-content-wrapper {
-            max-width: 800px; /* Lebarkan sedikit untuk 4 minggu */
+            max-width: 1100px;
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -118,23 +119,24 @@
         .navbar {
             background-color: var(--primary-blue);
             width: 100%;
-            max-width: 800px;
+            max-width: 1100px;
             border-radius: 12px 12px 0 0;
-            padding: 10px 0;
+            padding: 12px 18px;
             margin-bottom: -15px; 
             z-index: 10;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 18px;
         }
         .navbar a {
             color: white;
             text-decoration: none;
-            padding: 8px 15px;
+            padding: 10px 16px;
             border-radius: 8px;
             transition: background-color 0.2s ease;
             font-weight: bold;
+            white-space: nowrap;
         }
         .navbar a:hover {
             background-color: var(--sub-heading-color);
@@ -208,66 +210,16 @@
             border-bottom: 2px solid var(--border-light);
             padding-bottom: 10px;
         }
-        
-        .weekly-schedule-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-
-        .weekly-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 10px;
-            padding: 20px;
-            text-align: left;
-        }
-
-        .weekly-card h3 {
-            color: var(--sub-heading-color);
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-            text-align: center;
-            border-bottom: 1px solid var(--border-light);
-            padding-bottom: 8px;
-        }
-
-        .weekly-card ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            font-size: 1em;
-        }
-
-        .weekly-card li {
-            padding: 10px 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px dashed var(--border-light);
-        }
-        .weekly-card li:last-child {
-            border-bottom: none;
-        }
-
-        .weekly-card li .day-name {
-            font-weight: 600;
-        }
-
-        .weekly-card .status {
-            font-weight: bold;
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 0.9em;
-            color: white;
-            min-width: 100px;
-            text-align: center;
-        }
-        .status-kantor { background-color: var(--status-kantor-color); }
-        .status-transmisi-pagi { background-color: var(--status-transmisi-pagi-color); }
-        .status-transmisi-menginap { background-color: var(--status-transmisi-menginap-color); }
-        .status-libur { background-color: var(--status-libur-color); }
+        /* Upcoming shifts grid */
+        .upcoming-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+        .shift-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; text-align: left; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+        .shift-card .date { font-weight: 700; color: var(--sub-heading-color); margin-bottom: 6px; }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; color: #fff; font-weight: 700; font-size: 0.85em; }
+        .badge-kantor { background: var(--status-kantor-color); }
+        .badge-pagi { background: var(--status-transmisi-pagi-color); }
+        /* menginap dihilangkan */
+        .time { margin-top: 6px; color: var(--text-color); opacity: 0.85; font-size: 0.95em; }
+        .note { margin-top: 6px; color: var(--empty-msg-color); font-size: 0.9em; }
 
         /* Sisa CSS untuk Pop-up, Theme Switch, dll. tetap sama */
                 .theme-switch-wrapper {
@@ -496,6 +448,9 @@
         <nav class="navbar">
             <a href="index.html">Jadwal Harian</a>
             <a href="search.html" class="active-nav">Cari Jadwal Saya</a>
+            <a href="swap.html">Tukar Jadwal</a>
+            <a href="attendance.html">Absensi</a>
+            <a href="recap.html">Rekapan</a>
         </nav>
 
         <div class="container">
@@ -505,14 +460,13 @@
             </div>
             <div class="search-container">
                 <input type="text" id="employeeNameSearch" placeholder="Ketik nama karyawan...">
-                <p class="search-message" id="searchMessage">Ketik nama untuk melihat jadwal bulanan pribadi.</p>
+                <p class="search-message" id="searchMessage">Ketik nama untuk melihat 10 shift ke depan.</p>
             </div>
         </div>
 
         <div class="personal-schedule-result-container" id="personalScheduleResultContainer" style="display: none;"> 
             <h2 id="searchResultName"></h2>
-            <div class="weekly-schedule-container" id="weeklyScheduleContainer">
-            </div>
+            <div class="upcoming-grid" id="upcomingShiftsContainer"></div>
         </div>
     </div>
 
@@ -539,7 +493,7 @@
 
     <script>
         let scheduleData = null;
-        const allDays = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU"];
+        const dayNames = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"]; // index mengikuti Date.getDay()
         const emergencyContacts = [
              { role: "Manajer Operasional", name: "Budi Santoso", phone: "0812-3456-7890" },
             { role: "PIC IT", name: "Citra Dewi", phone: "0876-5432-1098" },
@@ -560,76 +514,80 @@
             }
         }
 
+        function getWitaTime() {
+            return new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
+        }
+        function getWeekOfMonth(date) {
+            const startDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+            const dateOfMonth = date.getDate();
+            const week = Math.ceil((dateOfMonth + startDayOfMonth) / 7);
+            return ((week - 1) % 4) + 1; // 5->1, 6->2, dst
+        }
+        function getShiftForEmployeeOnDate(employeeFullName, date) {
+            const dayName = dayNames[date.getDay()];
+            const isWeekend = (dayName === 'SABTU' || dayName === 'MINGGU');
+            const defs = scheduleData.shift_definitions;
+            const karyawan = scheduleData.karyawan[employeeFullName] || {};
+            const nickname = (karyawan.nama_panggilan || employeeFullName).toLowerCase();
+            const isWanita = scheduleData.personel_grup.WANITA.includes(employeeFullName);
+            // Menginap dihilangkan
+            if (isWanita) {
+                if (isWeekend) return null; // libur
+                const time = dayName === 'JUMAT' ? defs.KANTOR.waktu_jumat : defs.KANTOR.waktu_senin_kamis;
+                return { type: 'KANTOR', label: defs.KANTOR.display, time };
+            }
+            // Cek transmisi pagi berdasarkan pola minggu
+            const weekKey = `MINGGU_${getWeekOfMonth(date)}`;
+            const daily = scheduleData.jadwal_transmisi_pagi[weekKey]?.[dayName] || [];
+            const onPagi = daily.some(n => (n || '').toLowerCase() === nickname);
+            if (onPagi) {
+                const time = dayName === 'JUMAT' ? defs.TRANSMISI_PAGI.waktu_jumat : defs.TRANSMISI_PAGI.waktu_senin_kamis;
+                return { type: 'PAGI', label: defs.TRANSMISI_PAGI.display, time };
+            }
+            if (!isWeekend) {
+                const time = dayName === 'JUMAT' ? defs.KANTOR.waktu_jumat : defs.KANTOR.waktu_senin_kamis;
+                return { type: 'KANTOR', label: defs.KANTOR.display, time };
+            }
+            return null; // libur
+        }
         function displayPersonalSchedule(employeeFullName) {
             const resultContainer = document.getElementById('personalScheduleResultContainer');
-            const weeklyContainer = document.getElementById('weeklyScheduleContainer');
+            const grid = document.getElementById('upcomingShiftsContainer');
             const nameHeader = document.getElementById('searchResultName');
             const searchMessage = document.getElementById('searchMessage');
-
-            weeklyContainer.innerHTML = '';
+            grid.innerHTML = '';
 
             if (!scheduleData) {
                 searchMessage.textContent = 'Data jadwal belum termuat. Coba lagi.';
                 resultContainer.style.display = 'none';
                 return;
             }
-            
-            nameHeader.textContent = `Jadwal Bulanan: ${employeeFullName}`;
-            const employeeNickname = scheduleData.karyawan[employeeFullName]?.nama_panggilan || '';
+            nameHeader.textContent = `10 Shift Ke Depan: ${employeeFullName}`;
 
-            const isWanita = scheduleData.personel_grup.WANITA.includes(employeeFullName);
-            const isMenginap = scheduleData.personel_grup.MENGINAP_TETAP.includes(employeeFullName);
-
-            // Loop untuk 4 minggu
-            for (let i = 1; i <= 4; i++) {
-                const weekKey = `MINGGU_${i}`;
-                const weekSchedule = scheduleData.jadwal_transmisi_pagi[weekKey];
-                
-                const weekCard = document.createElement('div');
-                weekCard.className = 'weekly-card';
-                let weekHtml = `<h3>Minggu ${i}</h3><ul>`;
-
-                allDays.forEach(day => {
-                    let shiftStatus = 'Libur';
-                    let shiftClass = 'status-libur';
-
-                    if (isWanita) {
-                        if (day !== 'SABTU' && day !== 'MINGGU') {
-                            shiftStatus = 'Shift Kantor';
-                            shiftClass = 'status-kantor';
-                        }
-                    } else if (isMenginap) {
-                        shiftStatus = 'Shift Menginap';
-                        shiftClass = 'status-transmisi-menginap';
-                    } else {
-                        // Cek jadwal transmisi pagi
-                        let isOnPagi = false;
-                        if(weekSchedule[day]){
-                            if(weekSchedule[day].some(nama => nama.toLowerCase() === employeeNickname.toLowerCase())){
-                                isOnPagi = true;
-                            }
-                        }
-
-                        if (isOnPagi) {
-                            shiftStatus = 'Transmisi Pagi';
-                            shiftClass = 'status-transmisi-pagi';
-                        } else if (day !== 'SABTU' && day !== 'MINGGU') {
-                            shiftStatus = 'Shift Kantor';
-                            shiftClass = 'status-kantor';
-                        }
-                    }
-                    
-                    const dayDisplayName = day.charAt(0).toUpperCase() + day.slice(1).toLowerCase();
-                    weekHtml += `<li><span class="day-name">${dayDisplayName}</span> <span class="status ${shiftClass}">${shiftStatus}</span></li>`;
-                });
-
-                weekHtml += `</ul>`;
-                weekCard.innerHTML = weekHtml;
-                weeklyContainer.appendChild(weekCard);
+            let date = getWitaTime();
+            let collected = 0;
+            while (collected < 10) {
+                const shift = getShiftForEmployeeOnDate(employeeFullName, date);
+                if (shift) {
+                    const localeDate = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Makassar' }).format(date);
+                    const card = document.createElement('div');
+                    card.className = 'shift-card';
+                    const badgeClass = shift.type === 'KANTOR' ? 'badge-kantor' : 'badge-pagi';
+                    card.innerHTML = `
+                        <div class="date">${localeDate}</div>
+                        <div class="badge ${badgeClass}">${shift.label}</div>
+                        <div class="time">${shift.time}</div>
+                    `;
+                    grid.appendChild(card);
+                    collected++;
+                }
+                // Next day
+                const next = new Date(date);
+                next.setDate(date.getDate() + 1);
+                date = next;
             }
-
             resultContainer.style.display = 'block';
-            searchMessage.textContent = `Menampilkan jadwal untuk ${employeeFullName}.`;
+            searchMessage.textContent = `Menampilkan 10 shift ke depan untuk ${employeeFullName}.`;
         }
 
 
@@ -662,7 +620,7 @@
                 }
             } else if (searchTerm.length === 0) {
                 resultContainer.style.display = 'none';
-                searchMessage.textContent = 'Ketik nama untuk melihat jadwal bulanan pribadi.';
+                searchMessage.textContent = 'Ketik nama untuk melihat 10 shift ke depan.';
             } else {
                 resultContainer.style.display = 'none';
                 searchMessage.textContent = 'Ketik minimal 3 huruf nama karyawan.';

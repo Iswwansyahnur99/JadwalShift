@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tukar Jadwal | TVRI Kaltara</title>
+  <link rel="icon" href="photos/logo_tvri_kaltara.png" type="image/png" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :root {
+      --bg-color:#e6f0f5; --container-bg:#fff; --text-color:#333; --primary-blue:#00508C; --secondary-red:#DC2F2F; --card-bg:#f5fafd; --card-border:#d0e0e9; --shadow:rgba(0,0,0,.1); --border-light:#e0eaf2; --sub:#003a66;
+    }
+    body.dark-mode { --bg-color:#212121; --container-bg:#2d2d2d; --text-color:#e0e0e0; --primary-blue:#4FA8D8; --secondary-red:#F15E6E; --card-bg:#3c3c3c; --card-border:#555; --shadow:rgba(0,0,0,.4); --border-light:#3a3a3a; --sub:#a0d8f0; }
+    body { margin:0; padding:20px; background:var(--bg-color); color:var(--text-color); font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif; display:flex; flex-direction:column; align-items:center; min-height:100vh; }
+    .main { max-width:1100px; width:100%; }
+    .navbar { background:var(--primary-blue); color:#fff; border-radius:12px 12px 0 0; padding:12px 18px; display:flex; justify-content:center; gap:18px; }
+    .navbar a { color:#fff; text-decoration:none; font-weight:700; padding:10px 16px; border-radius:8px; white-space:nowrap; }
+    .navbar a.active-nav, .navbar a:hover { background:#003a66; }
+    .container { background:var(--container-bg); border-radius:0 0 12px 12px; box-shadow:0 4px 20px var(--shadow); padding:24px; }
+    h1 { color:var(--primary-blue); margin:10px 0 16px; text-align:center; }
+    .row { display:grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+    .field { display:flex; flex-direction:column; gap:6px; }
+    label { font-weight:700; color:var(--sub); }
+    input, select { padding:10px 12px; border:1px solid var(--card-border); border-radius:8px; background:var(--bg-color); color:var(--text-color); }
+    .card { background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; padding:16px; }
+    .actions { display:flex; gap:12px; justify-content:center; margin-top:18px; }
+    button { background:var(--primary-blue); color:#fff; border:none; border-radius:8px; padding:10px 14px; font-weight:700; cursor:pointer; }
+    button.secondary { background:var(--secondary-red); }
+    .result { margin-top:18px; border-top:1px solid var(--border-light); padding-top:14px; }
+    .summary { background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; padding:14px; }
+    .theme-switch-wrapper{display:flex; align-items:center; justify-content:flex-end; max-width:1100px; width:100%; padding:0 10px; margin-bottom:16px;}
+    .theme-switch{display:inline-block;height:34px;position:relative;width:60px;} .theme-switch input{display:none}
+    .slider{background:#ccc;bottom:0;cursor:pointer;left:0;position:absolute;right:0;top:0;transition:.4s;border-radius:34px}
+    .slider:before{background:#fff;bottom:4px;content:"";height:26px;left:4px;position:absolute;transition:.4s;width:26px;border-radius:50%}
+    input:checked + .slider{background:var(--primary-blue)} input:checked + .slider:before{transform:translateX(26px)}
+  </style>
+</head>
+<body class="light-mode">
+  <div class="theme-switch-wrapper">
+    <span style="margin-right:10px;">Dark Mode</span>
+    <label class="theme-switch" for="checkbox"><input type="checkbox" id="checkbox" /><div class="slider round"></div></label>
+  </div>
+
+  <div class="main">
+    <nav class="navbar">
+      <a href="index.html">Jadwal Harian</a>
+      <a href="search.html">Cari Jadwal Saya</a>
+      <a href="swap.html" class="active-nav">Tukar Jadwal</a>
+      <a href="attendance.html">Absensi</a>
+      <a href="recap.html">Rekapan</a>
+    </nav>
+    <div class="container">
+      <h1>Konfirmasi Pertukaran Jadwal</h1>
+      <div class="row">
+        <div class="field">
+          <label for="empA">Karyawan A</label>
+          <input list="names" id="empA" placeholder="Ketik nama..." />
+        </div>
+        <div class="field">
+          <label for="empB">Karyawan B</label>
+          <input list="names" id="empB" placeholder="Ketik nama..." />
+        </div>
+        <div class="field">
+          <label for="swapDate">Tanggal Pertukaran</label>
+          <input type="date" id="swapDate" />
+        </div>
+      </div>
+      <datalist id="names"></datalist>
+
+      <div class="actions">
+        <button id="cekBtn">Cek Jadwal</button>
+        <button id="confirmBtn" class="secondary" disabled>Konfirmasi Pertukaran</button>
+      </div>
+
+      <div class="row" style="margin-top:16px;">
+        <div class="card" id="jadwalA">Karyawan A: -</div>
+        <div class="card" id="jadwalB">Karyawan B: -</div>
+      </div>
+
+      <div class="result" id="result" style="display:none;">
+        <div class="summary" id="summary"></div>
+        <div class="actions" style="margin-top:12px;">
+          <button id="copyBtn">Salin Ringkasan</button>
+          <button id="waBtn">Kirim via WhatsApp</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let scheduleData = null;
+    const dayNames = ["MINGGU","SENIN","SELASA","RABU","KAMIS","JUMAT","SABTU"];
+    const defsKey = { KANTOR:'KANTOR', PAGI:'TRANSMISI_PAGI' };
+
+    function getWitaDateFromInput(value){
+      // input type=date is in local time; use as-is
+      const [y,m,d] = value.split('-').map(Number);
+      return new Date(y, m-1, d);
+    }
+    function getWeekOfMonth(date){
+      const start = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+      const dom = date.getDate();
+      const week = Math.ceil((dom + start) / 7);
+      return ((week-1)%4)+1; // 5->1,6->2
+    }
+    function getShiftForEmployeeOnDate(employeeFullName, date){
+      const dayName = dayNames[date.getDay()];
+      const isWeekend = (dayName==='SABTU'||dayName==='MINGGU');
+      const defs = scheduleData.shift_definitions;
+      const karyawan = scheduleData.karyawan[employeeFullName]||{};
+      const nickname = (karyawan.nama_panggilan||employeeFullName).toLowerCase();
+      const isWanita = (scheduleData.personel_grup.WANITA||[]).includes(employeeFullName);
+      if(isWanita){
+        if(isWeekend) return null; // libur
+        const time = dayName==='JUMAT'?defs.KANTOR.waktu_jumat:defs.KANTOR.waktu_senin_kamis;
+        return { key: defsKey.KANTOR, label: defs.KANTOR.display, time };
+      }
+      const weekKey = `MINGGU_${getWeekOfMonth(date)}`;
+      const daily = scheduleData.jadwal_transmisi_pagi[weekKey]?.[dayName]||[];
+      const onPagi = daily.some(n => (n||'').toLowerCase()===nickname);
+      if(onPagi){
+        const time = dayName==='JUMAT'?defs.TRANSMISI_PAGI.waktu_jumat:defs.TRANSMISI_PAGI.waktu_senin_kamis;
+        return { key: defsKey.PAGI, label: defs.TRANSMISI_PAGI.display, time };
+      }
+      if(!isWeekend){
+        const time = dayName==='JUMAT'?defs.KANTOR.waktu_jumat:defs.KANTOR.waktu_senin_kamis;
+        return { key: defsKey.KANTOR, label: defs.KANTOR.display, time };
+      }
+      return null;
+    }
+
+    async function fetchSchedule(){
+      const res = await fetch('jadwal.json');
+      scheduleData = await res.json();
+      // datalist names
+      const dl = document.getElementById('names');
+      Object.keys(scheduleData.karyawan).forEach(n=>{ const o=document.createElement('option'); o.value=n; dl.appendChild(o); });
+    }
+
+    function fmtDateID(d){
+      return new Intl.DateTimeFormat('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(d);
+    }
+
+    function showCheck(){
+      const empA = document.getElementById('empA').value.trim();
+      const empB = document.getElementById('empB').value.trim();
+      const dateVal = document.getElementById('swapDate').value;
+      const boxA = document.getElementById('jadwalA');
+      const boxB = document.getElementById('jadwalB');
+      const confirmBtn = document.getElementById('confirmBtn');
+      confirmBtn.disabled = true;
+      document.getElementById('result').style.display='none';
+      if(!empA || !empB || !dateVal || !scheduleData){ boxA.textContent='Karyawan A: -'; boxB.textContent='Karyawan B: -'; return; }
+      const date = getWitaDateFromInput(dateVal);
+      const sA = getShiftForEmployeeOnDate(empA, date);
+      const sB = getShiftForEmployeeOnDate(empB, date);
+      const dstr = fmtDateID(date);
+      boxA.textContent = `${empA}: ${sA? sA.label+" ("+sA.time+")" : 'Libur'}`;
+      boxB.textContent = `${empB}: ${sB? sB.label+" ("+sB.time+")" : 'Libur'}`;
+      if(sA && sB){ confirmBtn.disabled = false; confirmBtn.dataset.payload = JSON.stringify({empA,empB,date:dateVal,sA,sB, dstr}); }
+    }
+
+    function confirmSwap(){
+      const data = JSON.parse(this.dataset.payload||'{}');
+      if(!data.empA) return;
+      const summary = `Persetujuan Tukar Jadwal\nTanggal: ${data.dstr}\nA: ${data.empA} → ${data.sB.label}\nB: ${data.empB} → ${data.sA.label}\nWaktu A: ${data.sB.time}\nWaktu B: ${data.sA.time}`;
+      document.getElementById('summary').textContent = summary;
+      document.getElementById('result').style.display='block';
+      document.getElementById('copyBtn').onclick = ()=>{ navigator.clipboard.writeText(summary); };
+      document.getElementById('waBtn').onclick = ()=>{ const url='https://wa.me/?text='+encodeURIComponent(summary); window.open(url,'_blank'); };
+    }
+
+    // Theme
+    const toggle = document.getElementById('checkbox');
+    const saved = localStorage.getItem('theme');
+    if(saved){ document.body.classList.add(saved); if(saved==='dark-mode') toggle.checked = true; } else { document.body.classList.add('light-mode'); }
+    toggle.addEventListener('change', (e)=>{
+      if(e.target.checked){ document.body.classList.replace('light-mode','dark-mode'); localStorage.setItem('theme','dark-mode'); }
+      else { document.body.classList.replace('dark-mode','light-mode'); localStorage.setItem('theme','light-mode'); }
+    });
+
+    document.getElementById('cekBtn').addEventListener('click', showCheck);
+    document.getElementById('empA').addEventListener('change', showCheck);
+    document.getElementById('empB').addEventListener('change', showCheck);
+    document.getElementById('swapDate').addEventListener('change', showCheck);
+    document.getElementById('confirmBtn').addEventListener('click', confirmSwap);
+
+    fetchSchedule();
+  </script>
+</body>
+</html>

@@ -10,12 +10,6 @@
             "display": "Shift Transmisi Pagi",
             "waktu_senin_kamis": "07:30 - 16:00 WITA",
             "waktu_jumat": "07:30 - 16:30 WITA"
-        },
-        "TRANSMISI_MENGINAP": {
-            "display": "Shift Menginap Transmisi",
-            "waktu_senin_kamis": "16:00 - 07:30 WITA",
-            "waktu_jumat": "16:30 - 07:30 WITA",
-            "waktu_weekend": "24 Jam (Sabtu - Minggu)"
         }
     },
     "personel_grup": {
@@ -23,13 +17,6 @@
             "ALVIANA DAMAYANTI",
             "INA APRIANA",
             "RAHMA ELVIRA ARIYANTI"
-        ],
-        "MENGINAP_TETAP": [
-            "RAMAZONA NABABAN",
-            "MUH. FADIL PERKASA",
-            "BAHRIN",
-            "ARI ARDIANSYAH",
-            "ANDI FAIRUL AMRI"
         ]
     },
     "jadwal_transmisi_pagi": {

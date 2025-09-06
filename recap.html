@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rekapan Kehadiran | TVRI Kaltara</title>
+  <link rel="icon" href="photos/logo_tvri_kaltara.png" type="image/png" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    :root{--bg:#e6f0f5;--text:#333;--primary:#00508C;--container:#fff;--border:#d0e0e9;--card:#f5fafd}
+    body.dark-mode{--bg:#212121;--text:#e0e0e0;--primary:#4FA8D8;--container:#2d2d2d;--border:#555;--card:#3c3c3c}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Segoe UI,Tahoma,Arial,sans-serif;padding:20px;display:flex;flex-direction:column;align-items:center}
+    .wrap{max-width:1100px;width:100%}
+    .navbar{background:var(--primary);border-radius:12px 12px 0 0;color:#fff;padding:10px 0;display:flex;justify-content:center;gap:14px}
+    .navbar a{color:#fff;text-decoration:none;font-weight:700;padding:8px 14px;border-radius:8px}
+    .navbar a.active-nav,.navbar a:hover{background:#003a66}
+    .container{background:var(--container);border-radius:0 0 12px 12px;box-shadow:0 4px 20px rgba(0,0,0,.1);padding:20px}
+    h1{text-align:center;color:var(--primary);margin:10px 0 16px}
+    .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:12px}
+    input[type=date]{padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text)}
+    .actions{display:flex;gap:10px;justify-content:flex-end;margin:10px 0}
+    button{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:10px 14px;font-weight:700;cursor:pointer}
+    table{width:100%;border-collapse:collapse;background:var(--container);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left}
+    th{background:var(--card)}
+    .note{font-size:.9em;color:#667}
+    @media print{.navbar,.actions,.filters,.theme-switch-wrapper{display:none} body{padding:0} .container{box-shadow:none;border-radius:0} h1{margin-top:0}}
+  </style>
+</head>
+<body class="light-mode">
+  <div class="theme-switch-wrapper" style="display:flex;align-items:center;justify-content:flex-end;max-width:1100px;width:100%;padding:0 10px;margin-bottom:16px">
+    <span style="margin-right:10px;">Dark Mode</span>
+    <label style="display:inline-block;height:34px;position:relative;width:60px" for="checkbox"><input type="checkbox" id="checkbox" style="display:none"/><div style="background:#ccc;bottom:0;cursor:pointer;left:0;position:absolute;right:0;top:0;transition:.4s;border-radius:34px" class="slider"></div></label>
+  </div>
+  <div class="wrap">
+    <nav class="navbar">
+      <a href="index.html">Jadwal Harian</a>
+      <a href="search.html">Cari Jadwal Saya</a>
+      <a href="swap.html">Tukar Jadwal</a>
+      <a href="attendance.html">Absensi</a>
+      <a href="recap.html" class="active-nav">Rekapan</a>
+    </nav>
+    <div class="container">
+      <h1>Rekapan Kehadiran</h1>
+      <div class="filters">
+        <div><label>Mulai</label><input type="date" id="start"></div>
+        <div><label>Selesai</label><input type="date" id="end"></div>
+      </div>
+      <div class="actions">
+        <button id="btnEightSep">Set ke Senin 8 September terdekat</button>
+        <button id="show">Tampilkan</button>
+        <button id="csvBtn">Unduh CSV</button>
+        <button onclick="window.print()">Cetak</button>
+      </div>
+      <div id="resultNote" class="note"></div>
+      <table id="table" style="margin-top:10px">
+        <thead><tr><th>Tanggal</th><th>Nama</th><th>Shift</th><th>Status</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    let scheduleData=null; const dayNames=["MINGGU","SENIN","SELASA","RABU","KAMIS","JUMAT","SABTU"];
+    const SHEET_ENDPOINT = localStorage.getItem('attendance_sheet_endpoint') || '';
+    function loadAttendance(){ try{ return JSON.parse(localStorage.getItem('attendance_v1')||'{}'); }catch{return {}} }
+    function getWeekOfMonth(date){ const start=new Date(date.getFullYear(),date.getMonth(),1).getDay(); const dom=date.getDate(); const w=Math.ceil((dom+start)/7); return ((w-1)%4)+1; }
+    function getShiftForEmployeeOnDate(fullName,date){
+      const dayName=dayNames[date.getDay()]; const isWeekend=(dayName==='SABTU'||dayName==='MINGGU');
+      const defs=scheduleData.shift_definitions; const emp=scheduleData.karyawan[fullName]||{}; const nick=(emp.nama_panggilan||fullName).toLowerCase();
+      const isWanita=(scheduleData.personel_grup.WANITA||[]).includes(fullName);
+      if(isWanita){ if(isWeekend) return null; const time=dayName==='JUMAT'?defs.KANTOR.waktu_jumat:defs.KANTOR.waktu_senin_kamis; return {type:'KANTOR',label:defs.KANTOR.display,time}; }
+      const weekKey=`MINGGU_${getWeekOfMonth(date)}`; const daily=(scheduleData.jadwal_transmisi_pagi[weekKey]?.[dayName])||[]; const onPagi=daily.some(n=>(n||'').toLowerCase()===nick);
+      if(onPagi){ const time=dayName==='JUMAT'?defs.TRANSMISI_PAGI.waktu_jumat:defs.TRANSMISI_PAGI.waktu_senin_kamis; return {type:'PAGI',label:defs.TRANSMISI_PAGI.display,time}; }
+      if(!isWeekend){ const time=dayName==='JUMAT'?defs.KANTOR.waktu_jumat:defs.KANTOR.waktu_senin_kamis; return {type:'KANTOR',label:defs.KANTOR.display,time}; }
+      return null;
+    }
+    function fmtDateID(d){ return new Intl.DateTimeFormat('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(d); }
+    function defaultRange(){ const now=new Date(); const start=new Date(now); start.setDate(start.getDate()-14); return {start, end:now}; }
+    function nearestMondayEightSeptember(){ const y=(new Date()).getFullYear(); for(let i=0;i<4;i++){ const year=y+i; const d=new Date(year,8,8); if(d.getDay()===1) return d; } for(let i=1;i<=4;i++){ const year=y-i; const d=new Date(year,8,8); if(d.getDay()===1) return d; } return new Date(y,8,8); }
+    async function maybeFetchRemote(startISO,endISO){ if(!SHEET_ENDPOINT) return; try{ const res=await fetch(`${SHEET_ENDPOINT}?start=${startISO}&end=${endISO}`); if(!res.ok) return; const data=await res.json(); if(!data||typeof data!=='object') return; // expected shape: { "YYYY-MM-DD": { "Nama": { shift, status } } }
+        const local=loadAttendance(); Object.keys(data).forEach(date=>{ local[date] = { ...(local[date]||{}), ...(data[date]||{}) }; }); localStorage.setItem('attendance_v1', JSON.stringify(local)); } catch(e){ console.warn('Fetch remote range gagal:', e); }
+    }
+    async function render(){ const tbody=document.getElementById('tbody'); tbody.innerHTML=''; const startISO=document.getElementById('start').value; const endISO=document.getElementById('end').value; if(!startISO||!endISO) return; await maybeFetchRemote(startISO,endISO); const start=new Date(startISO); const end=new Date(endISO); end.setHours(0,0,0,0); const att=loadAttendance(); const names=Object.keys(scheduleData.karyawan).sort(); let days=0, rows=0; for(let d=new Date(start); d<=end; d.setDate(d.getDate()+1)){ days++; const dateISO=d.toISOString().slice(0,10); const pretty=fmtDateID(new Date(d)); names.forEach(n=>{ const rec=(att[dateISO]||{})[n]; const shift= getShiftForEmployeeOnDate(n, new Date(d)); const shiftText = shift?shift.label: 'Libur'; const status = rec? rec.status : (shift? '-' : ''); const tr=document.createElement('tr'); tr.innerHTML=`<td>${pretty}</td><td>${n}</td><td>${shiftText}</td><td>${status}</td>`; tbody.appendChild(tr); rows++; }); }
+      document.getElementById('resultNote').textContent = `Rentang: ${fmtDateID(new Date(startISO))} s/d ${fmtDateID(new Date(endISO))} • Hari: ${days} • Baris: ${rows}`;
+    }
+    async function downloadCSV(){ const startISO=document.getElementById('start').value; const endISO=document.getElementById('end').value; if(!startISO||!endISO) return; await maybeFetchRemote(startISO,endISO); const att=loadAttendance(); const names=Object.keys(scheduleData.karyawan).sort(); let rows=['Tanggal, Nama, Shift, Status']; const start=new Date(startISO); const end=new Date(endISO); for(let d=new Date(start); d<=end; d.setDate(d.getDate()+1)){ const dateISO=d.toISOString().slice(0,10); const pretty=fmtDateID(new Date(d)); names.forEach(n=>{ const rec=(att[dateISO]||{})[n]; const shift= getShiftForEmployeeOnDate(n, new Date(d)); const shiftText = shift?shift.label: 'Libur'; const status = rec? rec.status : (shift? '-' : ''); rows.push(`"${pretty}","${n}","${shiftText}","${status}"`); }); } const blob=new Blob([rows.join('\n')],{type:'text/csv;charset=utf-8;'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`rekap_${startISO}_sd_${endISO}.csv`; a.click(); URL.revokeObjectURL(a.href); }
+    function init(){ const dr=defaultRange(); document.getElementById('start').valueAsDate=dr.start; document.getElementById('end').valueAsDate=dr.end; fetch('jadwal.json').then(r=>r.json()).then(j=>{ scheduleData=j; render(); }); }
+    document.getElementById('show').addEventListener('click',render);
+    document.getElementById('csvBtn').addEventListener('click',downloadCSV);
+    document.getElementById('btnEightSep').addEventListener('click',()=>{ const d=nearestMondayEightSeptember(); document.getElementById('start').valueAsDate=d; });
+    const toggle=document.getElementById('checkbox'); const saved=localStorage.getItem('theme'); if(saved){ document.body.classList.add(saved); if(saved==='dark-mode') toggle.checked=true; } else { document.body.classList.add('light-mode'); }
+    toggle.addEventListener('change',e=>{ if(e.target.checked){document.body.classList.replace('light-mode','dark-mode');localStorage.setItem('theme','dark-mode');} else {document.body.classList.replace('dark-mode','light-mode');localStorage.setItem('theme','light-mode');}});
+    init();
+  </script>
+</body>
+</html>

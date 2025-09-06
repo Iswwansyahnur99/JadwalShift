@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Absensi Harian | TVRI Kaltara</title>
+  <link rel="icon" href="photos/logo_tvri_kaltara.png" type="image/png" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    :root{--bg:#e6f0f5;--card:#f5fafd;--text:#333;--primary:#00508C;--muted:#6b7280;--container:#fff;--border:#d0e0e9}
+    body.dark-mode{--bg:#212121;--card:#3c3c3c;--text:#e0e0e0;--primary:#4FA8D8;--muted:#9aa3ad;--container:#2d2d2d;--border:#555}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Segoe UI,Tahoma,Arial,sans-serif;padding:20px;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+    .wrap{max-width:1100px;width:100%}
+    .navbar{background:var(--primary);border-radius:12px 12px 0 0;color:#fff;padding:10px 0;display:flex;justify-content:center;gap:14px}
+    .navbar a{color:#fff;text-decoration:none;font-weight:700;padding:8px 14px;border-radius:8px}
+    .navbar a.active-nav,.navbar a:hover{background:#003a66}
+    .container{background:var(--container);border-radius:0 0 12px 12px;box-shadow:0 4px 20px rgba(0,0,0,.1);padding:20px}
+    h1{margin:10px 0 16px;color:var(--primary);text-align:center}
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:14px}
+    .field{display:flex;flex-direction:column;gap:6px}
+    label{font-weight:700}
+    input[type=date]{padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text)}
+    .table{width:100%;border-collapse:collapse;background:var(--container);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    .table th,.table td{padding:10px;border-bottom:1px solid var(--border);text-align:left}
+    .table th{background:var(--card)}
+    select,input[list]{padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text)}
+    .actions{display:flex;gap:10px;justify-content:flex-end;margin:12px 0}
+    button{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:10px 14px;font-weight:700;cursor:pointer}
+    button.secondary{background:#6b7280}
+    .theme-switch-wrapper{display:flex;align-items:center;justify-content:flex-end;max-width:1000px;width:100%;padding:0 10px;margin-bottom:16px}
+    .theme-switch{display:inline-block;height:34px;position:relative;width:60px}.theme-switch input{display:none}
+    .slider{background:#ccc;bottom:0;cursor:pointer;left:0;position:absolute;right:0;top:0;transition:.4s;border-radius:34px}
+    .slider:before{background:#fff;bottom:4px;content:"";height:26px;left:4px;position:absolute;transition:.4s;width:26px;border-radius:50%}
+    input:checked+.slider{background:var(--primary)}input:checked+.slider:before{transform:translateX(26px)}
+    @media print{.navbar,.theme-switch-wrapper,.actions{display:none} body{padding:0} .container{box-shadow:none;border-radius:0} }
+  </style>
+  </head>
+<body class="light-mode">
+  <div class="theme-switch-wrapper">
+    <span style="margin-right:10px;">Dark Mode</span>
+    <label class="theme-switch" for="checkbox"><input type="checkbox" id="checkbox"/><div class="slider"></div></label>
+  </div>
+  <div class="wrap">
+    <nav class="navbar">
+      <a href="index.html">Jadwal Harian</a>
+      <a href="search.html">Cari Jadwal Saya</a>
+      <a href="swap.html">Tukar Jadwal</a>
+      <a href="attendance.html" class="active-nav">Absensi</a>
+      <a href="recap.html">Rekapan</a>
+    </nav>
+    <div class="container">
+      <h1>Absensi</h1>
+      <div class="form-grid">
+        <div class="field"><label for="date">Tanggal</label><input type="date" id="date"></div>
+        <div class="field"><label for="empName">Nama</label><input list="names" id="empName" placeholder="Ketik nama..." /></div>
+        <div class="field"><label for="shiftSelect">Shift</label>
+          <select id="shiftSelect">
+            <option value="KANTOR">Shift Kantor</option>
+            <option value="PAGI">Transmisi Pagi</option>
+            <option value="LIBUR">Libur</option>
+          </select>
+        </div>
+        <div class="field"><label for="statusSelect">Keterangan</label>
+          <select id="statusSelect">
+            <option value="HADIR">Hadir</option>
+            <option value="IZIN">Izin</option>
+            <option value="SAKIT">Sakit</option>
+            <option value="CUTI">Cuti</option>
+          </select>
+        </div>
+      </div>
+      <datalist id="names"></datalist>
+      <div class="actions">
+        <button id="addBtn">Simpan/Perbarui</button>
+        <button class="secondary" id="clearFormBtn" type="button">Bersihkan Form</button>
+        <button id="cfgBtn" type="button">Pengaturan Sinkron</button>
+        <button onclick="window.print()">Cetak</button>
+      </div>
+      <table class="table" id="entriesTable">
+        <thead><tr><th>Nama</th><th>Shift</th><th>Keterangan</th><th>Aksi</th></tr></thead>
+        <tbody id="entriesBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    let scheduleData=null; const dayNames=["MINGGU","SENIN","SELASA","RABU","KAMIS","JUMAT","SABTU"];
+    const SHEET_ENDPOINT = localStorage.getItem('attendance_sheet_endpoint') || '';
+    function todayLocalISO(){ const d=new Date(); d.setHours(0,0,0,0); return d.toISOString().slice(0,10); }
+    function getWeekOfMonth(date){ const start=new Date(date.getFullYear(),date.getMonth(),1).getDay(); const dom=date.getDate(); const w=Math.ceil((dom+start)/7); return ((w-1)%4)+1; }
+    function getShiftForEmployeeOnDate(fullName,date){
+      const dayName=dayNames[date.getDay()]; const isWeekend=(dayName==='SABTU'||dayName==='MINGGU');
+      const defs=scheduleData.shift_definitions; const emp=scheduleData.karyawan[fullName]||{}; const nick=(emp.nama_panggilan||fullName).toLowerCase();
+      const isWanita=(scheduleData.personel_grup.WANITA||[]).includes(fullName);
+      if(isWanita){ if(isWeekend) return null; const time=dayName==='JUMAT'?defs.KANTOR.waktu_jumat:defs.KANTOR.waktu_senin_kamis; return {type:'KANTOR',label:defs.KANTOR.display,time}; }
+      const weekKey=`MINGGU_${getWeekOfMonth(date)}`; const daily=(scheduleData.jadwal_transmisi_pagi[weekKey]?.[dayName])||[]; const onPagi=daily.some(n=>(n||'').toLowerCase()===nick);
+      if(onPagi){ const time=dayName==='JUMAT'?defs.TRANSMISI_PAGI.waktu_jumat:defs.TRANSMISI_PAGI.waktu_senin_kamis; return {type:'PAGI',label:defs.TRANSMISI_PAGI.display,time}; }
+      if(!isWeekend){ const time=dayName==='JUMAT'?defs.KANTOR.waktu_jumat:defs.KANTOR.waktu_senin_kamis; return {type:'KANTOR',label:defs.KANTOR.display,time}; }
+      return null;
+    }
+    function loadAttendance(){ const raw=localStorage.getItem('attendance_v1')||'{}'; try{return JSON.parse(raw);}catch{return{};} }
+    function saveAttendance(data){ localStorage.setItem('attendance_v1',JSON.stringify(data)); }
+
+    function populateNames(){ const dl=document.getElementById('names'); dl.innerHTML=''; Object.keys(scheduleData.karyawan).sort().forEach(n=>{ const o=document.createElement('option'); o.value=n; dl.appendChild(o); }); }
+
+    function autoSetShift(){ const name=document.getElementById('empName').value.trim(); const dateISO=document.getElementById('date').value; const shiftSel=document.getElementById('shiftSelect'); if(!name||!dateISO||!scheduleData) return; const s=getShiftForEmployeeOnDate(name,new Date(dateISO)); shiftSel.value = s? s.type : 'LIBUR'; }
+
+    function renderEntries(){ const dateISO=document.getElementById('date').value; const body=document.getElementById('entriesBody'); body.innerHTML=''; const all=loadAttendance(); const map=all[dateISO]||{}; Object.keys(map).sort().forEach(n=>{ const r=map[n]; const tr=document.createElement('tr'); tr.innerHTML=`<td>${n}</td><td>${r.shift}</td><td>${r.status}</td><td><button data-name="${n}" class="editBtn">Edit</button> <button data-name="${n}" class="delBtn">Hapus</button></td>`; body.appendChild(tr); });
+      body.querySelectorAll('.editBtn').forEach(b=>b.addEventListener('click',()=>editEntry(b.dataset.name)));
+      body.querySelectorAll('.delBtn').forEach(b=>b.addEventListener('click',()=>deleteEntry(b.dataset.name)));
+    }
+
+    async function syncEntryRemote(dateISO, name, rec){ if(!SHEET_ENDPOINT) return; try{ await fetch(SHEET_ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'upsert', date:dateISO, name, ...rec }) }); } catch(e){ console.warn('Sync gagal (offline/CORS?):', e); } }
+    async function loadRemoteDate(dateISO){ if(!SHEET_ENDPOINT) return null; try{ const res=await fetch(`${SHEET_ENDPOINT}?date=${dateISO}`); if(!res.ok) return null; return await res.json(); } catch(e){ console.warn('Load remote gagal:', e); return null; } }
+
+    async function addOrUpdate(){ const name=document.getElementById('empName').value.trim(); const dateISO=document.getElementById('date').value; const shift=document.getElementById('shiftSelect').value; const status=document.getElementById('statusSelect').value; if(!name||!dateISO){ alert('Isi tanggal dan nama.'); return; } const all=loadAttendance(); all[dateISO]=all[dateISO]||{}; const rec={shift,status,ts:Date.now()}; all[dateISO][name]=rec; saveAttendance(all); renderEntries(); syncEntryRemote(dateISO, name, rec); }
+    function editEntry(name){ const dateISO=document.getElementById('date').value; const rec=(loadAttendance()[dateISO]||{})[name]; if(!rec) return; document.getElementById('empName').value=name; document.getElementById('shiftSelect').value=rec.shift; document.getElementById('statusSelect').value=rec.status; }
+    function deleteEntry(name){ const dateISO=document.getElementById('date').value; const all=loadAttendance(); if(all[dateISO]){ delete all[dateISO][name]; saveAttendance(all); renderEntries(); } }
+
+    async function init(){ document.getElementById('date').value=todayLocalISO(); const dateISO=document.getElementById('date').value; scheduleData = await fetch('jadwal.json').then(r=>r.json()); populateNames(); autoSetShift(); if(SHEET_ENDPOINT){ const remote=await loadRemoteDate(dateISO); if(remote && typeof remote==='object'){ const all=loadAttendance(); all[dateISO]= { ...(all[dateISO]||{}), ...remote }; saveAttendance(all); } } renderEntries(); }
+    document.getElementById('checkbox').addEventListener('change',e=>{ if(e.target.checked){document.body.classList.replace('light-mode','dark-mode');localStorage.setItem('theme','dark-mode');} else {document.body.classList.replace('dark-mode','light-mode');localStorage.setItem('theme','light-mode');}});
+    (function(){ const saved=localStorage.getItem('theme'); if(saved){ document.body.classList.add(saved); if(saved==='dark-mode') document.getElementById('checkbox').checked=true; } else { document.body.classList.add('light-mode'); } })();
+    document.getElementById('date').addEventListener('change',()=>{ autoSetShift(); renderEntries(); });
+    document.getElementById('empName').addEventListener('change',autoSetShift);
+    document.getElementById('addBtn').addEventListener('click',addOrUpdate);
+    document.getElementById('clearFormBtn').addEventListener('click',()=>{ document.getElementById('empName').value=''; document.getElementById('statusSelect').value='HADIR'; autoSetShift(); });
+    document.getElementById('cfgBtn').addEventListener('click',()=>{ const current = localStorage.getItem('attendance_sheet_endpoint')||''; const v = prompt('Masukkan URL Web App Google Apps Script (kosongkan untuk nonaktif sinkron):', current); if(v!==null){ if(v.trim()){ localStorage.setItem('attendance_sheet_endpoint', v.trim()); alert('Endpoint disimpan. Muat ulang halaman.'); } else { localStorage.removeItem('attendance_sheet_endpoint'); alert('Sinkron dinonaktifkan. Muat ulang halaman.'); } }});
+    init();
+  </script>
+</body>
+</html>
