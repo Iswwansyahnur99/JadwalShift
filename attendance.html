@@ -98,6 +98,7 @@
   <script>
     let scheduleData=null; const dayNames=["MINGGU","SENIN","SELASA","RABU","KAMIS","JUMAT","SABTU"];
     const SHEET_ENDPOINT = localStorage.getItem('attendance_sheet_endpoint') || '';
+    const SHEET_TOKEN = localStorage.getItem('attendance_sheet_token') || '';
     function todayLocalISO(){ const d=new Date(); d.setHours(0,0,0,0); return d.toISOString().slice(0,10); }
     function getWeekOfMonth(date){ const start=new Date(date.getFullYear(),date.getMonth(),1).getDay(); const dom=date.getDate(); const w=Math.ceil((dom+start)/7); return ((w-1)%4)+1; }
     function getShiftForEmployeeOnDate(fullName,date){
@@ -122,8 +123,8 @@
       body.querySelectorAll('.delBtn').forEach(b=>b.addEventListener('click',()=>deleteEntry(b.dataset.name)));
     }
 
-    async function syncEntryRemote(dateISO, name, rec){ if(!SHEET_ENDPOINT) return; try{ await fetch(SHEET_ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'upsert', date:dateISO, name, ...rec }) }); } catch(e){ console.warn('Sync gagal (offline/CORS?):', e); } }
-    async function loadRemoteDate(dateISO){ if(!SHEET_ENDPOINT) return null; try{ const res=await fetch(`${SHEET_ENDPOINT}?date=${dateISO}`); if(!res.ok) return null; return await res.json(); } catch(e){ console.warn('Load remote gagal:', e); return null; } }
+    async function syncEntryRemote(dateISO, name, rec){ if(!SHEET_ENDPOINT) return; try{ await fetch(SHEET_ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'upsert', token:SHEET_TOKEN, date:dateISO, name, ...rec }) }); } catch(e){ console.warn('Sync gagal (offline/CORS?):', e); } }
+    async function loadRemoteDate(dateISO){ if(!SHEET_ENDPOINT) return null; try{ const url = new URL(SHEET_ENDPOINT); url.searchParams.set('date', dateISO); if(SHEET_TOKEN) url.searchParams.set('token', SHEET_TOKEN); const res=await fetch(url.toString()); if(!res.ok) return null; return await res.json(); } catch(e){ console.warn('Load remote gagal:', e); return null; } }
 
     async function addOrUpdate(){ const name=document.getElementById('empName').value.trim(); const dateISO=document.getElementById('date').value; const shift=document.getElementById('shiftSelect').value; const status=document.getElementById('statusSelect').value; if(!name||!dateISO){ alert('Isi tanggal dan nama.'); return; } const all=loadAttendance(); all[dateISO]=all[dateISO]||{}; const rec={shift,status,ts:Date.now()}; all[dateISO][name]=rec; saveAttendance(all); renderEntries(); syncEntryRemote(dateISO, name, rec); }
     function editEntry(name){ const dateISO=document.getElementById('date').value; const rec=(loadAttendance()[dateISO]||{})[name]; if(!rec) return; document.getElementById('empName').value=name; document.getElementById('shiftSelect').value=rec.shift; document.getElementById('statusSelect').value=rec.status; }
@@ -136,7 +137,9 @@
     document.getElementById('empName').addEventListener('change',autoSetShift);
     document.getElementById('addBtn').addEventListener('click',addOrUpdate);
     document.getElementById('clearFormBtn').addEventListener('click',()=>{ document.getElementById('empName').value=''; document.getElementById('statusSelect').value='HADIR'; autoSetShift(); });
-    document.getElementById('cfgBtn').addEventListener('click',()=>{ const current = localStorage.getItem('attendance_sheet_endpoint')||''; const v = prompt('Masukkan URL Web App Google Apps Script (kosongkan untuk nonaktif sinkron):', current); if(v!==null){ if(v.trim()){ localStorage.setItem('attendance_sheet_endpoint', v.trim()); alert('Endpoint disimpan. Muat ulang halaman.'); } else { localStorage.removeItem('attendance_sheet_endpoint'); alert('Sinkron dinonaktifkan. Muat ulang halaman.'); } }});
+    document.getElementById('cfgBtn').addEventListener('click',()=>{ const current = localStorage.getItem('attendance_sheet_endpoint')||''; const v = prompt('Masukkan URL Web App Google Apps Script (akhiran /exec). Kosongkan untuk menonaktifkan sinkron:', current); if(v===null) return; if(v.trim()){ localStorage.setItem('attendance_sheet_endpoint', v.trim()); } else { localStorage.removeItem('attendance_sheet_endpoint'); }
+      const curTok = localStorage.getItem('attendance_sheet_token')||''; const t = prompt('Masukkan Token Rahasia (opsional, untuk keamanan). Kosongkan jika tidak pakai:', curTok); if(t===null) return; if(t.trim()){ localStorage.setItem('attendance_sheet_token', t.trim()); } else { localStorage.removeItem('attendance_sheet_token'); }
+      alert('Pengaturan disimpan. Muat ulang halaman agar aktif.'); });
     init();
   </script>
 </body>

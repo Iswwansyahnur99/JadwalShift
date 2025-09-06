@@ -68,6 +68,7 @@
   <script>
     let scheduleData=null; const dayNames=["MINGGU","SENIN","SELASA","RABU","KAMIS","JUMAT","SABTU"];
     const SHEET_ENDPOINT = localStorage.getItem('attendance_sheet_endpoint') || '';
+    const SHEET_TOKEN = localStorage.getItem('attendance_sheet_token') || '';
     function loadAttendance(){ try{ return JSON.parse(localStorage.getItem('attendance_v1')||'{}'); }catch{return {}} }
     function getWeekOfMonth(date){ const start=new Date(date.getFullYear(),date.getMonth(),1).getDay(); const dom=date.getDate(); const w=Math.ceil((dom+start)/7); return ((w-1)%4)+1; }
     function getShiftForEmployeeOnDate(fullName,date){
@@ -83,7 +84,7 @@
     function fmtDateID(d){ return new Intl.DateTimeFormat('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(d); }
     function defaultRange(){ const now=new Date(); const start=new Date(now); start.setDate(start.getDate()-14); return {start, end:now}; }
     function nearestMondayEightSeptember(){ const y=(new Date()).getFullYear(); for(let i=0;i<4;i++){ const year=y+i; const d=new Date(year,8,8); if(d.getDay()===1) return d; } for(let i=1;i<=4;i++){ const year=y-i; const d=new Date(year,8,8); if(d.getDay()===1) return d; } return new Date(y,8,8); }
-    async function maybeFetchRemote(startISO,endISO){ if(!SHEET_ENDPOINT) return; try{ const res=await fetch(`${SHEET_ENDPOINT}?start=${startISO}&end=${endISO}`); if(!res.ok) return; const data=await res.json(); if(!data||typeof data!=='object') return; // expected shape: { "YYYY-MM-DD": { "Nama": { shift, status } } }
+    async function maybeFetchRemote(startISO,endISO){ if(!SHEET_ENDPOINT) return; try{ const url = new URL(SHEET_ENDPOINT); url.searchParams.set('start', startISO); url.searchParams.set('end', endISO); if(SHEET_TOKEN) url.searchParams.set('token', SHEET_TOKEN); const res=await fetch(url.toString()); if(!res.ok) return; const data=await res.json(); if(!data||typeof data!=='object') return; // expected shape: { "YYYY-MM-DD": { "Nama": { shift, status } } }
         const local=loadAttendance(); Object.keys(data).forEach(date=>{ local[date] = { ...(local[date]||{}), ...(data[date]||{}) }; }); localStorage.setItem('attendance_v1', JSON.stringify(local)); } catch(e){ console.warn('Fetch remote range gagal:', e); }
     }
     async function render(){ const tbody=document.getElementById('tbody'); tbody.innerHTML=''; const startISO=document.getElementById('start').value; const endISO=document.getElementById('end').value; if(!startISO||!endISO) return; await maybeFetchRemote(startISO,endISO); const start=new Date(startISO); const end=new Date(endISO); end.setHours(0,0,0,0); const att=loadAttendance(); const names=Object.keys(scheduleData.karyawan).sort(); let days=0, rows=0; for(let d=new Date(start); d<=end; d.setDate(d.getDate()+1)){ days++; const dateISO=d.toISOString().slice(0,10); const pretty=fmtDateID(new Date(d)); names.forEach(n=>{ const rec=(att[dateISO]||{})[n]; const shift= getShiftForEmployeeOnDate(n, new Date(d)); const shiftText = shift?shift.label: 'Libur'; const status = rec? rec.status : (shift? '-' : ''); const tr=document.createElement('tr'); tr.innerHTML=`<td>${pretty}</td><td>${n}</td><td>${shiftText}</td><td>${status}</td>`; tbody.appendChild(tr); rows++; }); }
