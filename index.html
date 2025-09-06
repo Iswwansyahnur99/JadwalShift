@@ -693,7 +693,9 @@
         function getWeekOfMonth(date) {
             const startDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
             const dateOfMonth = date.getDate();
-            return Math.ceil((dateOfMonth + startDayOfMonth) / 7);
+            const week = Math.ceil((dateOfMonth + startDayOfMonth) / 7);
+            // Ubah ke pola siklus 4 minggu: 5->1, 6->2, dan seterusnya
+            return ((week - 1) % 4) + 1;
         }
 
         function getCurrentShiftInfo(now) {
