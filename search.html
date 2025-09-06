@@ -128,7 +128,11 @@
             display: flex;
             justify-content: center;
             gap: 18px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
+        .navbar::-webkit-scrollbar{ display:none }
         .navbar a {
             color: white;
             text-decoration: none;
@@ -137,6 +141,7 @@
             transition: background-color 0.2s ease;
             font-weight: bold;
             white-space: nowrap;
+            flex: 0 0 auto;
         }
         .navbar a:hover {
             background-color: var(--sub-heading-color);
@@ -278,6 +283,13 @@
             margin-right: 10px;
             font-size: 0.9em;
             color: var(--text-color);
+        }
+
+        @media (max-width: 640px){
+            body{ padding: 12px; }
+            .container, .personal-schedule-result-container{ padding: 16px; }
+            h1{ font-size: 1.6rem; }
+            .upcoming-grid{ grid-template-columns: 1fr; }
         }
 
         .popup-overlay {
